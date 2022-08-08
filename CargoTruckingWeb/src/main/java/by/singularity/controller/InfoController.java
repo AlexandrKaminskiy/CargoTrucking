@@ -1,16 +1,20 @@
-package by.singularity;
+package by.singularity.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/")
-public class HelloController {
-    @GetMapping("/hello")
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@RequestMapping("/api")
+public class InfoController {
+
+    @GetMapping("/about")
     public String hello(){
-        System.out.println("hello");
         return "hello";
     }
 }
