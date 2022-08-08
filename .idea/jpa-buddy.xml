@@ -2,5 +2,8 @@
 <project version="4">
   <component name="JpaBuddyIdeaProjectConfig">
     <option name="defaultUnitInitialized" value="true" />
+    <option name="sourceModelValue" value="Default" />
+    <option name="targetDbValue" value="099bac9f-1eff-4a2c-aecf-161bee9adda8" />
+    <option name="newEntityIdType" value="Long" />
   </component>
 </project>
