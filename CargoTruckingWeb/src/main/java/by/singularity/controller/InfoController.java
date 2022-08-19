@@ -1,20 +1,31 @@
 package by.singularity.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import by.singularity.entity.Client;
+import by.singularity.service.ClientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class InfoController {
+
+    private final ClientService clientService;
 
     @GetMapping("/about")
     public String hello(){
-        return "hello";
+        return "about";
+    }
+
+    @GetMapping
+    public List<Client> getClients() {
+        return clientService.findClient("sanya");
     }
 }
+
+

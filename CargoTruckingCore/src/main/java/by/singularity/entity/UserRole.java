@@ -3,7 +3,7 @@ package by.singularity.entity;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public enum UserRoles {
+public enum UserRole {
     ADMIN,DISPATCHER,MANAGER,DRIVER,COMPANY_OWNER;
 
     @Override
