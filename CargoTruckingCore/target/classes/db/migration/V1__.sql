@@ -1,4 +1,4 @@
-CREATE TABLE client
+CREATE TABLE "user"
 (
     id           BIGINT NOT NULL,
     name         VARCHAR(20),
@@ -14,23 +14,18 @@ CREATE TABLE client
     password     VARCHAR(72),
     passport_num VARCHAR(30),
     issued_by    VARCHAR(50),
-    CONSTRAINT pk_client PRIMARY KEY (id)
+    CONSTRAINT pk_user PRIMARY KEY (id)
 );
 
-CREATE TABLE storage
-(
-    id        BIGINT NOT NULL,
-    name      VARCHAR(20),
-    address   VARCHAR(20),
-    client_id BIGINT NOT NULL,
-    CONSTRAINT pk_storage PRIMARY KEY (id)
-);
+ALTER TABLE storage
+    ADD user_id BIGINT;
 
-CREATE TABLE user_role
-(
-    client_id BIGINT NOT NULL,
-    user_role VARCHAR(255)
-);
+ALTER TABLE storage
+    ALTER COLUMN user_id SET NOT NULL;
 
-ALTER TABLE user_role
-    ADD CONSTRAINT fk_user_role_on_client FOREIGN KEY (client_id) REFERENCES client (id);
+ALTER TABLE user_roles
+    ADD CONSTRAINT fk_userol_on_user FOREIGN KEY (user_id) REFERENCES "user" (id);
+
+ALTER TABLE storage
+DROP
+COLUMN user_id_id;

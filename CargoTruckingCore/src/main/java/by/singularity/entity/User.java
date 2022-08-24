@@ -1,8 +1,12 @@
 package by.singularity.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -10,14 +14,13 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "client")
+@Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Client {
+public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "client_seq")
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -60,29 +63,9 @@ public class Client {
     @Length(max = 50)
     private String issuedBy;
 
-    @ElementCollection(targetClass = UserRole.class, fetch = FetchType.LAZY)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<UserRole> userRole;
 
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", patronymic='" + patronymic + '\'' +
-                ", date=" + date +
-                ", email='" + email + '\'' +
-                ", town='" + town + '\'' +
-                ", street='" + street + '\'' +
-                ", house=" + house +
-                ", flat=" + flat +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", passportNum='" + passportNum + '\'' +
-                ", issuedBy='" + issuedBy + '\'' +
-                ", userRole=" + userRole +
-                '}';
-    }
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    private Set<Role> roles;
 }

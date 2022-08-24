@@ -17,7 +17,6 @@ import javax.persistence.*;
 public class Storage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @Length(max = 20,min = 1)
@@ -26,7 +25,7 @@ public class Storage {
     @Length(max = 20,min = 1)
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Client.class,optional = false)
-    private Long clientId;
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = User.class,optional = false)
+    private Long userId;
 
 }

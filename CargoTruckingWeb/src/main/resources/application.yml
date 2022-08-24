@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/Cargotrucking
+    url: jdbc:postgresql://localhost:5432/cargotrucking
     username: postgres
     password: 1111
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     show-sql: true
   flyway:
     enabled: true
@@ -14,3 +14,6 @@ spring:
 logging:
   level:
     org.hibernate.sql: debug
+jwt:
+  secret: Thequickbrownfoxjumpsoverthelazydog
+  expiration: 172800000
