@@ -25,7 +25,7 @@ public class Storage {
     @Length(max = 20,min = 1)
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY,targetEntity = User.class,optional = false)
-    private Long userId;
+//    @ManyToOne(fetch = FetchType.LAZY,targetEntity = User.class,optional = false)
+//    private Long userId;
 
 }
