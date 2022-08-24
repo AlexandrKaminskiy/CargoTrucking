@@ -1,8 +1,8 @@
 package by.singularity.service;
 
-import by.singularity.entity.User;
-import by.singularity.repository.UserJpaRepository;
-import by.singularity.repository.impl.UserRepository;
+import by.singularity.entity.Client;
+import by.singularity.repository.ClientJpaRepository;
+import by.singularity.repository.impl.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final UserJpaRepository userJpaRepository;
+    private final ClientRepository userRepository;
+    private final ClientJpaRepository userJpaRepository;
 
 
-    public List<User> findUser(String name){
-        User user = new User();
+    public List<Client> findUser(String name){
+        Client user = new Client();
         user.setName("sanya");
         user.setDate(new Date(2003, Calendar.AUGUST,4));
         user.setEmail("sasha.pinsk2003@gmail.com");

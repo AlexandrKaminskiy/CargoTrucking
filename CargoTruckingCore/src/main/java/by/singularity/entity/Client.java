@@ -14,13 +14,14 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "client")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Client {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -66,6 +67,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "client_id"))
     private Set<Role> roles;
 }

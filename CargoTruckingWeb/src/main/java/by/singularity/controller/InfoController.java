@@ -1,6 +1,6 @@
 package by.singularity.controller;
 
-import by.singularity.entity.User;
+import by.singularity.entity.Client;
 import by.singularity.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class InfoController {
     }
 
     @GetMapping
-    public List<User> getClients() {
+    public List<Client> getClients() {
         return clientService.findUser("sanya");
     }
 }

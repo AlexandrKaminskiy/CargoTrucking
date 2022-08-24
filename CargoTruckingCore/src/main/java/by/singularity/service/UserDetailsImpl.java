@@ -1,7 +1,6 @@
 package by.singularity.service;
 
-import by.singularity.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import by.singularity.entity.Client;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,7 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
-    public static UserDetailsImpl mapToUserDetails(User user) {
+    public static UserDetailsImpl mapToUserDetails(Client user) {
         Set<GrantedAuthority> grantedAuthorities = user.getRoles()
                 .stream()
                 .map(r->new SimpleGrantedAuthority(r.toString()))
