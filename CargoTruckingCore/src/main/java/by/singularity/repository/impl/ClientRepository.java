@@ -1,13 +1,11 @@
 package by.singularity.repository.impl;
 
 import static by.singularity.entity.QClient.client;
-
 import by.singularity.entity.Client;
 import by.singularity.repository.CustomClientRepository;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -42,7 +40,7 @@ public class ClientRepository implements CustomClientRepository {
         return Optional.ofNullable(new JPAQuery<Client>(entityManager)
                 .select(client)
                 .from(client)
-                .where(client.name.eq(login))
+                .where(client.login.eq(login))
                 .fetchOne());
     }
 }

@@ -66,7 +66,7 @@ public class Client {
 
 
     @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "client_id"))
     private Set<Role> roles;
 }
