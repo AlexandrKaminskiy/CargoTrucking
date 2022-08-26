@@ -60,7 +60,6 @@ public class InfoController {
 
     @GetMapping("/refresh")
     public void refresh(HttpServletRequest request, HttpServletResponse response) {
-
         String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
