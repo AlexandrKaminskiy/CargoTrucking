@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.util.Date;
@@ -39,7 +38,7 @@ public class WayBill {
     private User user;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "wayBill")
-    private Set<Checkpoint> checkpoints = new java.util.LinkedHashSet<>();
+    private Set<Checkpoint> checkpoints;
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = CarriageStatus.class)
