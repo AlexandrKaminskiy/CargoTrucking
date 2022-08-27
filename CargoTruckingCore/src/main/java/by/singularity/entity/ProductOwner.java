@@ -10,25 +10,21 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "client")
+@Table(name = "product_owner")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Client {
+public class ProductOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Length(max = 30, min = 1)
+    @Length(min = 1, max = 40)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = ClientStatus.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "status", joinColumns = @JoinColumn(name = "client_id"))
-    private Set<ClientStatus> status;
+    @OneToMany
+    private Set<Product> products;
 
-    @ManyToOne
-    private User adminInfo;
 }

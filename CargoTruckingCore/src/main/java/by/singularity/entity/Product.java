@@ -7,28 +7,30 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.Set;
 
 @Entity
-@Table(name = "client")
+@Table(name = "products")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Client {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Length(max = 30, min = 1)
+    @Length(min = 1, max = 50)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = ClientStatus.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "status", joinColumns = @JoinColumn(name = "client_id"))
-    private Set<ClientStatus> status;
+    @Min(0)
+    private Integer amount;
 
-    @ManyToOne
-    private User adminInfo;
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = ProductStatus.class)
+    @CollectionTable(name = "product_status",joinColumns = @JoinColumn(name = "product_id"))
+    private Set<ProductStatus> productStatus;
 }

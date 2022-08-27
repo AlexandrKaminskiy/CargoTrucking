@@ -1,10 +1,7 @@
 package by.singularity.entity;
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
-public enum Status {
-    PRIVATE, LEGAL;
+public enum ProductStatus {
+    LOST, STOLEN, SPOILED;
 
     @Override
     public String toString() {

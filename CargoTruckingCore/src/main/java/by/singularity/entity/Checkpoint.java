@@ -5,30 +5,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.Date;
 
 @Entity
-@Table(name = "client")
+@Table(name = "checkpoints")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Client {
+public class Checkpoint {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Length(max = 30, min = 1)
-    private String name;
-
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = ClientStatus.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "status", joinColumns = @JoinColumn(name = "client_id"))
-    private Set<ClientStatus> status;
-
     @ManyToOne
-    private User adminInfo;
+    @JoinColumn(name = "way_bill_id")
+    private WayBill wayBill;
+
+    @Length(min = 1)
+    private String address;
+
+    @DateTimeFormat
+    private Date requiredArrivalDate;
+
 }
