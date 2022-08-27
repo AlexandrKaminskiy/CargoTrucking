@@ -1,8 +1,9 @@
 package by.singularity.repository.impl;
 
 import static by.singularity.entity.QClient.client;
-import by.singularity.entity.Client;
-import by.singularity.repository.CustomClientRepository;
+
+import by.singularity.entity.User;
+import by.singularity.repository.CustomUserRepository;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -13,13 +14,13 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class ClientRepository implements CustomClientRepository {
+public class UserRepository implements CustomUserRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public List<Client> findByName(String name) {
-        return new JPAQuery<Client>(entityManager)
+    public List<User> findByName(String name) {
+        return new JPAQuery<User>(entityManager)
                 .select(client)
                 .from(client)
                 .where(client.name.equalsIgnoreCase(name))
@@ -27,8 +28,8 @@ public class ClientRepository implements CustomClientRepository {
     }
 
     @Override
-    public Optional<Client> findByEmail(String email) {
-        return Optional.ofNullable(new JPAQuery<Client>(entityManager)
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(new JPAQuery<User>(entityManager)
                 .select(client)
                 .from(client)
                 .where(client.email.equalsIgnoreCase(email))
@@ -36,8 +37,8 @@ public class ClientRepository implements CustomClientRepository {
     }
 
     @Override
-    public Optional<Client> findByLogin(String login) {
-        return Optional.ofNullable(new JPAQuery<Client>(entityManager)
+    public Optional<User> findByLogin(String login) {
+        return Optional.ofNullable(new JPAQuery<User>(entityManager)
                 .select(client)
                 .from(client)
                 .where(client.login.eq(login))

@@ -1,8 +1,8 @@
 package by.singularity.controller;
 
-import by.singularity.entity.Client;
+import by.singularity.entity.User;
 import by.singularity.entity.Role;
-import by.singularity.service.ClientService;
+import by.singularity.service.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -34,7 +34,7 @@ public class InfoController {
     @Value("${jwt.expiration}")
     private Long expires;
 
-    private final ClientService clientService;
+    private final UserService clientService;
 
     @GetMapping("/about")
     public String hello(){
@@ -43,7 +43,7 @@ public class InfoController {
 
 
     @PostMapping("/register")
-    public Client register(@RequestBody @Valid Client client) {
+    public User register(@RequestBody @Valid User client) {
         clientService.saveUser(client);
         return clientService.findClient(client.getLogin()).get();
     }
@@ -60,7 +60,6 @@ public class InfoController {
 
     @GetMapping("/refresh")
     public void refresh(HttpServletRequest request, HttpServletResponse response) {
-
         String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
@@ -69,7 +68,7 @@ public class InfoController {
                 JWTVerifier jwtVerifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = jwtVerifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
-                Client client = clientService.findClient(username).get();
+                User client = clientService.findClient(username).get();
                 String access_token = JWT.create()
                         .withSubject(client.getLogin())
                         .withExpiresAt(new Date(System.currentTimeMillis() + expires))

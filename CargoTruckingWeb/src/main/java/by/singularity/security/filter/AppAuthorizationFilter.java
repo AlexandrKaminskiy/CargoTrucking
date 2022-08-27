@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,12 +57,13 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request,response);
             } catch (Exception e){
                 e.printStackTrace();
-                log.info("SOMETHING WENT WRONG -_-");
+                log.error("SOMETHING WENT WRONG -_-");
                 response.setHeader("error","check your token");
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
             }
             return;
         }
+        log.info("SUCCESSFULLY AUTHORIZED!");
         filterChain.doFilter(request,response);
     }
 }

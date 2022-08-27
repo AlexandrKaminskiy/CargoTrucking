@@ -2,7 +2,6 @@ package by.singularity.security;
 
 import by.singularity.security.filter.AppAuthenticationFilter;
 import by.singularity.security.filter.AppAuthorizationFilter;
-import by.singularity.security.filter.AppRefreshTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -37,12 +36,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         appAuthenticationFilter.setFilterProcessesUrl("/api/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         http.authorizeRequests().antMatchers("/api/login/**","/api/refresh/**").permitAll();
         http.authorizeRequests().antMatchers("/api/admininfo/**").hasAuthority("ADMIN");
         http.authorizeRequests().antMatchers("/api/managerinfo/**").hasAuthority("MANAGER");
         http.addFilter(appAuthenticationFilter);
-        http.addFilter(new AppRefreshTokenFilter());
         http.addFilterBefore(new AppAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
