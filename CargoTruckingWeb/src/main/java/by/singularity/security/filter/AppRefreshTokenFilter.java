@@ -1,66 +1,30 @@
-package by.singularity.controller;
+package by.singularity.security.filter;
 
 import by.singularity.entity.Client;
 import by.singularity.entity.Role;
-import by.singularity.service.ClientService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@RestController
-@RequestMapping("/api")
-@RequiredArgsConstructor
-public class InfoController {
+public class AppRefreshTokenFilter extends OncePerRequestFilter {
 
-    @Value("${jwt.secret}")
-    private String secret;
-
-    @Value("${jwt.expiration}")
-    private Long expires;
-
-    private final ClientService clientService;
-
-    @GetMapping("/about")
-    public String hello(){
-        return "about";
-    }
-
-
-    @PostMapping("/register")
-    public Client register(@RequestBody @Valid Client client) {
-        clientService.saveUser(client);
-        return clientService.findClient(client.getLogin()).get();
-    }
-
-    @GetMapping("/admininfo")
-    public String admininfo() {
-        return "My name is Gustavo, but u can call me SUS!";
-    }
-
-    @GetMapping("/managerinfo")
-    public String managerinfo() {
-        return "My name is Tomas Shelby";
-    }
-
-    @GetMapping("/refresh")
-    public void refresh(HttpServletRequest request, HttpServletResponse response) {
-
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
@@ -90,7 +54,6 @@ public class InfoController {
                 response.setHeader("error","check your token");
             }
         }
+        filterChain.doFilter(request,response);
     }
 }
-
-
