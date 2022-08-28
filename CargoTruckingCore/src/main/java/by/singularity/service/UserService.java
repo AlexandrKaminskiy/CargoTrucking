@@ -1,7 +1,7 @@
 package by.singularity.service;
 
 import by.singularity.entity.User;
-import by.singularity.repository.UserJpaRepository;
+import by.singularity.repository.jparepo.UserJpaRepository;
 import by.singularity.repository.impl.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -32,6 +32,8 @@ public class QInvoice extends EntityPathBase<Invoice> {
 
     public final QStorage storage;
 
+    public final QWayBill wayBill;
+
     public QInvoice(String variable) {
         this(Invoice.class, forVariable(variable), INITS);
     }
@@ -53,6 +55,7 @@ public class QInvoice extends EntityPathBase<Invoice> {
         this.creator = inits.isInitialized("creator") ? new QUser(forProperty("creator")) : null;
         this.driver = inits.isInitialized("driver") ? new QUser(forProperty("driver")) : null;
         this.storage = inits.isInitialized("storage") ? new QStorage(forProperty("storage"), inits.get("storage")) : null;
+        this.wayBill = inits.isInitialized("wayBill") ? new QWayBill(forProperty("wayBill"), inits.get("wayBill")) : null;
     }
 
 }

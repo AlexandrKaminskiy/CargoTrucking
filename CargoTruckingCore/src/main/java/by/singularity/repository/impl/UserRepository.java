@@ -2,10 +2,13 @@ package by.singularity.repository.impl;
 
 import static by.singularity.entity.QUser.user;
 import by.singularity.entity.User;
-import by.singularity.repository.CustomUserRepository;
+import by.singularity.repository.customrepo.CustomUserRepository;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -42,5 +45,32 @@ public class UserRepository implements CustomUserRepository {
                 .from(user)
                 .where(user.login.eq(login))
                 .fetchOne());
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(new JPAQuery<User>(entityManager)
+                .select(user)
+                .from(user)
+                .where(user.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
+    public List<User> findAll() {
+        return new JPAQuery<User>(entityManager)
+                .select(user)
+                .from(user)
+                .fetch();
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager);
+        jpaQueryFactory
+                .delete(user)
+                .where(user.id.eq(id))
+                .execute();
     }
 }

@@ -1,4 +1,4 @@
-package by.singularity.repository;
+package by.singularity.repository.jparepo;
 
 import by.singularity.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
