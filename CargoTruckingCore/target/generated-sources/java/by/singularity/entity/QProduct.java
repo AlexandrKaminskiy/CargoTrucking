@@ -18,9 +18,13 @@ public class QProduct extends EntityPathBase<Product> {
 
     private static final long serialVersionUID = 486384466L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QProduct product = new QProduct("product");
 
     public final NumberPath<Integer> amount = createNumber("amount", Integer.class);
+
+    public final QUser creator;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -29,15 +33,24 @@ public class QProduct extends EntityPathBase<Product> {
     public final SetPath<ProductStatus, EnumPath<ProductStatus>> productStatus = this.<ProductStatus, EnumPath<ProductStatus>>createSet("productStatus", ProductStatus.class, EnumPath.class, PathInits.DIRECT2);
 
     public QProduct(String variable) {
-        super(Product.class, forVariable(variable));
+        this(Product.class, forVariable(variable), INITS);
     }
 
     public QProduct(Path<? extends Product> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QProduct(PathMetadata metadata) {
-        super(Product.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QProduct(PathMetadata metadata, PathInits inits) {
+        this(Product.class, metadata, inits);
+    }
+
+    public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.creator = inits.isInitialized("creator") ? new QUser(forProperty("creator")) : null;
     }
 
 }

@@ -34,14 +34,4 @@ public class Invoice {
     @OneToMany(targetEntity = Product.class)
     private Set<Product> products;
 
-    @OneToOne(mappedBy = "invoice", optional = false)
-    private WayBill wayBill;
-
-    public WayBill getWayBill() {
-        return wayBill;
-    }
-
-    public void setWayBill(WayBill wayBill) {
-        this.wayBill = wayBill;
-    }
 }

@@ -1,6 +1,5 @@
 package by.singularity.repository.impl;
 
-import by.singularity.entity.Invoice;
 import by.singularity.entity.WayBill;
 import by.singularity.repository.customrepo.CustomWayBillRepo;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -18,7 +17,7 @@ import static by.singularity.entity.QWayBill.wayBill;
 
 @Repository
 @RequiredArgsConstructor
-public class WayBillRepo implements CustomWayBillRepo {
+public class WayBillRepository implements CustomWayBillRepo {
     @PersistenceContext
     private EntityManager entityManager;
 

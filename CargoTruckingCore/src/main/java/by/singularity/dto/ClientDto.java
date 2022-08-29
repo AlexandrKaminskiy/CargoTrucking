@@ -12,7 +12,6 @@ import java.util.Set;
 public class ClientDto implements Serializable {
     @Length(max = 30, min = 1)
     private final String name;
-
     private final Set<ClientStatus> status;
     private final UserDto adminInfo;
 }
