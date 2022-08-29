@@ -19,10 +19,8 @@ public class Storage {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Length(max = 20,min = 1)
     private String name;
 
-    @Length(max = 20,min = 1)
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY,targetEntity = User.class,optional = false)

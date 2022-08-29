@@ -23,11 +23,12 @@ public class Product {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Length(min = 1, max = 50)
     private String name;
 
-    @Min(0)
     private Integer amount;
+
+    @ManyToOne
+    private User creator;
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = ProductStatus.class)

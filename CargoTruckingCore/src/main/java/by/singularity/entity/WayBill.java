@@ -25,13 +25,11 @@ public class WayBill {
     @OneToOne(targetEntity = Invoice.class)
     private Invoice invoice;
 
-    @Min(0)
     private Integer distance;
 
     @ManyToOne(targetEntity = Car.class)
     private Car car;
 
-    @DateTimeFormat
     private Date endDate;
 
     @ManyToOne(targetEntity = User.class)

@@ -21,7 +21,6 @@ public class Client {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Length(max = 30, min = 1)
     private String name;
 
     @Enumerated(EnumType.STRING)

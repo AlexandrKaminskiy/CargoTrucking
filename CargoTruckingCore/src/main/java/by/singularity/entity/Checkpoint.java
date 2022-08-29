@@ -26,10 +26,10 @@ public class Checkpoint {
     @JoinColumn(name = "way_bill_id")
     private WayBill wayBill;
 
-    @Length(min = 1)
     private String address;
 
-    @DateTimeFormat
     private Date requiredArrivalDate;
+
+    private Date checkpointDate;
 
 }

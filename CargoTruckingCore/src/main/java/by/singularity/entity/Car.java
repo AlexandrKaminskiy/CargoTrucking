@@ -21,9 +21,9 @@ public class Car {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Length(min = 1)
+
     private String brand;
-    @Length(min = 1)
+
     private String carNumber;
 
     @OneToMany(mappedBy = "car")

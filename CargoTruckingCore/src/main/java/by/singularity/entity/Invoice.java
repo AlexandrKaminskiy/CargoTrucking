@@ -20,7 +20,6 @@ import java.util.Set;
 public class Invoice {
     @Id
     @Column(name = "id", nullable = false)
-    @Length(max = 20, min = 1)
     private String number;
 
     @ManyToOne(targetEntity = Storage.class)
@@ -34,7 +33,6 @@ public class Invoice {
 
     @OneToMany(targetEntity = Product.class)
     private Set<Product> products;
-
 
     @OneToOne(mappedBy = "invoice", optional = false)
     private WayBill wayBill;

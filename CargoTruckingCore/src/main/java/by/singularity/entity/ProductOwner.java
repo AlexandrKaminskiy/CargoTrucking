@@ -21,7 +21,6 @@ public class ProductOwner {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Length(min = 1, max = 40)
     private String name;
 
     @OneToMany
