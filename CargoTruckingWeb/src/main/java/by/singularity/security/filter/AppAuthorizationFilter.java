@@ -34,7 +34,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
-        if (request.getServletPath().equals("/api/login")) {
+        if (request.getServletPath().equals("/api/sign-in")) {
             filterChain.doFilter(request,response);
             return;
         }

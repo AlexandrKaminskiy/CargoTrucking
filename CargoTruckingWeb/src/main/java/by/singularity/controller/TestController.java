@@ -12,9 +12,14 @@ public class TestController {
     @Autowired
     ProductRepository productRepository;
 
-    @GetMapping()
+    @GetMapping("/delete")
     String delete(){
         productRepository.deleteById(2L);
         return "oke";
+    }
+
+    @GetMapping()
+    String fun(){
+        return "okee";
     }
 }

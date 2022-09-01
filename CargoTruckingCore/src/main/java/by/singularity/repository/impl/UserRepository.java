@@ -1,6 +1,7 @@
 package by.singularity.repository.impl;
 
 import static by.singularity.entity.QUser.user;
+
 import by.singularity.entity.User;
 import by.singularity.repository.customrepo.CustomUserRepository;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +66,7 @@ public class UserRepository implements CustomUserRepository {
                 .fetch();
     }
 
+
     @Override
     @Transactional
     public void deleteById(Long id) {
@@ -72,5 +75,17 @@ public class UserRepository implements CustomUserRepository {
                 .delete(user)
                 .where(user.id.eq(id))
                 .execute();
+    }
+
+    @Override
+    @Transactional
+    public void updateById(HttpServletRequest request) {
+
+//        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager);
+//        jpaQueryFactory
+//                .update(user)
+//                .where(user.id.eq(1L))
+//                .set(user1)
+//                .execute();
     }
 }

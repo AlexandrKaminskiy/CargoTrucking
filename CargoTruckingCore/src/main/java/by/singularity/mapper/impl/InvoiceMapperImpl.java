@@ -22,8 +22,6 @@ public class InvoiceMapperImpl implements InvoiceMapper {
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
     private final StorageRepository storageRepository;
-    private final WayBillRepository wayBillRepository;
-    //todo доделать
     @Override
     public Invoice toModel(InvoiceDto invoiceDto) {
         if ( invoiceDto == null ) {
@@ -52,9 +50,9 @@ public class InvoiceMapperImpl implements InvoiceMapper {
         products = productSetToProductDtoSet( invoice.getProducts() );
         number = invoice.getNumber();
 
-        Long storageId = null;
-        Long creatorId = null;
-        Long driverId = null;
+        Long storageId = invoice.getStorage().getId();
+        Long creatorId = invoice.getCreator().getId();
+        Long driverId = invoice.getDriver().getId();
 
         return new InvoiceDto( number, storageId, creatorId, driverId, products );
     }
@@ -71,7 +69,7 @@ public class InvoiceMapperImpl implements InvoiceMapper {
         product.setAmount( productDto.getAmount() );
         Set<ProductStatus> set = productDto.getProductStatus();
         if ( set != null ) {
-            product.setProductStatus( new LinkedHashSet<ProductStatus>( set ) );
+            product.setProductStatus(new LinkedHashSet<>(set) );
         }
 
         return product;
@@ -82,7 +80,7 @@ public class InvoiceMapperImpl implements InvoiceMapper {
             return null;
         }
 
-        Set<Product> set1 = new LinkedHashSet<Product>( Math.max( (int) ( set.size() / .75f ) + 1, 16 ) );
+        Set<Product> set1 = new LinkedHashSet<>(Math.max((int) (set.size() / .75f) + 1, 16));
         for ( ProductDto productDto : set ) {
             set1.add( productDtoToProduct( productDto ) );
         }
@@ -96,13 +94,13 @@ public class InvoiceMapperImpl implements InvoiceMapper {
         }
 
         Set<ProductStatus> productStatus = null;
-        Long id = null;
-        String name = null;
-        Integer amount = null;
+        Long id;
+        String name;
+        Integer amount;
 
         Set<ProductStatus> set = product.getProductStatus();
         if ( set != null ) {
-            productStatus = new LinkedHashSet<ProductStatus>( set );
+            productStatus = new LinkedHashSet<>(set);
         }
         id = product.getId();
         name = product.getName();
@@ -110,9 +108,7 @@ public class InvoiceMapperImpl implements InvoiceMapper {
 
         Long creatorId = null;
 
-        ProductDto productDto = new ProductDto( id, name, amount, creatorId, productStatus );
-
-        return productDto;
+        return new ProductDto( id, name, amount, creatorId, productStatus );
     }
 
     protected Set<ProductDto> productSetToProductDtoSet(Set<Product> set) {
@@ -120,7 +116,7 @@ public class InvoiceMapperImpl implements InvoiceMapper {
             return null;
         }
 
-        Set<ProductDto> set1 = new LinkedHashSet<ProductDto>( Math.max( (int) ( set.size() / .75f ) + 1, 16 ) );
+        Set<ProductDto> set1 = new LinkedHashSet<>(Math.max((int) (set.size() / .75f) + 1, 16));
         for ( Product product : set ) {
             set1.add( productToProductDto( product ) );
         }

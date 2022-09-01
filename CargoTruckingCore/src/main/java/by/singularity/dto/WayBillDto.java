@@ -2,7 +2,9 @@ package by.singularity.dto;
 
 import by.singularity.entity.CarriageStatus;
 import by.singularity.entity.Checkpoint;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Min;
@@ -11,17 +13,18 @@ import java.util.Date;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
 public class WayBillDto implements Serializable {
+    @Length(min = 1)
+    private String invoiceId;
     @Min(1)
-    private final Long invoiceId;
+    private Integer distance;
     @Min(1)
-    private final Integer distance;
-    @Min(1)
-    private final Long carId;
+    private Long carId;
     @DateTimeFormat
-    private final Date endDate;
+    private Date endDate;
     @Min(1)
-    private final Long verifierId;
-    private final Set<CarriageStatus> carriageStatuses;
-    private final Set<Checkpoint> checkpoints;
+    private Long verifierId;
+    private Set<CarriageStatus> carriageStatuses;
+    private Set<Checkpoint> checkpoints;
 }

@@ -1,30 +1,29 @@
 package by.singularity.mapper.impl;
 
 import by.singularity.dto.UserDto;
+import by.singularity.entity.Client;
 import by.singularity.entity.Role;
 import by.singularity.entity.User;
 import by.singularity.mapper.UserMapper;
+import by.singularity.repository.impl.ClientRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Generated;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-08-30T01:49:14+0300",
-    comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.2 (Oracle Corporation)"
-)
+@Component
+@RequiredArgsConstructor
 public class UserMapperImpl implements UserMapper {
+    private final ClientRepository clientRepository;
 
     @Override
     public User toModel(UserDto userDto) {
         if ( userDto == null ) {
             return null;
         }
-
         User user = new User();
-
         user.setId( userDto.getId() );
         user.setName( userDto.getName() );
         user.setSurname( userDto.getSurname() );
@@ -34,6 +33,13 @@ public class UserMapperImpl implements UserMapper {
         user.setStreet( userDto.getStreet() );
         user.setHouse( userDto.getHouse() );
         user.setFlat( userDto.getFlat() );
+        Set<Client> clientSet = userDto
+                .getClientId()
+                .stream()
+                .filter((id) -> clientRepository.findById(id).isPresent())
+                .map((id) ->clientRepository.findById(id).get())
+                .collect(Collectors.toSet());
+        user.setClient(clientSet);
         user.setLogin( userDto.getLogin() );
         user.setPassword( userDto.getPassword() );
         user.setPassportNum( userDto.getPassportNum() );
@@ -53,19 +59,20 @@ public class UserMapperImpl implements UserMapper {
         }
 
         Set<Role> roles = null;
-        Long id = null;
-        String name = null;
-        String surname = null;
-        String patronymic = null;
-        String email = null;
-        String town = null;
-        String street = null;
-        Integer house = null;
-        Integer flat = null;
-        String login = null;
-        String password = null;
-        String passportNum = null;
-        String issuedBy = null;
+        Long id;
+        String name;
+        String surname;
+        String patronymic;
+        String email;
+        String town;
+        String street;
+        Integer house;
+        Integer flat;
+        String login;
+        String password;
+        String passportNum;
+        String issuedBy;
+        Long clientId;
 
         Set<Role> set = user.getRoles();
         if ( set != null ) {
@@ -84,11 +91,13 @@ public class UserMapperImpl implements UserMapper {
         password = user.getPassword();
         passportNum = user.getPassportNum();
         issuedBy = user.getIssuedBy();
+        Set<Long> clientSet = user
+                .getClient()
+                .stream()
+                .map(Client::getId)
+                .collect(Collectors.toSet());
+        Date bornDate = user.getBornDate();
 
-        Date bornDate = null;
-
-        UserDto userDto = new UserDto( id, name, surname, patronymic, bornDate, email, town, street, house, flat, login, password, passportNum, issuedBy, roles );
-
-        return userDto;
+        return new UserDto( id, name, surname, patronymic, clientSet, bornDate, email, town, street, house, flat, login, password, passportNum, issuedBy, roles );
     }
 }

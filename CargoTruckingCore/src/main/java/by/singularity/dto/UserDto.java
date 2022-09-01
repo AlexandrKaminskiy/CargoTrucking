@@ -1,8 +1,11 @@
 package by.singularity.dto;
 
 import by.singularity.entity.Role;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -12,35 +15,38 @@ import java.util.Date;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDto implements Serializable {
-    private final Long id;
+    private Long id;
     @Length(max = 20)
-    private final String name;
+    private String name;
     @Length(min = 1, max = 20)
-    private final String surname;
+    private String surname;
     @Length(max = 20)
-    private final String patronymic;
-    @Min(1)
-    private Long clientId;
-    private final Date bornDate;
+    private String patronymic;
+    private Set<Long> clientId;
+    @DateTimeFormat
+    private Date bornDate;
     @Length(max = 50)
     @Email
-    private final String email;
+    private String email;
     @Length(max = 20)
-    private final String town;
+    private String town;
     @Length(max = 20)
-    private final String street;
+    private String street;
     @Max(10000)
-    private final Integer house;
+    private Integer house;
     @Max(10000)
-    private final Integer flat;
+    private Integer flat;
     @Length(min = 5, max = 20)
-    private final String login;
+    private String login;
     @Length(min = 5, max = 72)
-    private final String password;
+    private String password;
     @Length(max = 30)
-    private final String passportNum;
+    private String passportNum;
     @Length(max = 50)
-    private final String issuedBy;
-    private final Set<Role> roles;
+    private String issuedBy;
+    private Set<Role> roles;
+
 }

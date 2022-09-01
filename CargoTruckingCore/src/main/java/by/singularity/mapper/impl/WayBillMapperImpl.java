@@ -5,18 +5,24 @@ import by.singularity.entity.CarriageStatus;
 import by.singularity.entity.Checkpoint;
 import by.singularity.entity.WayBill;
 import by.singularity.mapper.WayBillMapper;
+import by.singularity.repository.impl.CarRepository;
+import by.singularity.repository.impl.InvoiceRepository;
+import by.singularity.repository.impl.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Generated;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-08-30T01:49:14+0300",
-    comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.2 (Oracle Corporation)"
-)
+@Component
+@RequiredArgsConstructor
 public class WayBillMapperImpl implements WayBillMapper {
+
+    private final InvoiceRepository invoiceRepository;
+    private final UserRepository userRepository;
+    private final CarRepository carRepository;
 
     @Override
     public WayBill toModel(WayBillDto wayBillDto) {
@@ -28,6 +34,9 @@ public class WayBillMapperImpl implements WayBillMapper {
 
         wayBill.setDistance( wayBillDto.getDistance() );
         wayBill.setEndDate( wayBillDto.getEndDate() );
+        wayBill.setInvoice(invoiceRepository.findById(wayBillDto.getInvoiceId()).get());
+        wayBill.setVerifier(userRepository.findById(wayBillDto.getVerifierId()).get());
+        wayBill.setCar(carRepository.findById(wayBillDto.getCarId()).get());
         Set<Checkpoint> set = wayBillDto.getCheckpoints();
         if ( set != null ) {
             wayBill.setCheckpoints( new LinkedHashSet<Checkpoint>( set ) );
@@ -48,26 +57,24 @@ public class WayBillMapperImpl implements WayBillMapper {
 
         Set<CarriageStatus> carriageStatuses = null;
         Set<Checkpoint> checkpoints = null;
-        Integer distance = null;
-        Date endDate = null;
+        Integer distance;
+        Date endDate;
 
         Set<CarriageStatus> set = wayBill.getCarriageStatuses();
         if ( set != null ) {
-            carriageStatuses = new LinkedHashSet<CarriageStatus>( set );
+            carriageStatuses = new LinkedHashSet<>(set);
         }
         Set<Checkpoint> set1 = wayBill.getCheckpoints();
         if ( set1 != null ) {
-            checkpoints = new LinkedHashSet<Checkpoint>( set1 );
+            checkpoints = new LinkedHashSet<>(set1);
         }
         distance = wayBill.getDistance();
         endDate = wayBill.getEndDate();
 
-        Long invoiceId = null;
-        Long carId = null;
-        Long verifierId = null;
+        String invoiceId = wayBill.getInvoice().getNumber();
+        Long carId = wayBill.getCar().getId();
+        Long verifierId = wayBill.getVerifier().getId();
 
-        WayBillDto wayBillDto = new WayBillDto( invoiceId, distance, carId, endDate, verifierId, carriageStatuses, checkpoints );
-
-        return wayBillDto;
+        return new WayBillDto( invoiceId, distance, carId, endDate, verifierId, carriageStatuses, checkpoints );
     }
 }

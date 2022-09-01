@@ -1,7 +1,6 @@
 package by.singularity.controller;
 
 import by.singularity.dto.ClientDto;
-import by.singularity.repository.impl.ClientRepository;
 import by.singularity.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/clients")
+@RequestMapping("/clients")
 @RequiredArgsConstructor
 public class ClientController {
 

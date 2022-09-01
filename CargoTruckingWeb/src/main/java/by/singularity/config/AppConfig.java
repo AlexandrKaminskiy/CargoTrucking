@@ -11,5 +11,4 @@ public class AppConfig {
     BCryptPasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
 }

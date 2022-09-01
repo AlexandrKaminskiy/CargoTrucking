@@ -31,14 +31,18 @@ public class AppAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
 
     final static String SECRET = "Thequickbrownfoxjumpsoverthelazydog";
-    final static Integer EXPIRES = 60000;
+    final static Integer EXPIRES = 172800000;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String login = request.getParameter("login");
-        String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login,password);
-        return authenticationManager.authenticate(authenticationToken);
+        if (request.getServletPath().equals("/api/sign-in")) {
+            String login = request.getParameter("login");
+            String password = request.getParameter("password");
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login, password);
+            return authenticationManager.authenticate(authenticationToken);
+        }
+
+        return null;
     }
 
     @Override
@@ -56,7 +60,7 @@ public class AppAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(algorithm);
         String refresh_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 172800000 * 10))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
         Map<String,String> tokens = new HashMap<>();

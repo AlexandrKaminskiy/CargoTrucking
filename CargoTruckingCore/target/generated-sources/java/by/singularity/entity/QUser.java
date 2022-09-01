@@ -20,9 +20,9 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
-    public final SetPath<Client, QClient> client = this.<Client, QClient>createSet("client", Client.class, QClient.class, PathInits.DIRECT2);
+    public final DateTimePath<java.util.Date> bornDate = createDateTime("bornDate", java.util.Date.class);
 
-    public final DateTimePath<java.util.Date> date = createDateTime("date", java.util.Date.class);
+    public final SetPath<Client, QClient> client = this.<Client, QClient>createSet("client", Client.class, QClient.class, PathInits.DIRECT2);
 
     public final StringPath email = createString("email");
 

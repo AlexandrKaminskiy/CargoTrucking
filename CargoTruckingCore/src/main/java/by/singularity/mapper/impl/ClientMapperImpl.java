@@ -7,6 +7,7 @@ import by.singularity.entity.ClientStatus;
 import by.singularity.entity.Role;
 import by.singularity.entity.User;
 import by.singularity.mapper.ClientMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -15,8 +16,10 @@ import java.util.Set;
 
 
 @Component
+@RequiredArgsConstructor
 public class ClientMapperImpl implements ClientMapper {
 
+    private final UserMapperImpl userMapper;
     @Override
     public Client toModel(ClientDto clientDto) {
         if ( clientDto == null ) {
@@ -28,9 +31,9 @@ public class ClientMapperImpl implements ClientMapper {
         client.setName( clientDto.getName() );
         Set<ClientStatus> set = clientDto.getStatus();
         if ( set != null ) {
-            client.setStatus( new LinkedHashSet<ClientStatus>( set ) );
+            client.setStatus(new LinkedHashSet<>(set) );
         }
-        client.setAdminInfo( userDtoToUser( clientDto.getAdminInfo() ) );
+        client.setAdminInfo( userMapper.toModel( clientDto.getAdminInfo()));
 
         return client;
     }
@@ -42,91 +45,17 @@ public class ClientMapperImpl implements ClientMapper {
         }
 
         Set<ClientStatus> status = null;
-        String name = null;
-        UserDto adminInfo = null;
+        String name;
+        UserDto adminInfo;
 
         Set<ClientStatus> set = client.getStatus();
         if ( set != null ) {
-            status = new LinkedHashSet<ClientStatus>( set );
+            status = new LinkedHashSet<>(set);
         }
         name = client.getName();
-        adminInfo = userToUserDto( client.getAdminInfo() );
-
-        ClientDto clientDto = new ClientDto( name, status, adminInfo );
-
-        return clientDto;
+        adminInfo = userMapper.toDto(client.getAdminInfo());
+        return new ClientDto( name, status, adminInfo );
     }
 
-    protected User userDtoToUser(UserDto userDto) {
-        if ( userDto == null ) {
-            return null;
-        }
 
-        User user = new User();
-
-        user.setId( userDto.getId() );
-        user.setName( userDto.getName() );
-        user.setSurname( userDto.getSurname() );
-        user.setPatronymic( userDto.getPatronymic() );
-        user.setEmail( userDto.getEmail() );
-        user.setTown( userDto.getTown() );
-        user.setStreet( userDto.getStreet() );
-        user.setHouse( userDto.getHouse() );
-        user.setFlat( userDto.getFlat() );
-        user.setLogin( userDto.getLogin() );
-        user.setPassword( userDto.getPassword() );
-        user.setPassportNum( userDto.getPassportNum() );
-        user.setIssuedBy( userDto.getIssuedBy() );
-        Set<Role> set = userDto.getRoles();
-        if ( set != null ) {
-            user.setRoles( new LinkedHashSet<Role>( set ) );
-        }
-
-        return user;
-    }
-
-    protected UserDto userToUserDto(User user) {
-        if ( user == null ) {
-            return null;
-        }
-
-        Set<Role> roles = null;
-        Long id = null;
-        String name = null;
-        String surname = null;
-        String patronymic = null;
-        String email = null;
-        String town = null;
-        String street = null;
-        Integer house = null;
-        Integer flat = null;
-        String login = null;
-        String password = null;
-        String passportNum = null;
-        String issuedBy = null;
-
-        Set<Role> set = user.getRoles();
-        if ( set != null ) {
-            roles = new LinkedHashSet<Role>( set );
-        }
-        id = user.getId();
-        name = user.getName();
-        surname = user.getSurname();
-        patronymic = user.getPatronymic();
-        email = user.getEmail();
-        town = user.getTown();
-        street = user.getStreet();
-        house = user.getHouse();
-        flat = user.getFlat();
-        login = user.getLogin();
-        password = user.getPassword();
-        passportNum = user.getPassportNum();
-        issuedBy = user.getIssuedBy();
-
-        Date bornDate = null;
-
-        UserDto userDto = new UserDto( id, name, surname, patronymic, bornDate, email, town, street, house, flat, login, password, passportNum, issuedBy, roles );
-
-        return userDto;
-    }
 }

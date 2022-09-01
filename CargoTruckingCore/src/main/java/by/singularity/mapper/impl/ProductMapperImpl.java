@@ -4,18 +4,19 @@ import by.singularity.dto.ProductDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductStatus;
 import by.singularity.mapper.ProductMapper;
+import by.singularity.repository.impl.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Generated;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-08-30T01:49:14+0300",
-    comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.2 (Oracle Corporation)"
-)
+@Component
+@RequiredArgsConstructor
 public class ProductMapperImpl implements ProductMapper {
 
+    private final UserRepository userRepository;
     @Override
     public Product toModel(ProductDto productDto) {
         if ( productDto == null ) {
@@ -27,9 +28,10 @@ public class ProductMapperImpl implements ProductMapper {
         product.setId( productDto.getId() );
         product.setName( productDto.getName() );
         product.setAmount( productDto.getAmount() );
+        product.setCreator(userRepository.findById(product.getCreator().getId()).get());
         Set<ProductStatus> set = productDto.getProductStatus();
         if ( set != null ) {
-            product.setProductStatus( new LinkedHashSet<ProductStatus>( set ) );
+            product.setProductStatus(new LinkedHashSet<>(set) );
         }
 
         return product;
@@ -42,22 +44,20 @@ public class ProductMapperImpl implements ProductMapper {
         }
 
         Set<ProductStatus> productStatus = null;
-        Long id = null;
-        String name = null;
-        Integer amount = null;
+        Long id;
+        String name;
+        Integer amount;
 
         Set<ProductStatus> set = product.getProductStatus();
         if ( set != null ) {
-            productStatus = new LinkedHashSet<ProductStatus>( set );
+            productStatus = new LinkedHashSet<>(set);
         }
         id = product.getId();
         name = product.getName();
         amount = product.getAmount();
 
-        Long creatorId = null;
+        Long creatorId = product.getCreator().getId();
 
-        ProductDto productDto = new ProductDto( id, name, amount, creatorId, productStatus );
-
-        return productDto;
+        return new ProductDto( id, name, amount, creatorId, productStatus );
     }
 }

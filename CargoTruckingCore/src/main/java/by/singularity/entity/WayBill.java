@@ -33,7 +33,7 @@ public class WayBill {
     private Date endDate;
 
     @ManyToOne(targetEntity = User.class)
-    private User user;
+    private User verifier;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "wayBill")
     private Set<Checkpoint> checkpoints;

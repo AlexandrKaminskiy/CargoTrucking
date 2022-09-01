@@ -36,8 +36,6 @@ public class CheckpointMapperImpl implements CheckpointMapper {
         Date requiredArrivalDate = checkpoint.getRequiredArrivalDate();
         Date checkpointDate = checkpoint.getCheckpointDate();
 
-        CheckpointDto checkpointDto = new CheckpointDto( address, requiredArrivalDate, checkpointDate );
-
-        return checkpointDto;
+        return new CheckpointDto( address, requiredArrivalDate, checkpointDate );
     }
 }

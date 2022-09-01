@@ -33,10 +33,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         AppAuthenticationFilter appAuthenticationFilter = new AppAuthenticationFilter(authenticationManagerBean());
-        appAuthenticationFilter.setFilterProcessesUrl("/api/login");
+        appAuthenticationFilter.setFilterProcessesUrl("/api/sign-in");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/login/**","/api/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/sign-in/**","/api/refresh/**").permitAll();
         http.authorizeRequests().antMatchers("/api/admininfo/**").hasAuthority("ADMIN");
         http.authorizeRequests().antMatchers("/api/managerinfo/**").hasAuthority("MANAGER");
         http.addFilter(appAuthenticationFilter);

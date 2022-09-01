@@ -1,5 +1,6 @@
 package by.singularity.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -8,14 +9,15 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
 public class InvoiceDto implements Serializable {
     @Length(max = 20, min = 1)
-    private final String number;
+    private String number;
     @Min(1)
-    private final Long storageId;
+    private Long storageId;
     @Min(1)
-    private final Long creatorId;
+    private Long creatorId;
     @Min(1)
-    private final Long driverId;
-    private final Set<ProductDto> products;
+    private Long driverId;
+    private Set<ProductDto> products;
 }

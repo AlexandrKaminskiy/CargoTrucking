@@ -1,5 +1,6 @@
 package by.singularity.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,11 +9,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
+@AllArgsConstructor
 public class CheckpointDto implements Serializable {
     @Length(min = 1)
-    private final String address;
+    private String address;
     @DateTimeFormat
-    private final Date requiredArrivalDate;
+    private Date requiredArrivalDate;
     @DateTimeFormat
-    private final Date checkpointDate;
+    private Date checkpointDate;
 }

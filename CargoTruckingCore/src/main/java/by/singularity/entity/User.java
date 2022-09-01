@@ -34,17 +34,17 @@ public class User {
     @OneToMany
     private Set<Client> client;
 
-    @DateTimeFormat
-    private Date date;
+    private Date bornDate;
 
     private String email;
 
-    String town;
+    private String town;
 
-    String street;
-    Integer house;
+    private String street;
 
-    Integer flat;
+    private Integer house;
+
+    private Integer flat;
 
     private String login;
 

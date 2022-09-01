@@ -1,7 +1,8 @@
 package by.singularity.controller;
 
-import by.singularity.entity.User;
+import by.singularity.dto.UserDto;
 import by.singularity.entity.Role;
+import by.singularity.entity.User;
 import by.singularity.service.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -26,37 +27,16 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class InfoController {
-
+public class SecurityController {
     @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expiration}")
     private Long expires;
 
-    private final UserService clientService;
-
-    @GetMapping("/about")
-    public String hello(){
-        return "about";
-    }
+    private final UserService userService;
 
 
-    @PostMapping("/register")
-    public User register(@RequestBody @Valid User client) {
-        clientService.saveUser(client);
-        return clientService.findClient(client.getLogin()).get();
-    }
-
-    @GetMapping("/admininfo")
-    public String admininfo() {
-        return "My name is Gustavo, but u can call me SUS!";
-    }
-
-    @GetMapping("/managerinfo")
-    public String managerinfo() {
-        return "My name is Tomas Shelby";
-    }
 
     @GetMapping("/refresh")
     public void refresh(HttpServletRequest request, HttpServletResponse response) {
@@ -68,7 +48,7 @@ public class InfoController {
                 JWTVerifier jwtVerifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = jwtVerifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
-                User client = clientService.findClient(username).get();
+                User client = userService.findClient(username).get();
                 String access_token = JWT.create()
                         .withSubject(client.getLogin())
                         .withExpiresAt(new Date(System.currentTimeMillis() + expires))
@@ -91,5 +71,3 @@ public class InfoController {
         }
     }
 }
-
-
