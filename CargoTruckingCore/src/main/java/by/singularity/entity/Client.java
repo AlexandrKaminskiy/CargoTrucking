@@ -17,7 +17,6 @@ import java.util.Set;
 @Setter
 public class Client {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -28,6 +27,6 @@ public class Client {
     @CollectionTable(name = "status", joinColumns = @JoinColumn(name = "client_id"))
     private Set<ClientStatus> status;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User adminInfo;
 }

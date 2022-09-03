@@ -50,16 +50,8 @@ public class UserController {
     }
 
     //todo исправить
-    @DeleteMapping()
-    public void deleteUsers(HttpServletRequest request) {
-        Object o = request.getParameter("ids");
-        userService.deleteUsers(null);
+    @DeleteMapping("/{id}")
+    public void deleteUsers(@PathVariable Long id) {
+        userService.deleteUsers(id);
     }
-
-//    public static void main(String[] args) {
-//        List<Long> arr = new ArrayList<>();
-//        arr.add(5L);
-//        arr.add(6L);
-//        System.out.println(arr);
-//    }
 }

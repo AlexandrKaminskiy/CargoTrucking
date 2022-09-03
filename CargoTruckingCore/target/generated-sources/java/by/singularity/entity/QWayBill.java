@@ -58,7 +58,7 @@ public class QWayBill extends EntityPathBase<WayBill> {
         super(type, metadata, inits);
         this.car = inits.isInitialized("car") ? new QCar(forProperty("car")) : null;
         this.invoice = inits.isInitialized("invoice") ? new QInvoice(forProperty("invoice"), inits.get("invoice")) : null;
-        this.verifier = inits.isInitialized("verifier") ? new QUser(forProperty("verifier")) : null;
+        this.verifier = inits.isInitialized("verifier") ? new QUser(forProperty("verifier"), inits.get("verifier")) : null;
     }
 
 }

@@ -2,6 +2,7 @@ package by.singularity.repository.impl;
 
 import static by.singularity.entity.QUser.user;
 
+import by.singularity.entity.Client;
 import by.singularity.entity.User;
 import by.singularity.repository.customrepo.CustomUserRepository;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -77,15 +78,14 @@ public class UserRepository implements CustomUserRepository {
                 .execute();
     }
 
-    @Override
-    @Transactional
-    public void updateById(HttpServletRequest request) {
 
-//        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager);
-//        jpaQueryFactory
-//                .update(user)
-//                .where(user.id.eq(1L))
-//                .set(user1)
-//                .execute();
+    @Transactional
+    public void updateClientInfoById(Client client, Long id) {
+        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager);
+        jpaQueryFactory
+                .update(user)
+                .where(user.id.eq(id))
+                .set(user.client,client)
+                .execute();
     }
 }

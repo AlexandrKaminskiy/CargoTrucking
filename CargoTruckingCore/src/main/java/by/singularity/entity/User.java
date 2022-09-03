@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -31,8 +33,9 @@ public class User {
 
     private String patronymic;
 
-    @OneToMany
-    private Set<Client> client;
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Client client;
 
     private Date bornDate;
 

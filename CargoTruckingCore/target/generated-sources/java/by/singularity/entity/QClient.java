@@ -48,7 +48,7 @@ public class QClient extends EntityPathBase<Client> {
 
     public QClient(Class<? extends Client> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.adminInfo = inits.isInitialized("adminInfo") ? new QUser(forProperty("adminInfo")) : null;
+        this.adminInfo = inits.isInitialized("adminInfo") ? new QUser(forProperty("adminInfo"), inits.get("adminInfo")) : null;
     }
 
 }

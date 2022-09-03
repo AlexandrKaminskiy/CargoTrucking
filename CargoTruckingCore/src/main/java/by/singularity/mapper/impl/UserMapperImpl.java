@@ -33,13 +33,8 @@ public class UserMapperImpl implements UserMapper {
         user.setStreet( userDto.getStreet() );
         user.setHouse( userDto.getHouse() );
         user.setFlat( userDto.getFlat() );
-        Set<Client> clientSet = userDto
-                .getClientId()
-                .stream()
-                .filter((id) -> clientRepository.findById(id).isPresent())
-                .map((id) ->clientRepository.findById(id).get())
-                .collect(Collectors.toSet());
-        user.setClient(clientSet);
+        Optional<Client> clientOpt = clientRepository.findById(userDto.getClientId());
+        clientOpt.ifPresent(user::setClient);
         user.setLogin( userDto.getLogin() );
         user.setPassword( userDto.getPassword() );
         user.setPassportNum( userDto.getPassportNum() );
@@ -91,13 +86,8 @@ public class UserMapperImpl implements UserMapper {
         password = user.getPassword();
         passportNum = user.getPassportNum();
         issuedBy = user.getIssuedBy();
-        Set<Long> clientSet = user
-                .getClient()
-                .stream()
-                .map(Client::getId)
-                .collect(Collectors.toSet());
         Date bornDate = user.getBornDate();
 
-        return new UserDto( id, name, surname, patronymic, clientSet, bornDate, email, town, street, house, flat, login, password, passportNum, issuedBy, roles );
+        return new UserDto( id, name, surname, patronymic, user.getClient().getId(), bornDate, email, town, street, house, flat, login, password, passportNum, issuedBy, roles );
     }
 }

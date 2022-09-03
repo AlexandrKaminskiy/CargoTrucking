@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.singularity.entity.QClient.client;
+import static by.singularity.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -56,6 +57,16 @@ public class ClientRepository implements CustomClientRepository {
         jpaQueryFactory
                 .delete(client)
                 .where(client.id.eq(id))
+                .execute();
+    }
+
+    @Transactional
+    public void updateUserInfoById(User user, Long id) {
+        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager);
+        jpaQueryFactory
+                .update(client)
+                .where(client.id.eq(id))
+                .set(client.adminInfo,user)
                 .execute();
     }
 }

@@ -12,6 +12,4 @@ public interface CustomUserRepository extends CustomRepo<User, Long>{
     Optional<User> findByEmail(String email);
     Optional<User> findByLogin(String login);
 
-    @Transactional
-    void updateById(HttpServletRequest request);
 }

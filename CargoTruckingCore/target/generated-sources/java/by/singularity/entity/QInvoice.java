@@ -50,8 +50,8 @@ public class QInvoice extends EntityPathBase<Invoice> {
 
     public QInvoice(Class<? extends Invoice> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.creator = inits.isInitialized("creator") ? new QUser(forProperty("creator")) : null;
-        this.driver = inits.isInitialized("driver") ? new QUser(forProperty("driver")) : null;
+        this.creator = inits.isInitialized("creator") ? new QUser(forProperty("creator"), inits.get("creator")) : null;
+        this.driver = inits.isInitialized("driver") ? new QUser(forProperty("driver"), inits.get("driver")) : null;
         this.storage = inits.isInitialized("storage") ? new QStorage(forProperty("storage"), inits.get("storage")) : null;
     }
 

@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class UserDto implements Serializable {
     private String surname;
     @Length(max = 20)
     private String patronymic;
-    private Set<Long> clientId;
+    private Long clientId;
     @DateTimeFormat
     private Date bornDate;
     @Length(max = 50)
@@ -47,6 +48,7 @@ public class UserDto implements Serializable {
     private String passportNum;
     @Length(max = 50)
     private String issuedBy;
+    @NotNull
     private Set<Role> roles;
 
 }

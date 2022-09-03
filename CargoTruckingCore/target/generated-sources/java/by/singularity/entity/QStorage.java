@@ -48,7 +48,7 @@ public class QStorage extends EntityPathBase<Storage> {
 
     public QStorage(Class<? extends Storage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.client = inits.isInitialized("client") ? new QUser(forProperty("client")) : null;
+        this.client = inits.isInitialized("client") ? new QUser(forProperty("client"), inits.get("client")) : null;
     }
 
 }

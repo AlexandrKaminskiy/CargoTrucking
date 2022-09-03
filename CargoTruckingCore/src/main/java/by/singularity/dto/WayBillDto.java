@@ -4,6 +4,7 @@ import by.singularity.entity.CarriageStatus;
 import by.singularity.entity.Checkpoint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,6 +15,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class WayBillDto implements Serializable {
     @Length(min = 1)
     private String invoiceId;

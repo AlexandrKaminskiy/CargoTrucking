@@ -85,8 +85,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public void deleteUsers(List<Long> ids) {
-        ids.forEach(userRepository::deleteById);
+    public void deleteUsers(Long id) {
+        userRepository.deleteById(id);
     }
 
     public User getById(Long id) {
