@@ -15,8 +15,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientDto implements Serializable {
+    private Long id;
     @Length(max = 30, min = 1)
     private String name;
+    private Boolean isActive;
     @NotNull
     private Set<ClientStatus> status;
     @NotNull

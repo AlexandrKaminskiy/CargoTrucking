@@ -5,6 +5,8 @@ import by.singularity.repository.customrepo.CustomCarRepo;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +25,18 @@ public class CarRepository implements CustomCarRepo {
 
     @Override
     public List<Car> findByCarNumber(String carNumber) {
+        new JPAQuery<Car>(entityManager)
+                .select(car)
+                .from(car)
+                .where(car.carNumber.eq(carNumber))
+                .fetch();
         return new JPAQuery<Car>(entityManager)
                 .select(car)
                 .from(car)
                 .where(car.carNumber.eq(carNumber))
                 .fetch();
+//        new Page
+
     }
 
     @Override

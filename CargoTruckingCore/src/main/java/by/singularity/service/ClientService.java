@@ -29,15 +29,13 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientJpaRepository clientJpaRepository;
     private final ClientMapper clientMapper;
+    private final UserService userService;
     private final UserRepository userRepository;
     private final UserJpaRepository userJpaRepository;
     private final UserMapperImpl userMapper;
 
-    public List<ClientDto> getAllClients() {
-        List<Client> clients = clientRepository.findAll();
-        return clients.stream()
-                .map((clientMapper::toDto))
-                .collect(Collectors.toList());
+    public List<Client> getAllClients() {
+        return clientRepository.findAll();
     }
 
     @Transactional
@@ -45,15 +43,6 @@ public class ClientService {
         UserDto userDto = clientDto.getAdminInfo();
         String login = userDto.getLogin();
         String email = userDto.getEmail();
-        if (userRepository.findByLogin(login).isPresent()) {
-            //todo убрать null
-            log.error("USER WITH LOGIN {} EXISTS, ERROR DURING CREATION", login);
-            return null;
-        }
-        if (userRepository.findByEmail(email).isPresent()) {
-            log.error("USER WITH EMAIL {} EXISTS, ERROR DURING CREATION", email);
-            return null;
-        }
         Set<Role> userRoles = userDto.getRoles();
         if (userRoles.size() == 0) {
             log.error("USER HASN'T ROLES, ERROR DURING CREATION");
@@ -63,13 +52,12 @@ public class ClientService {
             log.error("CLIENT WITH THIS ID IS EXIST, ERROR DURING CREATION");
             return null;
         }
-        User user = userMapper.toModel(userDto);
-        log.info("USER {} CREATED", user.getLogin());
+        User user = userService.registerUser(clientDto.getAdminInfo());
         Client client = clientMapper.toModel(clientDto);
+        client.setIsActive(false);
         client.setId(userDto.getClientId());
         client.setAdminInfo(null);
         clientJpaRepository.save(client);
-        userJpaRepository.save(user);
         userRepository.updateClientInfoById(client,user.getId());
         clientRepository.updateUserInfoById(user,client.getId());
         log.info("CLIENT {} CREATED", client.getName());
@@ -87,5 +75,23 @@ public class ClientService {
         Optional.ofNullable(clientDto.getStatus()).ifPresent(client::setStatus);
         clientJpaRepository.save(client);
         log.info("CLIENT {} UPDATED", client.getName());
+    }
+
+    public Client getClient(Long id) {
+        Optional<Client> clientOpt = clientRepository.findById(id);
+        if (clientOpt.isEmpty()) {
+            //todo
+            return null;
+        }
+        return clientOpt.get();
+
+    }
+
+    public void activateClient(Long id) {
+        clientRepository.findById(id).ifPresent(client -> client.setIsActive(true));
+    }
+
+    public void deleteClient(Long id) {
+        clientRepository.findById(id).ifPresent(client -> client.setIsActive(false));
     }
 }

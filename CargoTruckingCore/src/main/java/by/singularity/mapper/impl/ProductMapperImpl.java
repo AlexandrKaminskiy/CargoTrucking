@@ -28,7 +28,7 @@ public class ProductMapperImpl implements ProductMapper {
         product.setId( productDto.getId() );
         product.setName( productDto.getName() );
         product.setAmount( productDto.getAmount() );
-        product.setCreator(userRepository.findById(product.getCreator().getId()).get());
+        product.setCreator(userRepository.findById(productDto.getCreatorId()).get());
         Set<ProductStatus> set = productDto.getProductStatus();
         if ( set != null ) {
             product.setProductStatus(new LinkedHashSet<>(set) );

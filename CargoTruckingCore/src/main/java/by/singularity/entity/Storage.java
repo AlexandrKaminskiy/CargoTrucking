@@ -1,5 +1,6 @@
 package by.singularity.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,8 @@ public class Storage {
 
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY,targetEntity = User.class,optional = false)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Client.class,optional = false)
     private Client client;
 
 }

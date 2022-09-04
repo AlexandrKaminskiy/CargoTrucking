@@ -4,28 +4,25 @@ import by.singularity.dto.UserDto;
 import by.singularity.entity.User;
 import by.singularity.mapper.impl.UserMapperImpl;
 import by.singularity.pojo.PasswordChanger;
-import by.singularity.repository.jparepo.UserJpaRepository;
 import by.singularity.repository.impl.UserRepository;
+import by.singularity.repository.jparepo.UserJpaRepository;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.sun.net.httpserver.Headers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
@@ -59,16 +56,16 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public String registerUser(UserDto userDto) {
+    public User registerUser(UserDto userDto) {
         User user = userMapper.toModel(userDto);
         if (userRepository.findByLogin(user.getLogin()).isPresent()) {
             log.info("user with username {} exists!",user.getLogin());
-            return "user exist";
+            return null;
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userJpaRepository.save(user);
         log.info("user {} saved",user.getLogin());
-        return "api/user/" + user.getId();
+        return user;
     }
 
 

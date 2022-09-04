@@ -1,8 +1,10 @@
 package by.singularity.controller;
 
 import by.singularity.dto.ClientDto;
+import by.singularity.dto.ProductOwnerDto;
 import by.singularity.entity.Client;
-import by.singularity.service.ClientService;
+import by.singularity.entity.ProductOwner;
+import by.singularity.service.ProductOwnerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,46 +17,41 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/clients")
+@RequestMapping("api/product-owners")
 @RequiredArgsConstructor
-public class ClientController {
+public class ProductOwnerController {
 
-    private final ClientService clientService;
+    private final ProductOwnerService productOwnerService;
 
     //todo add pagination
     @GetMapping()
     public void getAll(HttpServletResponse response) throws IOException {
         Map<String, Object> responseMap = new HashMap<>();
-        List<Client> clients = clientService.getAllClients();
+        List<ProductOwner> clients = productOwnerService.getAllProductOwners();
         responseMap.put("content", clients);
         responseMap.put("totalElements", clients.size());
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
 
     @GetMapping("/{id}")
-    public Client getById(@PathVariable Long id) {
-        return clientService.getClient(id);
+    public ProductOwner getById(@PathVariable Long id) {
+        return productOwnerService.getProductOwner(id);
     }
 
 
     @PostMapping()
-    public String addClient(@RequestBody @Valid ClientDto clientDto) {
-        Long createdId = clientService.createClient(clientDto);
+    public String addProductOwner(@RequestBody @Valid ProductOwnerDto productOwnerDto) {
+        Long createdId = productOwnerService.createProductOwner(productOwnerDto);
         return "/api/clients/" + createdId;
     }
 
     @PutMapping("/{id}")
-    public void updateClient(@PathVariable Long id, @RequestBody ClientDto clientDto) {
-        clientService.updateClient(clientDto, id);
-    }
-
-    @PutMapping("/activate/{id}")
-    public void activateClient(@PathVariable Long id) {
-        clientService.activateClient(id);
+    public void updateProductOwner(@PathVariable Long id, @RequestBody ProductOwnerDto productOwnerDto) {
+        productOwnerService.updateProductOwner(productOwnerDto, id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteClient(@PathVariable Long id) {
-        clientService.deleteClient(id);
+    public void deleteProductOwner(@PathVariable Long id) {
+        productOwnerService.deleteProductOwner(id);
     }
 }

@@ -29,6 +29,7 @@ public class ClientMapperImpl implements ClientMapper {
         Client client = new Client();
 
         client.setName( clientDto.getName() );
+        client.setIsActive(clientDto.getIsActive());
         Set<ClientStatus> set = clientDto.getStatus();
         if ( set != null ) {
             client.setStatus(new LinkedHashSet<>(set) );
@@ -47,14 +48,15 @@ public class ClientMapperImpl implements ClientMapper {
         Set<ClientStatus> status = null;
         String name;
         UserDto adminInfo;
-
+        Boolean isActive;
         Set<ClientStatus> set = client.getStatus();
         if ( set != null ) {
             status = new LinkedHashSet<>(set);
         }
         name = client.getName();
+        isActive = client.getIsActive();
         adminInfo = userMapper.toDto(client.getAdminInfo());
-        return new ClientDto( name, status, adminInfo );
+        return new ClientDto( client.getId(), name, isActive, status, adminInfo );
     }
 
 

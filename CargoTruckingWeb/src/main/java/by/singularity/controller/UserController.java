@@ -5,19 +5,14 @@ import by.singularity.entity.User;
 import by.singularity.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.http.HttpResponse;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/api/user")
 @RestController
@@ -46,7 +41,8 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@RequestBody @Valid UserDto userDto) {
-        return userService.registerUser(userDto);
+        //todo
+        return "api/user/" + userService.registerUser(userDto).getId();
     }
 
     //todo исправить
