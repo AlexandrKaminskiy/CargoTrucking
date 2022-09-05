@@ -1,5 +1,6 @@
 package by.singularity.mapper.impl;
 
+import by.singularity.dto.CheckpointDto;
 import by.singularity.dto.WayBillDto;
 import by.singularity.entity.CarriageStatus;
 import by.singularity.entity.Checkpoint;
@@ -15,6 +16,7 @@ import javax.annotation.Generated;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class WayBillMapperImpl implements WayBillMapper {
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
     private final CarRepository carRepository;
-
+    private final CheckpointMapperImpl checkpointMapper;
     @Override
     public WayBill toModel(WayBillDto wayBillDto) {
         if ( wayBillDto == null ) {
@@ -37,13 +39,13 @@ public class WayBillMapperImpl implements WayBillMapper {
         wayBill.setInvoice(invoiceRepository.findById(wayBillDto.getInvoiceId()).get());
         wayBill.setVerifier(userRepository.findById(wayBillDto.getVerifierId()).get());
         wayBill.setCar(carRepository.findById(wayBillDto.getCarId()).get());
-        Set<Checkpoint> set = wayBillDto.getCheckpoints();
-        if ( set != null ) {
-            wayBill.setCheckpoints( new LinkedHashSet<Checkpoint>( set ) );
-        }
+        Set<Checkpoint> set = wayBillDto.getCheckpointDtos().stream()
+                .map(checkpointMapper::toModel)
+                .collect(Collectors.toSet());
+        wayBill.setCheckpoints( new LinkedHashSet<>( set ) );
         Set<CarriageStatus> set1 = wayBillDto.getCarriageStatuses();
         if ( set1 != null ) {
-            wayBill.setCarriageStatuses( new LinkedHashSet<CarriageStatus>( set1 ) );
+            wayBill.setCarriageStatuses( new LinkedHashSet<>( set1 ) );
         }
 
         return wayBill;
@@ -56,7 +58,7 @@ public class WayBillMapperImpl implements WayBillMapper {
         }
 
         Set<CarriageStatus> carriageStatuses = null;
-        Set<Checkpoint> checkpoints = null;
+        Set<CheckpointDto> checkpoints;
         Integer distance;
         Date endDate;
 
@@ -64,10 +66,9 @@ public class WayBillMapperImpl implements WayBillMapper {
         if ( set != null ) {
             carriageStatuses = new LinkedHashSet<>(set);
         }
-        Set<Checkpoint> set1 = wayBill.getCheckpoints();
-        if ( set1 != null ) {
-            checkpoints = new LinkedHashSet<>(set1);
-        }
+        checkpoints = wayBill.getCheckpoints().stream()
+                .map(checkpointMapper::toDto)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         distance = wayBill.getDistance();
         endDate = wayBill.getEndDate();
 

@@ -1,5 +1,6 @@
 package by.singularity.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +29,12 @@ public class Product {
     private Integer amount;
 
     @ManyToOne
+    @JsonIgnore
     private User creator;
 
     @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = ProductStatus.class)
+    @ElementCollection(targetClass = ProductStatus.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "product_status",joinColumns = @JoinColumn(name = "product_id"))
+    @JsonIgnore
     private Set<ProductStatus> productStatus;
 }
