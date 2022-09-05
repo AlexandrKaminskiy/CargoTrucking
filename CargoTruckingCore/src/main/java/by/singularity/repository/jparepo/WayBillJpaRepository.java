@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface WayBillJpaRepo extends JpaRepository<WayBill,Long> {
+public interface WayBillJpaRepository extends JpaRepository<WayBill,Long> {
 }

@@ -28,5 +28,5 @@ public class WayBillDto implements Serializable {
     @Min(1)
     private Long verifierId;
     private Set<CarriageStatus> carriageStatuses;
-    private Set<Checkpoint> checkpoints;
+    private Set<CheckpointDto> checkpointDtos;
 }

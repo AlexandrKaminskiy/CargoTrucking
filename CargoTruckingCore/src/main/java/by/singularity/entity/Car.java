@@ -21,19 +21,8 @@ public class Car {
     @Column(name = "id", nullable = false)
     private Long id;
 
-
     private String brand;
 
     private String carNumber;
 
-    @OneToMany(mappedBy = "car")
-    private Collection<WayBill> wayBill;
-
-    public Collection<WayBill> getWayBill() {
-        return wayBill;
-    }
-
-    public void setWayBill(Collection<WayBill> wayBill) {
-        this.wayBill = wayBill;
-    }
 }
