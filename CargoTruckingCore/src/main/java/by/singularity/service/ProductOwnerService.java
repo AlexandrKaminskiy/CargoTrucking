@@ -1,23 +1,14 @@
 package by.singularity.service;
 
 import by.singularity.dto.ProductOwnerDto;
-import by.singularity.dto.StorageDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductOwner;
-import by.singularity.entity.Storage;
 import by.singularity.mapper.ProductOwnerMapper;
-import by.singularity.mapper.StorageMapper;
 import by.singularity.repository.impl.ProductOwnerRepository;
-import by.singularity.repository.impl.StorageRepository;
-import by.singularity.repository.jparepo.ProductJpaRepository;
 import by.singularity.repository.jparepo.ProductOwnerJpaRepository;
-import by.singularity.repository.jparepo.StorageJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.Valid;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -54,6 +45,9 @@ public class ProductOwnerService {
         Optional.ofNullable(productOwnerDto.getName()).ifPresent(productOwner::setName);
         Optional.ofNullable(productOwnerDto.getProducts())
                 .ifPresent((productDtos)-> {
+                    productService.getAllProducts()
+                            .forEach((product)->
+                                    productService.deleteProduct(product.getId()));
                     //todo delete by product owner id
                     Set<Product> products = productDtos
                             .stream()

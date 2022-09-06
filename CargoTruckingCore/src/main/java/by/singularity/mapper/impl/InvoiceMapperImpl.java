@@ -6,10 +6,7 @@ import by.singularity.entity.Invoice;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductStatus;
 import by.singularity.mapper.InvoiceMapper;
-import by.singularity.repository.impl.InvoiceRepository;
-import by.singularity.repository.impl.StorageRepository;
-import by.singularity.repository.impl.UserRepository;
-import by.singularity.repository.impl.WayBillRepository;
+import by.singularity.repository.impl.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +19,7 @@ public class InvoiceMapperImpl implements InvoiceMapper {
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
     private final StorageRepository storageRepository;
+    private final ProductOwnerRepository productOwnerRepository;
     @Override
     public Invoice toModel(InvoiceDto invoiceDto) {
         if ( invoiceDto == null ) {
@@ -35,6 +33,7 @@ public class InvoiceMapperImpl implements InvoiceMapper {
         invoice.setCreator(userRepository.findById(invoiceDto.getCreatorId()).get());
         invoice.setDriver(userRepository.findById(invoiceDto.getDriverId()).get());
         invoice.setStorage(storageRepository.findById(invoiceDto.getStorageId()).get());
+        invoice.setProductOwner(productOwnerRepository.findById(invoiceDto.getProductOwnerId()).get());
         return invoice;
     }
 
@@ -53,8 +52,8 @@ public class InvoiceMapperImpl implements InvoiceMapper {
         Long storageId = invoice.getStorage().getId();
         Long creatorId = invoice.getCreator().getId();
         Long driverId = invoice.getDriver().getId();
-
-        return new InvoiceDto( number, storageId, creatorId, driverId, products );
+        Long productOwnerId = invoice.getProductOwner().getId();
+        return new InvoiceDto( number, storageId, creatorId, productOwnerId, driverId, products );
     }
 
     protected Product productDtoToProduct(ProductDto productDto) {

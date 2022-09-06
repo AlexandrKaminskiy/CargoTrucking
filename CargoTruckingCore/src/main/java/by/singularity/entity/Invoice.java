@@ -28,6 +28,9 @@ public class Invoice {
     @ManyToOne(targetEntity = User.class)
     private User creator;
 
+    @ManyToOne(targetEntity = ProductOwner.class)
+    private ProductOwner productOwner;
+
     @ManyToOne(targetEntity = User.class)
     private User driver;
 

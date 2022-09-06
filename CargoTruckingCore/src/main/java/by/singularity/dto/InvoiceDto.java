@@ -19,6 +19,7 @@ public class InvoiceDto implements Serializable {
     private Long storageId;
     @Min(1)
     private Long creatorId;
+    private Long productOwnerId;
     @Min(1)
     private Long driverId;
     private Set<ProductDto> products;
