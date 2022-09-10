@@ -49,7 +49,11 @@ public class ProductController {
     public void updateClient(@PathVariable Long id, @RequestBody ProductDto productDto) {
         productService.updateProduct(productDto, id);
     }
+    @GetMapping("/test")
+    public void test() {
+        productService.get(1L);
 
+    }
     @DeleteMapping("/{id}")
     public void deleteClient(@PathVariable Long id) {
         productService.deleteProduct(id);

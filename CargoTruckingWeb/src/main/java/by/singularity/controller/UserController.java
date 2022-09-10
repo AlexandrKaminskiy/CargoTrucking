@@ -2,6 +2,7 @@ package by.singularity.controller;
 
 import by.singularity.dto.UserDto;
 import by.singularity.entity.User;
+import by.singularity.exception.UserException;
 import by.singularity.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -30,17 +31,17 @@ public class UserController {
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
     @GetMapping("/{id}")
-    public User getById(@PathVariable Long id) throws IOException {
+    public User getById(@PathVariable Long id) throws UserException {
         return userService.getById(id);
     }
 
     @PutMapping("/update")
-    public void updateUser(@RequestBody @Valid UserDto userDto) {
+    public void updateUser(@RequestBody @Valid UserDto userDto) throws UserException {
         userService.updateUser(userDto);
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody @Valid UserDto userDto) {
+    public String register(@RequestBody @Valid UserDto userDto) throws UserException {
         //todo
         return "api/user/" + userService.registerUser(userDto).getId();
     }

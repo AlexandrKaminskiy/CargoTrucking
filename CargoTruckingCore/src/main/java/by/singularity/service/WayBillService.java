@@ -5,10 +5,9 @@ import by.singularity.entity.CarriageStatus;
 import by.singularity.entity.Checkpoint;
 import by.singularity.entity.WayBill;
 import by.singularity.mapper.WayBillMapper;
-import by.singularity.repository.impl.CarRepository;
-import by.singularity.repository.impl.InvoiceRepository;
-import by.singularity.repository.impl.WayBillRepository;
-import by.singularity.repository.jparepo.WayBillJpaRepository;
+import by.singularity.repository.CarRepository;
+import by.singularity.repository.InvoiceRepository;
+import by.singularity.repository.WayBillRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 //TODO TEST
 public class WayBillService {
     private final WayBillRepository wayBillRepository;
-    private final WayBillJpaRepository wayBillJpaRepository;
     private final CheckpointService checkpointService;
     private final WayBillMapper wayBillMapper;
     private final InvoiceRepository invoiceRepository;
@@ -41,7 +39,7 @@ public class WayBillService {
                 .map(checkpointService::createCheckpoint)
                 .collect(Collectors.toSet());
         WayBill wayBill = wayBillMapper.toModel(wayBillDto);
-        wayBillJpaRepository.save(wayBill);
+        wayBillRepository.save(wayBill);
         return wayBill;
     }
 
@@ -53,7 +51,7 @@ public class WayBillService {
         }
         WayBill wayBill = wayBillOpt.get();
         wayBill.setCarriageStatuses(Collections.singleton(CarriageStatus.FINISHED_CARRIAGE));
-        wayBillJpaRepository.save(wayBill);
+        wayBillRepository.save(wayBill);
     }
     public List<WayBill> getAllWayBills() {
         //todo

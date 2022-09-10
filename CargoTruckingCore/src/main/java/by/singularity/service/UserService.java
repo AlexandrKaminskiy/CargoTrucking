@@ -1,15 +1,18 @@
 package by.singularity.service;
 
 import by.singularity.dto.UserDto;
+import by.singularity.entity.QUser;
 import by.singularity.entity.User;
+import by.singularity.exception.UserException;
 import by.singularity.mapper.impl.UserMapperImpl;
 import by.singularity.pojo.PasswordChanger;
-import by.singularity.repository.impl.UserRepository;
-import by.singularity.repository.jparepo.UserJpaRepository;
+import by.singularity.repository.UserRepository;
+import by.singularity.repository.queryUtils.QPredicate;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
@@ -31,20 +35,18 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final UserJpaRepository userJpaRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapperImpl userMapper;
-
     @Value("${jwt.secret}")
     private String secret;
 
-    public Optional<User> findClient(String login){
-        return userRepository.findByLogin(login);
+    public Optional<User> findUser(String login) {
+        return userRepository.findOne(getLoginPredicate(login));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userOpt = userRepository.findByLogin(username);
+        Optional<User> userOpt = userRepository.findOne(getLoginPredicate(username));
         if (userOpt.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
@@ -56,26 +58,26 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public User registerUser(UserDto userDto) {
+    public User registerUser(UserDto userDto) throws UserException {
         User user = userMapper.toModel(userDto);
-        if (userRepository.findByLogin(user.getLogin()).isPresent()) {
+        if (userRepository.exists(getLoginPredicate(userDto.getLogin()))) {
             log.info("user with username {} exists!",user.getLogin());
-            return null;
+            throw new UserException("user with username " + user.getLogin() + " exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userJpaRepository.save(user);
+        userRepository.save(user);
         log.info("user {} saved",user.getLogin());
         return user;
     }
 
-
-
-    public void updateUser(UserDto userDto) {
-        if (userRepository.findByLogin(userDto.getLogin()).isPresent()) {
+    public void updateUser(UserDto userDto) throws UserException{
+        if (userRepository.exists(getLoginPredicate(userDto.getLogin()))) {
             User user = userMapper.toModel(userDto);
-            userJpaRepository.save(user);
+            userRepository.save(user);
             log.info("USER {} UPDATED", user.getLogin());
+            return;
         }
+        throw new UserException("user doesn't exist");
     }
 
     public List<User> getAllUsers() {
@@ -84,32 +86,34 @@ public class UserService implements UserDetailsService {
 
     public void deleteUsers(Long id) {
         userRepository.deleteById(id);
+        log.info("USER WITH ID {} DELETED", id);
     }
 
-    public User getById(Long id) {
+    public User getById(Long id) throws UserException {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
-            return null;//todo
+            throw new UserException("user with id " + id + " not found");
         }
         return optionalUser.get();
     }
 
-    public UserDto getUserAuthInfo(HttpServletRequest request) {
+    public UserDto getUserAuthInfo(HttpServletRequest request) throws UserException {
         String authHeader = request.getHeader(AUTHORIZATION);
         String login = getLogin(authHeader);
-        Optional<User> userOpt = userRepository.findByLogin(login);
+        Optional<User> userOpt = userRepository.findOne(getLoginPredicate(login));
         if (userOpt.isEmpty()) {
-            return null;
+            throw new UserException("user not found");
         }
+        log.info("USER WITH ID {} UPDATED",userOpt.get().getId());
         return userMapper.toDto(userOpt.get());
     }
 
-    public void alterUserAuthInfo(HttpServletRequest request, UserDto userDto) {
+    public void alterUserAuthInfo(HttpServletRequest request, UserDto userDto) throws UserException{
         String authHeader = request.getHeader(AUTHORIZATION);
         String login = getLogin(authHeader);
-        Optional<User> userOpt = userRepository.findByLogin(login);
+        Optional<User> userOpt = userRepository.findOne(getLoginPredicate(login));
         if (userOpt.isEmpty()) {
-            return;
+            throw new UserException("user not found");
         }
         User user = userOpt.get();
         Optional.ofNullable(userDto.getName()).ifPresent(user::setName);
@@ -121,24 +125,25 @@ public class UserService implements UserDetailsService {
         Optional.ofNullable(userDto.getFlat()).ifPresent(user::setFlat);
         Optional.ofNullable(userDto.getPassportNum()).ifPresent(user::setPassportNum);
         Optional.ofNullable(userDto.getIssuedBy()).ifPresent(user::setIssuedBy);
-        userJpaRepository.save(user);
+        userRepository.save(user);
+        log.info("USER WITH ID {} DELETED",user.getId());
     }
 
-    public void changePassword(HttpServletRequest request, PasswordChanger changer) {
+    public void changePassword(HttpServletRequest request, PasswordChanger changer) throws UserException{
         String authHeader = request.getHeader(AUTHORIZATION);
         String login = getLogin(authHeader);
-        Optional<User> userOpt = userRepository.findByLogin(login);
+        Optional<User> userOpt = userRepository.findOne(getLoginPredicate(login));
         if (userOpt.isEmpty()) {
-            return;
+            throw new UserException("user not found");
         }
-        System.out.println(passwordEncoder.encode("12345"));
-        System.out.println(passwordEncoder.encode("12345"));
         User user = userOpt.get();
         if (passwordEncoder.matches(changer.getOldPassword(),user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changer.getNewPassword()));
-            userJpaRepository.save(user);
+            userRepository.save(user);
+            log.info("PASSWORD CHANGED");
         }
     }
+
     private String getLogin(String authHeader) {
         String token = authHeader.substring("Bearer ".length());
         Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());
@@ -147,5 +152,10 @@ public class UserService implements UserDetailsService {
         return decodedJWT.getSubject();
     }
 
+    private Predicate getLoginPredicate(String login) {
+        return QPredicate.builder()
+                .add(login, QUser.user.login::equalsIgnoreCase)
+                .buildAnd();
+    }
 
 }

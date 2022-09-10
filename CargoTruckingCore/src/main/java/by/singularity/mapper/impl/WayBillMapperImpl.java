@@ -6,13 +6,12 @@ import by.singularity.entity.CarriageStatus;
 import by.singularity.entity.Checkpoint;
 import by.singularity.entity.WayBill;
 import by.singularity.mapper.WayBillMapper;
-import by.singularity.repository.impl.CarRepository;
-import by.singularity.repository.impl.InvoiceRepository;
-import by.singularity.repository.impl.UserRepository;
+import by.singularity.repository.CarRepository;
+import by.singularity.repository.InvoiceRepository;
+import by.singularity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Generated;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;

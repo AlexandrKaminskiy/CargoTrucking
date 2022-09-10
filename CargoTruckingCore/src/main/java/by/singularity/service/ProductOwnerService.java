@@ -4,11 +4,11 @@ import by.singularity.dto.ProductOwnerDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductOwner;
 import by.singularity.mapper.ProductOwnerMapper;
-import by.singularity.repository.impl.ProductOwnerRepository;
-import by.singularity.repository.jparepo.ProductOwnerJpaRepository;
+import by.singularity.repository.ProductOwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductOwnerService {
     private final ProductOwnerRepository productOwnerRepository;
-    private final ProductOwnerJpaRepository productOwnerJpaRepository;
     private final ProductOwnerMapper productOwnerMapper;
     private final ProductService productService;
 
@@ -31,7 +30,7 @@ public class ProductOwnerService {
                 .map(productService::createProduct)
                 .collect(Collectors.toSet());
         productOwner.setProducts(products);
-        productOwnerJpaRepository.save(productOwner);
+        productOwnerRepository.save(productOwner);
         return productOwner.getId();
     }
 
@@ -55,7 +54,7 @@ public class ProductOwnerService {
                             .collect(Collectors.toSet());
                     productOwner.setProducts(products);
                 });
-        productOwnerJpaRepository.save(productOwner);
+        productOwnerRepository.save(productOwner);
     }
 
     public List<ProductOwner> getAllProductOwners() {

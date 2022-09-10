@@ -4,11 +4,10 @@ import by.singularity.dto.ProductDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductStatus;
 import by.singularity.mapper.ProductMapper;
-import by.singularity.repository.impl.UserRepository;
+import by.singularity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Generated;
 import java.util.LinkedHashSet;
 import java.util.Set;
 

@@ -1,6 +1,7 @@
 package by.singularity.controller;
 
-import by.singularity.repository.impl.ProductRepository;
+import by.singularity.exception.CustomException;
+import by.singularity.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,10 @@ public class TestController {
     }
 
     @GetMapping()
-    String fun(){
-        return "okee";
+    int fun(boolean invalid) throws CustomException {
+        if (invalid) {
+            throw new CustomException("ga-ga-ga");
+        }
+        return 7;
     }
 }

@@ -3,12 +3,9 @@ package by.singularity.mapper.impl;
 import by.singularity.dto.StorageDto;
 import by.singularity.entity.Storage;
 import by.singularity.mapper.StorageMapper;
-import by.singularity.repository.impl.ClientRepository;
-import by.singularity.repository.impl.StorageRepository;
+import by.singularity.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Generated;
 
 @Component
 @RequiredArgsConstructor

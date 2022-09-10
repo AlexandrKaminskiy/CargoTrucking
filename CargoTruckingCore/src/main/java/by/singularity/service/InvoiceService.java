@@ -1,12 +1,9 @@
 package by.singularity.service;
 
 import by.singularity.dto.InvoiceDto;
-import by.singularity.dto.ProductDto;
 import by.singularity.entity.Invoice;
-import by.singularity.entity.Product;
 import by.singularity.mapper.InvoiceMapper;
-import by.singularity.repository.impl.InvoiceRepository;
-import by.singularity.repository.jparepo.InvoiceJpaRepository;
+import by.singularity.repository.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +14,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class InvoiceService {
     private final InvoiceMapper invoiceMapper;
-    private final InvoiceJpaRepository invoiceJpaRepository;
     private final InvoiceRepository invoiceRepository;
 
     public Invoice createInvoice(InvoiceDto invoiceDto) {
         Invoice invoice = invoiceMapper.toModel(invoiceDto);
-        invoiceJpaRepository.save(invoice);
+        invoiceRepository.save(invoice);
         return invoice;
     }
 
@@ -33,7 +29,7 @@ public class InvoiceService {
             return;
         }
         Invoice invoice = invoiceMapper.toModel(invoiceDto);
-        invoiceJpaRepository.save(invoice);
+        invoiceRepository.save(invoice);
     }
 
     public List<Invoice> getAllInvoices() {

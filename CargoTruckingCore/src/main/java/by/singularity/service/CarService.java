@@ -3,8 +3,7 @@ package by.singularity.service;
 import by.singularity.dto.CarDto;
 import by.singularity.entity.Car;
 import by.singularity.mapper.CarMapper;
-import by.singularity.repository.impl.CarRepository;
-import by.singularity.repository.jparepo.CarJpaRepository;
+import by.singularity.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +14,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CarService {
     private final CarRepository carRepository;
-    private final CarJpaRepository carJpaRepository;
     private final CarMapper carMapper;
 
     public Car createCar(CarDto carDto) {
         Car car = carMapper.toModel(carDto);
-        carJpaRepository.save(car);
+        carRepository.save(car);
         return car;
     }
 

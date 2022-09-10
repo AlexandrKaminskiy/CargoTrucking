@@ -1,6 +1,5 @@
 package by.singularity.controller;
 
-import by.singularity.dto.UserDto;
 import by.singularity.entity.Role;
 import by.singularity.entity.User;
 import by.singularity.service.UserService;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +34,6 @@ public class SecurityController {
 
     private final UserService userService;
 
-
-
     @GetMapping("/refresh")
     public void refresh(HttpServletRequest request, HttpServletResponse response) {
         String authHeader = request.getHeader(AUTHORIZATION);
@@ -48,7 +44,7 @@ public class SecurityController {
                 JWTVerifier jwtVerifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = jwtVerifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
-                User client = userService.findClient(username).get();
+                User client = userService.findUser(username).get();
                 String access_token = JWT.create()
                         .withSubject(client.getLogin())
                         .withExpiresAt(new Date(System.currentTimeMillis() + expires))

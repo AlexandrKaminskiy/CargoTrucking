@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -49,6 +46,7 @@ public class UserDto implements Serializable {
     @Length(max = 50)
     private String issuedBy;
     @NotNull
+    @Size(min = 1)
     private Set<Role> roles;
 
 }

@@ -2,11 +2,12 @@ package by.singularity.controller;
 
 import by.singularity.dto.ClientDto;
 import by.singularity.entity.Client;
+import by.singularity.exception.ClientException;
+import by.singularity.exception.UserException;
 import by.singularity.service.ClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -32,19 +33,19 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public Client getById(@PathVariable Long id) {
+    public Client getById(@PathVariable Long id) throws ClientException {
         return clientService.getClient(id);
     }
 
 
     @PostMapping()
-    public String addClient(@RequestBody @Valid ClientDto clientDto) {
+    public String addClient(@RequestBody @Valid ClientDto clientDto) throws UserException, ClientException {
         Long createdId = clientService.createClient(clientDto);
         return "/api/clients/" + createdId;
     }
 
     @PutMapping("/{id}")
-    public void updateClient(@PathVariable Long id, @RequestBody ClientDto clientDto) {
+    public void updateClient(@PathVariable Long id, @RequestBody ClientDto clientDto) throws ClientException {
         clientService.updateClient(clientDto, id);
     }
 

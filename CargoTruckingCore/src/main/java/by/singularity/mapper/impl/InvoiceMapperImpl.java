@@ -6,7 +6,10 @@ import by.singularity.entity.Invoice;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductStatus;
 import by.singularity.mapper.InvoiceMapper;
-import by.singularity.repository.impl.*;
+import by.singularity.repository.InvoiceRepository;
+import by.singularity.repository.ProductOwnerRepository;
+import by.singularity.repository.StorageRepository;
+import by.singularity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

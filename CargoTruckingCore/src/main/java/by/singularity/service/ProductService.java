@@ -3,11 +3,12 @@ package by.singularity.service;
 import by.singularity.dto.ProductDto;
 import by.singularity.entity.Product;
 import by.singularity.mapper.ProductMapper;
-import by.singularity.repository.impl.ProductRepository;
-import by.singularity.repository.jparepo.ProductJpaRepository;
+import by.singularity.repository.ProductRepository;
+import by.singularity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,11 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductMapper productMapper;
-    private final ProductJpaRepository productJpaRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
     public Product createProduct(ProductDto productDto) {
         Product product = productMapper.toModel(productDto);
-        productJpaRepository.save(product);
+        productRepository.save(product);
         return product;
     }
 
@@ -32,7 +33,7 @@ public class ProductService {
         Product product = productOpt.get();
         Optional.ofNullable(productDto.getAmount()).ifPresent(product::setAmount);
         Optional.ofNullable(productDto.getProductStatus()).ifPresent(product::setProductStatus);
-        productJpaRepository.save(product);
+        productRepository.save(product);
     }
 
     public List<Product> getAllProducts() {
@@ -51,5 +52,12 @@ public class ProductService {
             return null;
         }
         return productOpt.get();
+    }
+
+    public Product get(Long id) {
+        Iterable<Product> products = productRepository.findAll();
+        Product product = new Product(2L,"qwe",5,userRepository.findById(4L).get(), Collections.emptySet());
+        productRepository.save(product);
+        return null;
     }
 }

@@ -4,6 +4,8 @@ import by.singularity.dto.ClientDto;
 import by.singularity.dto.StorageDto;
 import by.singularity.entity.Client;
 import by.singularity.entity.Storage;
+import by.singularity.exception.ClientException;
+import by.singularity.exception.StorageException;
 import by.singularity.service.StorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -33,18 +35,18 @@ public class StorageController {
     }
 
     @GetMapping("/{id}")
-    public Storage getById(@PathVariable Long id) {
+    public Storage getById(@PathVariable Long id) throws StorageException {
         return storageService.getStorage(id);
     }
 
 
     @PostMapping()
-    public String addClient(@RequestBody @Valid StorageDto storageDto) {
+    public String addClient(@RequestBody @Valid StorageDto storageDto) throws ClientException {
         return storageService.createStorage(storageDto);
     }
 
     @PutMapping("/{id}")
-    public void updateStorage(@PathVariable Long id, @RequestBody StorageDto storageDto) {
+    public void updateStorage(@PathVariable Long id, @RequestBody StorageDto storageDto) throws StorageException {
         storageService.updateStorage(storageDto, id);
     }
 

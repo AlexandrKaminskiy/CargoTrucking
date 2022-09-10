@@ -5,13 +5,11 @@ import by.singularity.entity.Client;
 import by.singularity.entity.Role;
 import by.singularity.entity.User;
 import by.singularity.mapper.UserMapper;
-import by.singularity.repository.impl.ClientRepository;
+import by.singularity.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Generated;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
