@@ -1,7 +1,6 @@
 package by.singularity.dto;
 
 import by.singularity.entity.CarriageStatus;
-import by.singularity.entity.Checkpoint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class WayBillDto implements Serializable {
     @Length(min = 1)
-    private String invoiceId;
+    private String invoiceNumber;
     @Min(1)
     private Integer distance;
     @Min(1)

@@ -23,7 +23,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping()
-    public void getAll(HttpServletResponse response) throws IOException {
+    public void getAll(@RequestParam Map<String, Object> params,
+                       HttpServletResponse response) throws IOException {
         Map<String,Object> responseMap = new HashMap<>();
         List<User> userList = userService.getAllUsers();
         responseMap.put("content",userList);

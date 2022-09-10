@@ -35,7 +35,7 @@ public class WayBillMapperImpl implements WayBillMapper {
 
         wayBill.setDistance( wayBillDto.getDistance() );
         wayBill.setEndDate( wayBillDto.getEndDate() );
-        wayBill.setInvoice(invoiceRepository.findById(wayBillDto.getInvoiceId()).get());
+        wayBill.setInvoice(invoiceRepository.findById(wayBillDto.getInvoiceNumber()).get());
         wayBill.setVerifier(userRepository.findById(wayBillDto.getVerifierId()).get());
         wayBill.setCar(carRepository.findById(wayBillDto.getCarId()).get());
         Set<Checkpoint> set = wayBillDto.getCheckpointDtos().stream()

@@ -4,6 +4,7 @@ import by.singularity.dto.ClientDto;
 import by.singularity.dto.ProductDto;
 import by.singularity.entity.Client;
 import by.singularity.entity.Product;
+import by.singularity.exception.ProductException;
 import by.singularity.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product getById(@PathVariable Long id) {
+    public Product getById(@PathVariable Long id) throws ProductException {
         return productService.getProduct(id);
     }
 
@@ -46,14 +47,10 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public void updateClient(@PathVariable Long id, @RequestBody ProductDto productDto) {
+    public void updateClient(@PathVariable Long id, @RequestBody ProductDto productDto) throws ProductException {
         productService.updateProduct(productDto, id);
     }
-    @GetMapping("/test")
-    public void test() {
-        productService.get(1L);
 
-    }
     @DeleteMapping("/{id}")
     public void deleteClient(@PathVariable Long id) {
         productService.deleteProduct(id);

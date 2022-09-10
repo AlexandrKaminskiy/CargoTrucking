@@ -4,6 +4,7 @@ import by.singularity.dto.ClientDto;
 import by.singularity.dto.ProductOwnerDto;
 import by.singularity.entity.Client;
 import by.singularity.entity.ProductOwner;
+import by.singularity.exception.ProductOwnerException;
 import by.singularity.service.ProductOwnerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class ProductOwnerController {
     }
 
     @GetMapping("/{id}")
-    public ProductOwner getById(@PathVariable Long id) {
+    public ProductOwner getById(@PathVariable Long id) throws ProductOwnerException {
         return productOwnerService.getProductOwner(id);
     }
 
@@ -46,7 +47,8 @@ public class ProductOwnerController {
     }
 
     @PutMapping("/{id}")
-    public void updateProductOwner(@PathVariable Long id, @RequestBody ProductOwnerDto productOwnerDto) {
+    public void updateProductOwner(@PathVariable Long id,
+                                   @RequestBody ProductOwnerDto productOwnerDto) throws ProductOwnerException {
         productOwnerService.updateProductOwner(productOwnerDto, id);
     }
 

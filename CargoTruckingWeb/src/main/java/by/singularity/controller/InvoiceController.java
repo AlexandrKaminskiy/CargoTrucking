@@ -3,6 +3,7 @@ package by.singularity.controller;
 
 import by.singularity.dto.InvoiceDto;
 import by.singularity.entity.Invoice;
+import by.singularity.exception.InvoiceException;
 import by.singularity.service.InvoiceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/{number}")
-    public Invoice getById(@PathVariable String number) {
+    public Invoice getById(@PathVariable String number) throws InvoiceException {
         return invoiceService.getInvoice(number);
     }
 
@@ -45,7 +46,7 @@ public class InvoiceController {
     }
 
     @PutMapping("/{number}")
-    public void updateInvoice(@PathVariable String number, @RequestBody InvoiceDto invoiceDto) {
+    public void updateInvoice(@PathVariable String number, @RequestBody InvoiceDto invoiceDto) throws InvoiceException {
         invoiceService.updateInvoice(invoiceDto, number);
     }
 

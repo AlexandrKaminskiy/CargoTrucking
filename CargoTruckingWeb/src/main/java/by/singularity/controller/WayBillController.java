@@ -5,6 +5,9 @@ import by.singularity.dto.WayBillDto;
 import by.singularity.entity.Checkpoint;
 import by.singularity.entity.Client;
 import by.singularity.entity.WayBill;
+import by.singularity.exception.CarException;
+import by.singularity.exception.InvoiceException;
+import by.singularity.exception.WayBillException;
 import by.singularity.service.WayBillService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -35,18 +38,18 @@ public class WayBillController {
     }
 
     @GetMapping("/{id}")
-    public Set<Checkpoint> getById(@PathVariable Long id) {
+    public Set<Checkpoint> getById(@PathVariable Long id) throws WayBillException {
         return wayBillService.getWayBill(id).getCheckpoints();
     }
 
     @PostMapping()
-    public Long addWayBill(@RequestBody @Valid WayBillDto wayBillDto) {
+    public Long addWayBill(@RequestBody @Valid WayBillDto wayBillDto) throws InvoiceException, CarException {
         WayBill wayBill = wayBillService.createWayBill(wayBillDto);
         return wayBill.getId();
     }
 
     @PutMapping("/{id}")
-    public void reachCheckpoint(@PathVariable Long id) {
+    public void reachCheckpoint(@PathVariable Long id) throws WayBillException {
         wayBillService.reachCheckpoint(id);
     }
 }

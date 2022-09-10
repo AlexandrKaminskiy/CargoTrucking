@@ -23,9 +23,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -154,8 +155,31 @@ public class UserService implements UserDetailsService {
 
     private Predicate getLoginPredicate(String login) {
         return QPredicate.builder()
-                .add(login, QUser.user.login::equalsIgnoreCase)
+                .add(login, QUser.user.login::eq)
                 .buildAnd();
     }
 
+    public Predicate getSearchPredicate(Map<String, String> params) {
+
+        Predicate predicate = QPredicate.builder()
+                .add(params.get("name"), QUser.user.name::eq)
+                .add(params.get("surname"), QUser.user.surname::eq)
+                .add(params.get("patronymic"), QUser.user.patronymic::eq)
+                .add(params.get("beforeBordDate"), QUser.user.patronymic::eq)
+                .add(params.get("afterBornDate"), QUser.user.patronymic::eq)
+                .add(params.get("town"), QUser.user.town::eq)
+                .add(params.get("street"), QUser.user.street::eq)
+                .add(params.get("house"), QUser.user.street::eq)
+                .add(params.get("flat"), QUser.user.street::eq)
+                .buildAnd();
+        return null;
+    }
+
+    public static void main(String[] args) throws ParseException {
+        String j = "2003-07-04";
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date h = dateFormat.parse(j);
+//        Date h = new Date(j);
+        System.out.println(h);
+    }
 }
