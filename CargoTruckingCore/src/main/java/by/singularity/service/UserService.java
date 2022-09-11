@@ -40,6 +40,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapperImpl userMapper;
+
     @Value("${jwt.secret}")
     private String secret;
 
@@ -58,7 +59,6 @@ public class UserService implements UserDetailsService {
         List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
         user.getRoles().forEach((c)->grantedAuthorities.add(new SimpleGrantedAuthority(c.toString())));
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), grantedAuthorities);
-
     }
 
     public User registerUser(UserDto userDto) throws UserException {
@@ -73,14 +73,15 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public void updateUser(UserDto userDto) throws UserException{
-        if (userRepository.exists(getLoginPredicate(userDto.getLogin()))) {
+    public void updateUser(UserDto userDto, Long id) throws UserException{
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
             User user = userMapper.toModel(userDto);
             userRepository.save(user);
             log.info("USER {} UPDATED", user.getLogin());
             return;
         }
-        throw new UserException("user doesn't exist");
+        throw new UserException("user with id " + id + " doesn't exist");
     }
 
     public Page<User> getAllUsers(Pageable pageable, Map<String,String> params) {

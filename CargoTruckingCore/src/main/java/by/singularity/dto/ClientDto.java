@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Set;
@@ -16,12 +17,19 @@ import java.util.Set;
 @NoArgsConstructor
 public class ClientDto implements Serializable {
     private Long id;
+
     @Length(max = 30, min = 1)
+    @NotNull
+    @NotEmpty
     private String name;
     private Boolean isActive;
+
     @NotNull
+    @NotEmpty
     private Set<ClientStatus> status;
+
     @NotNull
+    @NotEmpty
     @Valid
     private UserDto adminInfo;
 }

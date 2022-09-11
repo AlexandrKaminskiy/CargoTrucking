@@ -34,14 +34,16 @@ public class UserController {
         responseMap.put("totalElements", userPage.getContent().size());
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
+
     @GetMapping("/{id}")
     public User getById(@PathVariable Long id) throws UserException {
         return userService.getById(id);
     }
 
-    @PutMapping("/update")
-    public void updateUser(@RequestBody @Valid UserDto userDto) throws UserException {
-        userService.updateUser(userDto);
+    @PutMapping("/{id}")
+    public void updateUser(@RequestBody @Valid UserDto userDto,
+                           @PathVariable Long id) throws UserException {
+        userService.updateUser(userDto, id);
     }
 
     @PostMapping("/register")

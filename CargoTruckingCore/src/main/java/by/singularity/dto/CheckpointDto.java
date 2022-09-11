@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,9 +16,17 @@ import java.util.Date;
 @NoArgsConstructor
 public class CheckpointDto implements Serializable {
     @Length(min = 1)
+    @NotNull
+    @NotEmpty
     private String address;
+
     @DateTimeFormat
+    @NotNull
+    @NotEmpty
     private Date requiredArrivalDate;
+
     @DateTimeFormat
+    @NotNull
+    @NotEmpty
     private Date checkpointDate;
 }

@@ -69,7 +69,7 @@ public class UserMapperImpl implements UserMapper {
 
         Set<Role> set = user.getRoles();
         if ( set != null ) {
-            roles = new LinkedHashSet<Role>( set );
+            roles = new LinkedHashSet<>( set );
         }
         id = user.getId();
         name = user.getName();
