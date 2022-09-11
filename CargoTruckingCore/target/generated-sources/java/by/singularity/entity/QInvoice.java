@@ -22,15 +22,23 @@ public class QInvoice extends EntityPathBase<Invoice> {
 
     public static final QInvoice invoice = new QInvoice("invoice");
 
+    public final DateTimePath<java.util.Date> creationDate = createDateTime("creationDate", java.util.Date.class);
+
     public final QUser creator;
 
     public final QUser driver;
 
+    public final SetPath<InvoiceStatus, EnumPath<InvoiceStatus>> invoiceStatus = this.<InvoiceStatus, EnumPath<InvoiceStatus>>createSet("invoiceStatus", InvoiceStatus.class, EnumPath.class, PathInits.DIRECT2);
+
     public final StringPath number = createString("number");
+
+    public final QProductOwner productOwner;
 
     public final SetPath<Product, QProduct> products = this.<Product, QProduct>createSet("products", Product.class, QProduct.class, PathInits.DIRECT2);
 
     public final QStorage storage;
+
+    public final DateTimePath<java.util.Date> verifiedDate = createDateTime("verifiedDate", java.util.Date.class);
 
     public QInvoice(String variable) {
         this(Invoice.class, forVariable(variable), INITS);
@@ -52,6 +60,7 @@ public class QInvoice extends EntityPathBase<Invoice> {
         super(type, metadata, inits);
         this.creator = inits.isInitialized("creator") ? new QUser(forProperty("creator"), inits.get("creator")) : null;
         this.driver = inits.isInitialized("driver") ? new QUser(forProperty("driver"), inits.get("driver")) : null;
+        this.productOwner = inits.isInitialized("productOwner") ? new QProductOwner(forProperty("productOwner")) : null;
         this.storage = inits.isInitialized("storage") ? new QStorage(forProperty("storage"), inits.get("storage")) : null;
     }
 

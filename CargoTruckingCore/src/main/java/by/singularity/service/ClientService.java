@@ -3,16 +3,24 @@ package by.singularity.service;
 import by.singularity.dto.ClientDto;
 import by.singularity.dto.UserDto;
 import by.singularity.entity.Client;
+import by.singularity.entity.ClientStatus;
+import by.singularity.entity.QClient;
 import by.singularity.entity.User;
 import by.singularity.exception.ClientException;
 import by.singularity.exception.UserException;
 import by.singularity.mapper.ClientMapper;
 import by.singularity.repository.ClientRepository;
+import by.singularity.repository.queryUtils.QPredicate;
+import by.singularity.service.utils.ParseUtils;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,8 +32,8 @@ public class ClientService {
     private final ClientMapper clientMapper;
     private final UserService userService;
 
-    public List<Client> getAllClients() {
-        return clientRepository.findAll();
+    public Page<Client> getAllClients(Pageable pageable, Map<String,String> params) {
+        return clientRepository.findAll(getFindingPredicate(params), pageable);
     }
 
     @Transactional
@@ -74,5 +82,13 @@ public class ClientService {
     public void deleteClient(Long id) {
         clientRepository.findById(id).ifPresent(client -> client.setIsActive(false));
         log.info("CLIENT WITH ID {} DELETED", id);
+    }
+
+    private Predicate getFindingPredicate(Map<String,String> params) {
+        return QPredicate.builder()
+                .add(params.get("name"), QClient.client.name::eq)
+                .add(ParseUtils.parseBool(params.get("name")), QClient.client.isActive::eq)
+                .add(ParseUtils.parseEnum(params.get("status"), ClientStatus.class),QClient.client.status::contains)
+                .buildAnd();
     }
 }

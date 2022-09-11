@@ -3,15 +3,21 @@ package by.singularity.service;
 import by.singularity.dto.ProductOwnerDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductOwner;
+import by.singularity.entity.QProductOwner;
 import by.singularity.exception.ProductOwnerException;
 import by.singularity.mapper.ProductOwnerMapper;
 import by.singularity.repository.ProductOwnerRepository;
+import by.singularity.repository.queryUtils.QPredicate;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,9 +53,9 @@ public class ProductOwnerService {
         Optional.ofNullable(productOwnerDto.getName()).ifPresent(productOwner::setName);
         Optional.ofNullable(productOwnerDto.getProducts())
                 .ifPresent((productDtos)-> {
-                    productService.getAllProducts()
-                            .forEach((product)->
-                                    productService.deleteProduct(product.getId()));
+                    productOwner.getProducts().stream()
+                            .map(Product::getId)
+                            .forEach(productService::deleteProduct);
                     //todo delete by product owner id
                     Set<Product> products = productDtos
                             .stream()
@@ -61,10 +67,11 @@ public class ProductOwnerService {
         log.info("PRODUCT OWNER WITH ID {} UPDATED", productOwner.getId());
     }
 
-    public List<ProductOwner> getAllProductOwners() {
-        //todo
-        return productOwnerRepository.findAll();
+    public Page<ProductOwner> getAllProductOwners(Pageable pageable, String name) {
+        return productOwnerRepository.findAll(getFindingPredicate(name),pageable);
     }
+
+
 
     public void deleteProductOwner(Long id) {
         productOwnerRepository.deleteById(id);
@@ -77,6 +84,12 @@ public class ProductOwnerService {
             throw new ProductOwnerException("product owner with id " + id + "not found");
         }
         return productOwnerOpt.get();
+    }
+
+    private Predicate getFindingPredicate(String name) {
+        return QPredicate.builder()
+                .add(name, QProductOwner.productOwner.name::eq)
+                .buildAnd();
     }
 
 }

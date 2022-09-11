@@ -8,6 +8,8 @@ import by.singularity.exception.ProductException;
 import by.singularity.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,11 +28,13 @@ public class ProductController {
 
     //todo add pagination
     @GetMapping()
-    public void getAll(HttpServletResponse response) throws IOException {
+    public void getAll(HttpServletResponse response,
+                       @RequestParam Map<String,String> params,
+                       Pageable pageable) throws IOException {
         Map<String, Object> responseMap = new HashMap<>();
-        List<Product> products = productService.getAllProducts();
+        Page<Product> products = productService.getAllProducts(params,pageable);
         responseMap.put("content", products);
-        responseMap.put("totalElements", products.size());
+        responseMap.put("totalElements", products.getContent().size());
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
 

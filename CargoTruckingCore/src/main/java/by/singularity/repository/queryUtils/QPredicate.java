@@ -2,6 +2,7 @@ package by.singularity.repository.queryUtils;
 
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.Expressions;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -26,11 +27,19 @@ public class QPredicate {
     }
 
     public Predicate buildAnd() {
-        return ExpressionUtils.allOf(predicates);
+        Predicate predicate = ExpressionUtils.allOf(predicates);
+        if (predicate == null) {
+            predicate = Expressions.TRUE.isTrue();
+        }
+        return predicate;
     }
 
     public Predicate buildOr() {
-        return ExpressionUtils.anyOf(predicates);
+        Predicate predicate = ExpressionUtils.anyOf(predicates);
+        if (predicate == null) {
+            predicate = Expressions.TRUE.isTrue();
+        }
+        return predicate;
     }
 
 }

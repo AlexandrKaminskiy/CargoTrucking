@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -21,6 +22,10 @@ public class Invoice {
     @Id
     @Column(name = "id", nullable = false)
     private String number;
+
+    private Date creationDate;
+
+    private Date verifiedDate;
 
     @ManyToOne(targetEntity = Storage.class)
     private Storage storage;
@@ -36,5 +41,10 @@ public class Invoice {
 
     @OneToMany(targetEntity = Product.class)
     private Set<Product> products;
+
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = InvoiceStatus.class,fetch = FetchType.EAGER)
+    @CollectionTable(name = "invoice_status",joinColumns = @JoinColumn(name = "invoice_number"))
+    private Set<InvoiceStatus> status;
 
 }

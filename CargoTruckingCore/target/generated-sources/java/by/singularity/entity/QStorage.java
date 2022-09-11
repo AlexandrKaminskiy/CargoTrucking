@@ -24,7 +24,7 @@ public class QStorage extends EntityPathBase<Storage> {
 
     public final StringPath address = createString("address");
 
-    public final QUser client;
+    public final QClient client;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -48,7 +48,7 @@ public class QStorage extends EntityPathBase<Storage> {
 
     public QStorage(Class<? extends Storage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.client = inits.isInitialized("client") ? new QUser(forProperty("client"), inits.get("client")) : null;
+        this.client = inits.isInitialized("client") ? new QClient(forProperty("client"), inits.get("client")) : null;
     }
 
 }

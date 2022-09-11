@@ -26,6 +26,8 @@ public class QClient extends EntityPathBase<Client> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isActive = createBoolean("isActive");
+
     public final StringPath name = createString("name");
 
     public final SetPath<ClientStatus, EnumPath<ClientStatus>> status = this.<ClientStatus, EnumPath<ClientStatus>>createSet("status", ClientStatus.class, EnumPath.class, PathInits.DIRECT2);

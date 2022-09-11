@@ -3,6 +3,7 @@ package by.singularity.service;
 import by.singularity.dto.WayBillDto;
 import by.singularity.entity.CarriageStatus;
 import by.singularity.entity.Checkpoint;
+import by.singularity.entity.QWayBill;
 import by.singularity.entity.WayBill;
 import by.singularity.exception.CarException;
 import by.singularity.exception.InvoiceException;
@@ -11,8 +12,13 @@ import by.singularity.mapper.WayBillMapper;
 import by.singularity.repository.CarRepository;
 import by.singularity.repository.InvoiceRepository;
 import by.singularity.repository.WayBillRepository;
+import by.singularity.repository.queryUtils.QPredicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -61,11 +67,9 @@ public class WayBillService {
         log.info("CHECKPOINT IN WAYBILL WITH ID {} CREATED", id);
     }
 
-    public List<WayBill> getAllWayBills() {
-        //todo
-        return wayBillRepository.findAll();
+    public Page<WayBill> getAllWayBills(CarriageStatus carriageStatus, Pageable pageable) {
+        return wayBillRepository.findAll(getFindingPredicate(carriageStatus),pageable);
     }
-
 
     public WayBill getWayBill(Long id) throws WayBillException {
         Optional<WayBill> wayBillOpt = wayBillRepository.findById(id);
@@ -73,6 +77,12 @@ public class WayBillService {
             throw new WayBillException("waybill with id " + id + " not exist");
         }
         return wayBillOpt.get();
+    }
+
+    private Predicate getFindingPredicate(CarriageStatus carriageStatus) {
+        return QPredicate.builder()
+                .add(carriageStatus, QWayBill.wayBill.carriageStatuses::contains)
+                .buildAnd();
     }
 
 }

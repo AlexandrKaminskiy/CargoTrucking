@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -25,8 +24,6 @@ public class QCar extends EntityPathBase<Car> {
     public final StringPath carNumber = createString("carNumber");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final CollectionPath<WayBill, QWayBill> wayBill = this.<WayBill, QWayBill>createCollection("wayBill", WayBill.class, QWayBill.class, PathInits.DIRECT2);
 
     public QCar(String variable) {
         super(Car.class, forVariable(variable));

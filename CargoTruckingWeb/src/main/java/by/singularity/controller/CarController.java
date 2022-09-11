@@ -9,6 +9,8 @@ import by.singularity.exception.InvoiceException;
 import by.singularity.service.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,13 +27,14 @@ public class CarController {
 
     private final CarService carService;
 
-    //todo add pagination
     @GetMapping()
-    public void getAllCars(HttpServletResponse response) throws IOException {
+    public void getAllCars(HttpServletResponse response,
+                           @RequestParam Map<String,String> params,
+                           Pageable pageable) throws IOException {
         Map<String, Object> responseMap = new HashMap<>();
-        List<Car> cars = carService.getAllCars();
+        Page<Car> cars = carService.getAllCars(pageable,params);
         responseMap.put("content", cars);
-        responseMap.put("totalElements", cars.size());
+        responseMap.put("totalElements", cars.getContent().size());
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
 

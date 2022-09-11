@@ -2,12 +2,14 @@ package by.singularity.service;
 
 import by.singularity.dto.UserDto;
 import by.singularity.entity.QUser;
+import by.singularity.entity.Role;
 import by.singularity.entity.User;
 import by.singularity.exception.UserException;
 import by.singularity.mapper.impl.UserMapperImpl;
 import by.singularity.pojo.PasswordChanger;
 import by.singularity.repository.UserRepository;
 import by.singularity.repository.queryUtils.QPredicate;
+import by.singularity.service.utils.ParseUtils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -16,16 +18,16 @@ import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -81,8 +83,8 @@ public class UserService implements UserDetailsService {
         throw new UserException("user doesn't exist");
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public Page<User> getAllUsers(Pageable pageable, Map<String,String> params) {
+        return userRepository.findAll(getSearchPredicate(params), pageable);
     }
 
     public void deleteUsers(Long id) {
@@ -160,26 +162,21 @@ public class UserService implements UserDetailsService {
     }
 
     public Predicate getSearchPredicate(Map<String, String> params) {
-
-        Predicate predicate = QPredicate.builder()
+        return QPredicate.builder()
                 .add(params.get("name"), QUser.user.name::eq)
                 .add(params.get("surname"), QUser.user.surname::eq)
                 .add(params.get("patronymic"), QUser.user.patronymic::eq)
-                .add(params.get("beforeBordDate"), QUser.user.patronymic::eq)
-                .add(params.get("afterBornDate"), QUser.user.patronymic::eq)
+                .add(ParseUtils.parseDate(params.get("beforeBornDate")), QUser.user.bornDate::goe)
+                .add(ParseUtils.parseDate(params.get("afterBornDate")), QUser.user.bornDate::loe)
                 .add(params.get("town"), QUser.user.town::eq)
                 .add(params.get("street"), QUser.user.street::eq)
-                .add(params.get("house"), QUser.user.street::eq)
-                .add(params.get("flat"), QUser.user.street::eq)
+                .add(ParseUtils.parseInt(params.get("house")), QUser.user.house::eq)
+                .add(ParseUtils.parseInt(params.get("flat")), QUser.user.flat::eq)
+                .add(ParseUtils.parseEnum(params.get("roles"), Role.class), QUser.user.roles::contains)
                 .buildAnd();
-        return null;
+
     }
 
-    public static void main(String[] args) throws ParseException {
-        String j = "2003-07-04";
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date h = dateFormat.parse(j);
-//        Date h = new Date(j);
-        System.out.println(h);
-    }
+
+
 }

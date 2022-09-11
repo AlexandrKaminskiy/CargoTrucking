@@ -1,17 +1,24 @@
 package by.singularity.service;
 
 import by.singularity.dto.StorageDto;
+import by.singularity.entity.QStorage;
 import by.singularity.entity.Storage;
 import by.singularity.exception.ClientException;
 import by.singularity.exception.StorageException;
 import by.singularity.mapper.StorageMapper;
 import by.singularity.repository.ClientRepository;
 import by.singularity.repository.StorageRepository;
+import by.singularity.repository.queryUtils.QPredicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -44,9 +51,8 @@ public class StorageService {
         log.info("STORAGE WITH ID {} UPDATED", storage.getId());
     }
 
-    public List<Storage> getAllStorages() {
-        //todo
-        return storageRepository.findAll();
+    public Page<Storage> getAllStorages(String name, Pageable pageable) {
+        return storageRepository.findAll(getFindingPredicate(name), pageable);
     }
 
     public void deleteStorage(Long id) {
@@ -59,5 +65,11 @@ public class StorageService {
             throw new StorageException("storage with id" + id + "not exist");
         }
         return storageOpt.get();
+    }
+
+    private Predicate getFindingPredicate(String name) {
+        return QPredicate.builder()
+                .add(name, QStorage.storage.name::eq)
+                .buildAnd();
     }
 }

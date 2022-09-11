@@ -7,6 +7,8 @@ import by.singularity.exception.UserException;
 import by.singularity.service.ClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -22,13 +24,14 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    //todo add pagination
     @GetMapping()
-    public void getAll(HttpServletResponse response) throws IOException {
+    public void getAll(HttpServletResponse response,
+                       Pageable pageable,
+                       @RequestParam Map<String,String> params) throws IOException {
         Map<String, Object> responseMap = new HashMap<>();
-        List<Client> clients = clientService.getAllClients();
+        Page<Client> clients = clientService.getAllClients(pageable, params);
         responseMap.put("content", clients);
-        responseMap.put("totalElements", clients.size());
+        responseMap.put("totalElements", clients.getContent().size());
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
 

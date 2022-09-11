@@ -7,6 +7,8 @@ import by.singularity.exception.InvoiceException;
 import by.singularity.service.InvoiceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,13 +25,14 @@ public class InvoiceController {
 
     private final InvoiceService invoiceService;
 
-    //todo add pagination
     @GetMapping()
-    public void getAll(HttpServletResponse response) throws IOException {
+    public void getAll(HttpServletResponse response,
+                       @RequestParam Map<String,String> params,
+                       Pageable pageable) throws IOException {
         Map<String, Object> responseMap = new HashMap<>();
-        List<Invoice> invoices = invoiceService.getAllInvoices();
+        Page<Invoice> invoices = invoiceService.getAllInvoices(params,pageable);
         responseMap.put("content", invoices);
-        responseMap.put("totalElements", invoices.size());
+        responseMap.put("totalElements", invoices.getContent().size());
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
 

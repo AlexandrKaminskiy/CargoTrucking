@@ -9,6 +9,8 @@ import by.singularity.exception.StorageException;
 import by.singularity.service.StorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -24,13 +26,14 @@ public class StorageController {
 
     private final StorageService storageService;
 
-    //todo add pagination
     @GetMapping()
-    public void getAll(HttpServletResponse response) throws IOException {
+    public void getAll(HttpServletResponse response,
+                       @RequestParam String name,
+                       Pageable pageable) throws IOException {
         Map<String, Object> responseMap = new HashMap<>();
-        List<Storage> storages = storageService.getAllStorages();
+        Page<Storage> storages = storageService.getAllStorages(name, pageable);
         responseMap.put("content", storages);
-        responseMap.put("totalElements", storages.size());
+        responseMap.put("totalElements", storages.getContent().size());
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
 

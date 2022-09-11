@@ -19,6 +19,5 @@ public class CheckpointService {
         checkpointRepository.save(checkpoint);
         log.info("CHECKPOINT WITH ID {} CREATED", checkpoint.getId());
         return checkpoint;
-
     }
 }

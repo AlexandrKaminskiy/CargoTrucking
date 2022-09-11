@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class CustomControllerAdvice {
+
     @ExceptionHandler({WayBillException.class, UserException.class, StorageException.class, ProductOwnerException.class,
             ProductException.class, InvoiceException.class, ClientException.class, CarException.class})
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
