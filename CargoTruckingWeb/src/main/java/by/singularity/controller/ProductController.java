@@ -51,7 +51,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public void updateClient(@PathVariable Long id, @RequestBody ProductDto productDto) throws ProductException {
+    public void updateClient(@PathVariable Long id,
+                             @RequestBody @Valid ProductDto productDto) throws ProductException {
         productService.updateProduct(productDto, id);
     }
 

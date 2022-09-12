@@ -1,6 +1,7 @@
 package by.singularity.service;
 
 import by.singularity.dto.UserDto;
+import by.singularity.entity.Client;
 import by.singularity.entity.QUser;
 import by.singularity.entity.Role;
 import by.singularity.entity.User;
@@ -67,6 +68,10 @@ public class UserService implements UserDetailsService {
             log.info("user with username {} exists!",user.getLogin());
             throw new UserException("user with username " + user.getLogin() + " exists");
         }
+        if (userRepository.exists(getEmailPredicate(userDto.getEmail()))) {
+            log.info("user with email {} exists!",user.getEmail());
+            throw new UserException("user with email " + user.getEmail() + " exists");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         log.info("user {} saved",user.getLogin());
@@ -76,7 +81,9 @@ public class UserService implements UserDetailsService {
     public void updateUser(UserDto userDto, Long id) throws UserException{
         Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isPresent()) {
-            User user = userMapper.toModel(userDto);
+            User user = userOpt.get();
+            alterUserProfileInfo(userDto,user);
+            alterFromAdminInfo(userDto,user);
             userRepository.save(user);
             log.info("USER {} UPDATED", user.getLogin());
             return;
@@ -89,8 +96,10 @@ public class UserService implements UserDetailsService {
     }
 
     public void deleteUsers(Long id) {
-        userRepository.deleteById(id);
-        log.info("USER WITH ID {} DELETED", id);
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            log.info("USER WITH ID {} DELETED", id);
+        }
     }
 
     public User getById(Long id) throws UserException {
@@ -120,15 +129,7 @@ public class UserService implements UserDetailsService {
             throw new UserException("user not found");
         }
         User user = userOpt.get();
-        Optional.ofNullable(userDto.getName()).ifPresent(user::setName);
-        Optional.ofNullable(userDto.getSurname()).ifPresent(user::setSurname);
-        Optional.ofNullable(userDto.getPatronymic()).ifPresent(user::setPatronymic);
-        Optional.ofNullable(userDto.getBornDate()).ifPresent(user::setBornDate);
-        Optional.ofNullable(userDto.getTown()).ifPresent(user::setTown);
-        Optional.ofNullable(userDto.getStreet()).ifPresent(user::setStreet);
-        Optional.ofNullable(userDto.getFlat()).ifPresent(user::setFlat);
-        Optional.ofNullable(userDto.getPassportNum()).ifPresent(user::setPassportNum);
-        Optional.ofNullable(userDto.getIssuedBy()).ifPresent(user::setIssuedBy);
+        alterUserProfileInfo(userDto,user);
         userRepository.save(user);
         log.info("USER WITH ID {} DELETED",user.getId());
     }
@@ -162,6 +163,12 @@ public class UserService implements UserDetailsService {
                 .buildAnd();
     }
 
+    private Predicate getEmailPredicate(String email) {
+        return QPredicate.builder()
+                .add(email, QUser.user.email::eq)
+                .buildAnd();
+    }
+
     public Predicate getSearchPredicate(Map<String, String> params) {
         return QPredicate.builder()
                 .add(params.get("name"), QUser.user.name::eq)
@@ -177,7 +184,21 @@ public class UserService implements UserDetailsService {
                 .buildAnd();
 
     }
+    private void alterUserProfileInfo(UserDto userDto, User user) {
+        Optional.ofNullable(userDto.getName()).ifPresent(user::setName);
+        Optional.ofNullable(userDto.getSurname()).ifPresent(user::setSurname);
+        Optional.ofNullable(userDto.getPatronymic()).ifPresent(user::setPatronymic);
+        Optional.ofNullable(userDto.getBornDate()).ifPresent(user::setBornDate);
+        Optional.ofNullable(userDto.getTown()).ifPresent(user::setTown);
+        Optional.ofNullable(userDto.getStreet()).ifPresent(user::setStreet);
+        Optional.ofNullable(userDto.getFlat()).ifPresent(user::setFlat);
+        Optional.ofNullable(userDto.getPassportNum()).ifPresent(user::setPassportNum);
+        Optional.ofNullable(userDto.getIssuedBy()).ifPresent(user::setIssuedBy);
+    }
 
+    private void alterFromAdminInfo(UserDto userDto, User user) {
+        Optional.ofNullable(userDto.getRoles()).ifPresent(user::setRoles);
+    }
 
 
 }

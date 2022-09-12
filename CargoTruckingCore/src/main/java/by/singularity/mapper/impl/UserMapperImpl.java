@@ -31,15 +31,13 @@ public class UserMapperImpl implements UserMapper {
         user.setStreet( userDto.getStreet() );
         user.setHouse( userDto.getHouse() );
         user.setFlat( userDto.getFlat() );
-        Optional<Client> clientOpt = clientRepository.findById(userDto.getClientId());
-        clientOpt.ifPresent(user::setClient);
         user.setLogin( userDto.getLogin() );
         user.setPassword( userDto.getPassword() );
         user.setPassportNum( userDto.getPassportNum() );
         user.setIssuedBy( userDto.getIssuedBy() );
         Set<Role> set = userDto.getRoles();
         if ( set != null ) {
-            user.setRoles( new LinkedHashSet<Role>( set ) );
+            user.setRoles( new LinkedHashSet<>( set ) );
         }
 
         return user;

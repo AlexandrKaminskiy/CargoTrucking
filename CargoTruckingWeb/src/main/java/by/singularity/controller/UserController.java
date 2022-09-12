@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/api/user")
@@ -48,11 +47,10 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@RequestBody @Valid UserDto userDto) throws UserException {
-        //todo
         return "api/user/" + userService.registerUser(userDto).getId();
     }
 
-    //todo исправить
+
     @DeleteMapping("/{id}")
     public void deleteUsers(@PathVariable Long id) {
         userService.deleteUsers(id);

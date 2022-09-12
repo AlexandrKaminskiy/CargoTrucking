@@ -48,7 +48,7 @@ public class ProductOwnerController {
 
     @PutMapping("/{id}")
     public void updateProductOwner(@PathVariable Long id,
-                                   @RequestBody ProductOwnerDto productOwnerDto) throws ProductOwnerException {
+                                   @RequestBody @Valid ProductOwnerDto productOwnerDto) throws ProductOwnerException {
         productOwnerService.updateProductOwner(productOwnerDto, id);
     }
 

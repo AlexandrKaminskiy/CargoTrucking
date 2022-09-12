@@ -20,7 +20,6 @@ public class UserDto implements Serializable {
 
     @Length(max = 20)
     @NotNull
-    @NotEmpty
     private String name;
 
     @Length(min = 1, max = 20)
@@ -37,7 +36,6 @@ public class UserDto implements Serializable {
 
     @DateTimeFormat
     @NotNull
-    @NotEmpty
     private Date bornDate;
 
     @Length(max = 50)
@@ -60,7 +58,6 @@ public class UserDto implements Serializable {
 
     @Length(min = 5, max = 20)
     @NotNull
-    @NotEmpty
     private String login;
 
     @Length(min = 5, max = 72)
@@ -75,7 +72,6 @@ public class UserDto implements Serializable {
     private String issuedBy;
 
     @NotNull
-    @NotEmpty
     @Size(min = 1)
     private Set<Role> roles;
 

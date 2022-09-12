@@ -49,7 +49,8 @@ public class InvoiceController {
     }
 
     @PutMapping("/{number}")
-    public void updateInvoice(@PathVariable String number, @RequestBody InvoiceDto invoiceDto) throws InvoiceException {
+    public void updateInvoice(@PathVariable String number,
+                              @RequestBody @Valid InvoiceDto invoiceDto) throws InvoiceException {
         invoiceService.updateInvoice(invoiceDto, number);
     }
 

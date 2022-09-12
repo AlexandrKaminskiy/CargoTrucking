@@ -18,7 +18,7 @@ import java.util.Set;
 public class ClientDto implements Serializable {
     private Long id;
 
-    @Length(max = 30, min = 1)
+    @Length(max = 30)
     @NotNull
     @NotEmpty
     private String name;
@@ -29,7 +29,6 @@ public class ClientDto implements Serializable {
     private Set<ClientStatus> status;
 
     @NotNull
-    @NotEmpty
     @Valid
     private UserDto adminInfo;
 }

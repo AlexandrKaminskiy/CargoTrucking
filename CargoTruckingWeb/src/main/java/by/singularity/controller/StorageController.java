@@ -49,7 +49,8 @@ public class StorageController {
     }
 
     @PutMapping("/{id}")
-    public void updateStorage(@PathVariable Long id, @RequestBody StorageDto storageDto) throws StorageException {
+    public void updateStorage(@PathVariable Long id,
+                              @RequestBody @Valid StorageDto storageDto) throws StorageException {
         storageService.updateStorage(storageDto, id);
     }
 

@@ -38,12 +38,12 @@ public class ParseUtils {
     }
 
     public static Boolean parseBool(String strBool) {
-        Boolean bool;
-        try {
-            bool = Boolean.getBoolean(strBool);
-        } catch (Exception e) {
-            bool = null;
+        if (strBool == null) {
+            return null;
         }
-        return bool;
+        if (!(strBool.equals("true") || strBool.equals("false"))) {
+            return null;
+        }
+        return Boolean.parseBoolean(strBool);
     }
 }

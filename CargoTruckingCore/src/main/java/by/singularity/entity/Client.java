@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -30,7 +32,15 @@ public class Client {
     @CollectionTable(name = "status", joinColumns = @JoinColumn(name = "client_id"))
     private Set<ClientStatus> status;
 
-    @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "client_id")
+    private Set<Storage> storages;
+
+
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User adminInfo;
 }

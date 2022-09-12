@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -21,7 +22,7 @@ public class ProfileController {
     }
 
     @PutMapping()
-    public void alterUser( HttpServletRequest request, @RequestBody UserDto userDto) throws UserException {
+    public void alterUser(HttpServletRequest request, @RequestBody @Valid UserDto userDto) throws UserException {
         userService.alterUserAuthInfo(request, userDto);
     }
 

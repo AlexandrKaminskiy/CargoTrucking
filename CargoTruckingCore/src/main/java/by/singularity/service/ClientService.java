@@ -39,6 +39,10 @@ public class ClientService {
     @Transactional
     public Long createClient(ClientDto clientDto) throws UserException, ClientException {
         UserDto userDto = clientDto.getAdminInfo();
+        if (userDto.getClientId() == null) {
+            log.error("ID NOT PASSED, ERROR DURING CREATION");
+            throw new ClientException("you should pass client id");
+        }
         if (clientRepository.existsById(userDto.getClientId())) {
             log.error("CLIENT WITH THIS ID IS EXIST, ERROR DURING CREATION");
             throw new ClientException("client with this id is exists");
@@ -87,7 +91,7 @@ public class ClientService {
     private Predicate getFindingPredicate(Map<String,String> params) {
         return QPredicate.builder()
                 .add(params.get("name"), QClient.client.name::eq)
-                .add(ParseUtils.parseBool(params.get("name")), QClient.client.isActive::eq)
+                .add(ParseUtils.parseBool(params.get("isActive")), QClient.client.isActive::eq)
                 .add(ParseUtils.parseEnum(params.get("status"), ClientStatus.class),QClient.client.status::contains)
                 .buildAnd();
     }

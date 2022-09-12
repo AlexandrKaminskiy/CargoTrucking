@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,7 +47,8 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public void updateClient(@PathVariable Long id, @RequestBody ClientDto clientDto) throws ClientException {
+    public void updateClient(@PathVariable Long id,
+                             @RequestBody @Valid ClientDto clientDto) throws ClientException {
         clientService.updateClient(clientDto, id);
     }
 

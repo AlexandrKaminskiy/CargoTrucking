@@ -25,7 +25,7 @@ public class Storage {
     private String address;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Client.class,optional = false)
+    @ManyToOne
     private Client client;
 
 }
