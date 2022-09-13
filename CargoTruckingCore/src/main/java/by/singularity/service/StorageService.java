@@ -6,6 +6,7 @@ import by.singularity.entity.Storage;
 import by.singularity.exception.ClientException;
 import by.singularity.exception.StorageException;
 import by.singularity.mapper.StorageMapper;
+import by.singularity.pojo.StorageUpdateDto;
 import by.singularity.repository.ClientRepository;
 import by.singularity.repository.StorageRepository;
 import by.singularity.repository.queryUtils.QPredicate;
@@ -39,14 +40,14 @@ public class StorageService {
         return storage.getAddress();
     }
 
-    public void updateStorage(StorageDto storageDto, Long id) throws StorageException {
+    public void updateStorage(StorageUpdateDto storageUpdateDto, Long id) throws StorageException {
         Optional<Storage> storageOpt = storageRepository.findById(id);
         if (storageOpt.isEmpty()) {
-            throw new StorageException("storage with id " + storageDto.getId() + " not found");
+            throw new StorageException("storage with id " + storageUpdateDto.getId() + " not found");
         }
         Storage storage = storageOpt.get();
-        Optional.ofNullable(storageDto.getName()).ifPresent(storage::setName);
-        Optional.ofNullable(storageDto.getAddress()).ifPresent(storage::setAddress);
+        Optional.ofNullable(storageUpdateDto.getName()).ifPresent(storage::setName);
+        Optional.ofNullable(storageUpdateDto.getAddress()).ifPresent(storage::setAddress);
         storageRepository.save(storage);
         log.info("STORAGE WITH ID {} UPDATED", storage.getId());
     }

@@ -18,7 +18,6 @@ public class StorageDto implements Serializable {
 
     @Length(max = 20, min = 1)
     @NotNull
-    @NotEmpty
     private String name;
 
     @Length(max = 20, min = 1)
@@ -28,6 +27,5 @@ public class StorageDto implements Serializable {
 
     @Min(1)
     @NotNull
-    @NotEmpty
     private Long clientId;
 }

@@ -25,7 +25,7 @@ public class ProductOwnerController {
 
     @GetMapping()
     public void getAll(HttpServletResponse response,
-                       @RequestParam String name,
+                       String name,
                        Pageable pageable) throws IOException {
         Map<String, Object> responseMap = new HashMap<>();
         Page<ProductOwner> clients = productOwnerService.getAllProductOwners(pageable,name);
@@ -38,7 +38,6 @@ public class ProductOwnerController {
     public ProductOwner getById(@PathVariable Long id) throws ProductOwnerException {
         return productOwnerService.getProductOwner(id);
     }
-
 
     @PostMapping()
     public String addProductOwner(@RequestBody @Valid ProductOwnerDto productOwnerDto) {

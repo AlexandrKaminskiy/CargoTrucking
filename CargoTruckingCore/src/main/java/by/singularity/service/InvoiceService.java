@@ -40,6 +40,7 @@ public class InvoiceService {
         if (invoiceOpt.isEmpty()) {
             throw new InvoiceException("invoice with number " + number + "not found");
         }
+        //todo fix there
         Invoice invoice = invoiceMapper.toModel(invoiceDto);
         invoiceRepository.save(invoice);
         log.info("INVOICE WITH NUMBER {} UPDATED", number);
@@ -49,9 +50,6 @@ public class InvoiceService {
         return invoiceRepository.findAll(getFindingPredicate(params), pageable);
     }
 
-
-
-    //todo пофиксить
     public void deleteInvoice(String number) {
         invoiceRepository.deleteById(number);
         log.info("INVOICE WITH NUMBER {} DELETED", number);

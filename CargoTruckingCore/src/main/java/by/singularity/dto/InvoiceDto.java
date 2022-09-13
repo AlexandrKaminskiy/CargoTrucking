@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,20 +23,21 @@ public class InvoiceDto implements Serializable {
 
     @Min(1)
     @NotNull
-    @NotEmpty
     private Long storageId;
 
     @Min(1)
     @NotNull
-    @NotEmpty
     private Long creatorId;
 
+    @Min(1)
+    @NotNull
     private Long productOwnerId;
 
     @Min(1)
     @NotNull
-    @NotEmpty
     private Long driverId;
 
+    @NotNull
+    @Valid
     private Set<ProductDto> products;
 }

@@ -1,8 +1,6 @@
 package by.singularity.controller;
 
-import by.singularity.dto.ClientDto;
 import by.singularity.dto.ProductDto;
-import by.singularity.entity.Client;
 import by.singularity.entity.Product;
 import by.singularity.exception.ProductException;
 import by.singularity.service.ProductService;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,7 +23,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-    //todo add pagination
     @GetMapping()
     public void getAll(HttpServletResponse response,
                        @RequestParam Map<String,String> params,
@@ -43,11 +39,10 @@ public class ProductController {
         return productService.getProduct(id);
     }
 
-
     @PostMapping()
     public String addProduct(@RequestBody @Valid ProductDto productDto) {
         Product product = productService.createProduct(productDto);
-        return "/api/clients/" + product.getId();
+        return "/api/product-writeoffs/" + product.getId();
     }
 
     @PutMapping("/{id}")

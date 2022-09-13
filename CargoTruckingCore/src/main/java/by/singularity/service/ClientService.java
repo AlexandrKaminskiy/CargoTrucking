@@ -9,6 +9,7 @@ import by.singularity.entity.User;
 import by.singularity.exception.ClientException;
 import by.singularity.exception.UserException;
 import by.singularity.mapper.ClientMapper;
+import by.singularity.pojo.ClientUpdateDto;
 import by.singularity.repository.ClientRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import by.singularity.service.utils.ParseUtils;
@@ -58,14 +59,14 @@ public class ClientService {
     }
 
     @Transactional
-    public void updateClient(ClientDto clientDto, Long id) throws ClientException {
+    public void updateClient(ClientUpdateDto clientUpdateDto, Long id) throws ClientException {
         Optional<Client> clientOpt = clientRepository.findById(id);
         if (clientOpt.isEmpty()) {
             throw new ClientException("client with this id is exists");
         }
         Client client = clientOpt.get();
-        Optional.ofNullable(clientDto.getName()).ifPresent(client::setName);
-        Optional.ofNullable(clientDto.getStatus()).ifPresent(client::setStatus);
+        Optional.ofNullable(clientUpdateDto.getName()).ifPresent(client::setName);
+        Optional.ofNullable(clientUpdateDto.getStatus()).ifPresent(client::setStatus);
         clientRepository.save(client);
         log.info("CLIENT {} UPDATED", client.getName());
     }
@@ -79,13 +80,20 @@ public class ClientService {
     }
 
     public void activateClient(Long id) {
-        clientRepository.findById(id).ifPresent(client -> client.setIsActive(true));
-        log.info("CLIENT WITH ID {} ACTIVATED", id);
+        clientRepository.findById(id).ifPresent(client -> {
+            client.setIsActive(true);
+            clientRepository.save(client);
+            log.info("CLIENT WITH ID {} ACTIVATED", id);
+        });
     }
 
     public void deleteClient(Long id) {
-        clientRepository.findById(id).ifPresent(client -> client.setIsActive(false));
-        log.info("CLIENT WITH ID {} DELETED", id);
+        clientRepository.findById(id).ifPresent(client -> {
+            client.setIsActive(false);
+            clientRepository.save(client);
+            log.info("CLIENT WITH ID {} DELETED", id);
+        });
+
     }
 
     private Predicate getFindingPredicate(Map<String,String> params) {

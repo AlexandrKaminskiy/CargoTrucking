@@ -1,11 +1,8 @@
 package by.singularity.controller;
 
 import by.singularity.dto.CarDto;
-import by.singularity.dto.InvoiceDto;
 import by.singularity.entity.Car;
-import by.singularity.entity.Invoice;
 import by.singularity.exception.CarException;
-import by.singularity.exception.InvoiceException;
 import by.singularity.service.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController

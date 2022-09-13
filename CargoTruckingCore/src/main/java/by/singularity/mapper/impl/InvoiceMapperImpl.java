@@ -108,9 +108,7 @@ public class InvoiceMapperImpl implements InvoiceMapper {
         name = product.getName();
         amount = product.getAmount();
 
-        Long creatorId = null;
-
-        return new ProductDto( id, name, amount, creatorId, productStatus );
+        return new ProductDto( id, name, amount, productStatus );
     }
 
     protected Set<ProductDto> productSetToProductDtoSet(Set<Product> set) {

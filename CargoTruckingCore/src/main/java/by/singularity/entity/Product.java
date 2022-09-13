@@ -33,6 +33,10 @@ public class Product {
     private User creator;
 
     @JsonIgnore
+    @ManyToOne
+    private ProductOwner productOwner;
+
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = ProductStatus.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "product_status",joinColumns = @JoinColumn(name = "product_id"))

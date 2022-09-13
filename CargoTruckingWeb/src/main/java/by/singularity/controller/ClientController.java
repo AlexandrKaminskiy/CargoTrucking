@@ -4,6 +4,7 @@ import by.singularity.dto.ClientDto;
 import by.singularity.entity.Client;
 import by.singularity.exception.ClientException;
 import by.singularity.exception.UserException;
+import by.singularity.pojo.ClientUpdateDto;
 import by.singularity.service.ClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +49,8 @@ public class ClientController {
 
     @PutMapping("/{id}")
     public void updateClient(@PathVariable Long id,
-                             @RequestBody @Valid ClientDto clientDto) throws ClientException {
-        clientService.updateClient(clientDto, id);
+                             @RequestBody @Valid ClientUpdateDto clientUpdateDto) throws ClientException {
+        clientService.updateClient(clientUpdateDto, id);
     }
 
     @PutMapping("/activate/{id}")
