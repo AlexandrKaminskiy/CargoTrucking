@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import java.util.Date;
 import java.util.Set;
 
@@ -39,7 +38,7 @@ public class WayBill {
     private Set<Checkpoint> checkpoints;
 
     @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = CarriageStatus.class)
+    @ElementCollection(targetClass = CarriageStatus.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "carriage_status", joinColumns = @JoinColumn(name = "waybill_id"))
     private Set<CarriageStatus> carriageStatuses;
 }
