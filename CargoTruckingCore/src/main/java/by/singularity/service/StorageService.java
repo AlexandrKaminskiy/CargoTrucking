@@ -10,7 +10,6 @@ import by.singularity.pojo.StorageUpdateDto;
 import by.singularity.repository.ClientRepository;
 import by.singularity.repository.StorageRepository;
 import by.singularity.repository.queryUtils.QPredicate;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -31,7 +28,7 @@ public class StorageService {
     private final StorageMapper storageMapper;
 
     public String createStorage(StorageDto storageDto) throws ClientException {
-        if (clientRepository.findById(storageDto.getClientId()).isEmpty()) {
+        if (!clientRepository.existsById(storageDto.getClientId())) {
             throw new ClientException("client with id " + storageDto.getClientId() + " not found");
         }
         Storage storage = storageMapper.toModel(storageDto);
@@ -41,11 +38,8 @@ public class StorageService {
     }
 
     public void updateStorage(StorageUpdateDto storageUpdateDto, Long id) throws StorageException {
-        Optional<Storage> storageOpt = storageRepository.findById(id);
-        if (storageOpt.isEmpty()) {
-            throw new StorageException("storage with id " + storageUpdateDto.getId() + " not found");
-        }
-        Storage storage = storageOpt.get();
+        Storage storage = storageRepository.findById(id)
+                .orElseThrow(()->new StorageException("storage with id " + storageUpdateDto.getId() + " not found"));
         Optional.ofNullable(storageUpdateDto.getName()).ifPresent(storage::setName);
         Optional.ofNullable(storageUpdateDto.getAddress()).ifPresent(storage::setAddress);
         storageRepository.save(storage);
@@ -61,11 +55,8 @@ public class StorageService {
     }
 
     public Storage getStorage(Long id) throws StorageException {
-        Optional<Storage> storageOpt = storageRepository.findById(id);
-        if (storageOpt.isEmpty()) {
-            throw new StorageException("storage with id" + id + "not exist");
-        }
-        return storageOpt.get();
+        return storageRepository.findById(id)
+                .orElseThrow(()->new StorageException("storage with id" + id + "not exist"));
     }
 
     private Predicate getFindingPredicate(String name) {

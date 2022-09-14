@@ -60,11 +60,8 @@ public class ClientService {
 
     @Transactional
     public void updateClient(ClientUpdateDto clientUpdateDto, Long id) throws ClientException {
-        Optional<Client> clientOpt = clientRepository.findById(id);
-        if (clientOpt.isEmpty()) {
-            throw new ClientException("client with this id is exists");
-        }
-        Client client = clientOpt.get();
+        Client client = clientRepository.findById(id)
+                .orElseThrow(()->new ClientException("client with this id is exists"));
         Optional.ofNullable(clientUpdateDto.getName()).ifPresent(client::setName);
         Optional.ofNullable(clientUpdateDto.getStatus()).ifPresent(client::setStatus);
         clientRepository.save(client);
@@ -72,11 +69,8 @@ public class ClientService {
     }
 
     public Client getClient(Long id) throws ClientException {
-        Optional<Client> clientOpt = clientRepository.findById(id);
-        if (clientOpt.isEmpty()) {
-            throw new ClientException("client with id " + id + " not found");
-        }
-        return clientOpt.get();
+        return clientRepository.findById(id)
+                .orElseThrow(()->new ClientException("client with id " + id + " not found"));
     }
 
     public void activateClient(Long id) {

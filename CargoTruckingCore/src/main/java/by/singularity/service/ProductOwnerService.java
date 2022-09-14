@@ -16,8 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +30,6 @@ public class ProductOwnerService {
 
     @Transactional
     public Long createProductOwner(ProductOwnerDto productOwnerDto) {
-        //todo
         ProductOwner productOwner = productOwnerMapper.toModel(productOwnerDto);
         Set<Product> products = productOwnerDto.getProducts()
                 .stream()
@@ -45,18 +42,14 @@ public class ProductOwnerService {
     }
 
     public void updateProductOwner(ProductOwnerDto productOwnerDto, Long id) throws ProductOwnerException {
-        Optional<ProductOwner> productOwnerOpt = productOwnerRepository.findById(id);
-        if (productOwnerOpt.isEmpty()) {
-            throw new ProductOwnerException("product owner with id" + id + "not found");
-        }
-        ProductOwner productOwner = productOwnerOpt.get();
+        ProductOwner productOwner = productOwnerRepository.findById(id)
+                .orElseThrow(()->new ProductOwnerException("product owner with id" + id + "not found"));
         Optional.ofNullable(productOwnerDto.getName()).ifPresent(productOwner::setName);
         Optional.ofNullable(productOwnerDto.getProducts())
                 .ifPresent((productDtos)-> {
                     productOwner.getProducts().stream()
                             .map(Product::getId)
                             .forEach(productService::deleteProduct);
-                    //todo delete by product owner id
                     Set<Product> products = productDtos
                             .stream()
                             .map(productService::createProduct)
@@ -71,19 +64,14 @@ public class ProductOwnerService {
         return productOwnerRepository.findAll(getFindingPredicate(name),pageable);
     }
 
-
-
     public void deleteProductOwner(Long id) {
         productOwnerRepository.deleteById(id);
         log.info("PRODUCT OWNER WITH ID {} DELETED", id);
     }
 
     public ProductOwner getProductOwner(Long id) throws ProductOwnerException {
-        Optional<ProductOwner> productOwnerOpt = productOwnerRepository.findById(id);
-        if (productOwnerOpt.isEmpty()) {
-            throw new ProductOwnerException("product owner with id " + id + "not found");
-        }
-        return productOwnerOpt.get();
+        return productOwnerRepository.findById(id)
+                .orElseThrow(()->new ProductOwnerException("product owner with id " + id + "not found"));
     }
 
     private Predicate getFindingPredicate(String name) {

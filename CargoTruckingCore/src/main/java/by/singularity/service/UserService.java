@@ -1,7 +1,6 @@
 package by.singularity.service;
 
 import by.singularity.dto.UserDto;
-import by.singularity.entity.Client;
 import by.singularity.entity.QUser;
 import by.singularity.entity.Role;
 import by.singularity.entity.User;
@@ -29,7 +28,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -51,11 +53,8 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userOpt = userRepository.findOne(getLoginPredicate(username));
-        if (userOpt.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        User user = userOpt.get();
+        User user = userRepository.findOne(getLoginPredicate(username))
+                .orElseThrow(()->new UsernameNotFoundException("User not found"));
         log.info("USER {} WAS FOUND", user.getName());
         List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
         user.getRoles().forEach((c)->grantedAuthorities.add(new SimpleGrantedAuthority(c.toString())));
@@ -79,16 +78,12 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateUser(UserDto userDto, Long id) throws UserException{
-        Optional<User> userOpt = userRepository.findById(id);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            alterUserProfileInfo(userDto,user);
-            alterFromAdminInfo(userDto,user);
-            userRepository.save(user);
-            log.info("USER {} UPDATED", user.getLogin());
-            return;
-        }
-        throw new UserException("user with id " + id + " doesn't exist");
+        User user = userRepository.findById(id)
+                .orElseThrow(()->new UserException("user with id " + id + " doesn't exist"));
+        alterUserProfileInfo(userDto,user);
+        alterFromAdminInfo(userDto,user);
+        userRepository.save(user);
+        log.info("USER {} UPDATED", user.getLogin());
     }
 
     public Page<User> getAllUsers(Pageable pageable, Map<String,String> params) {
@@ -103,32 +98,24 @@ public class UserService implements UserDetailsService {
     }
 
     public User getById(Long id) throws UserException {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new UserException("user with id " + id + " not found");
-        }
-        return optionalUser.get();
+        return userRepository.findById(id)
+                .orElseThrow(()->new UserException("user with id " + id + " not found"));
     }
 
     public UserDto getUserAuthInfo(HttpServletRequest request) throws UserException {
         String authHeader = request.getHeader(AUTHORIZATION);
         String login = getLogin(authHeader);
-        Optional<User> userOpt = userRepository.findOne(getLoginPredicate(login));
-        if (userOpt.isEmpty()) {
-            throw new UserException("user not found");
-        }
-        log.info("USER WITH ID {} UPDATED",userOpt.get().getId());
-        return userMapper.toDto(userOpt.get());
+        User user = userRepository.findOne(getLoginPredicate(login))
+                .orElseThrow(()->new UserException("user not found"));
+        log.info("USER WITH ID {} UPDATED",user.getId());
+        return userMapper.toDto(user);
     }
 
     public void alterUserAuthInfo(HttpServletRequest request, UserDto userDto) throws UserException{
         String authHeader = request.getHeader(AUTHORIZATION);
         String login = getLogin(authHeader);
-        Optional<User> userOpt = userRepository.findOne(getLoginPredicate(login));
-        if (userOpt.isEmpty()) {
-            throw new UserException("user not found");
-        }
-        User user = userOpt.get();
+        User user = userRepository.findOne(getLoginPredicate(login))
+                .orElseThrow(()->new UserException("user not found"));
         alterUserProfileInfo(userDto,user);
         userRepository.save(user);
         log.info("USER WITH ID {} DELETED",user.getId());
@@ -137,11 +124,8 @@ public class UserService implements UserDetailsService {
     public void changePassword(HttpServletRequest request, PasswordChanger changer) throws UserException{
         String authHeader = request.getHeader(AUTHORIZATION);
         String login = getLogin(authHeader);
-        Optional<User> userOpt = userRepository.findOne(getLoginPredicate(login));
-        if (userOpt.isEmpty()) {
-            throw new UserException("user not found");
-        }
-        User user = userOpt.get();
+        User user = userRepository.findOne(getLoginPredicate(login))
+                .orElseThrow(()->new UserException("user not found"));
         if (passwordEncoder.matches(changer.getOldPassword(),user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changer.getNewPassword()));
             userRepository.save(user);

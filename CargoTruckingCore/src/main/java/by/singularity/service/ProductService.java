@@ -34,11 +34,8 @@ public class ProductService {
     }
 
     public void updateProduct(ProductDto productDto, Long id) throws ProductException {
-        Optional<Product> productOpt = productRepository.findById(id);
-        if (productOpt.isEmpty()) {
-            throw new ProductException("product with id" + id +" not found");
-        }
-        Product product = productOpt.get();
+        Product product = productRepository.findById(id)
+                        .orElseThrow(()->new ProductException("product with id" + id +" not found"));
         Optional.ofNullable(productDto.getAmount()).ifPresent(product::setAmount);
         Optional.ofNullable(productDto.getProductStatus()).ifPresent(product::setProductStatus);
         productRepository.save(product);
@@ -55,11 +52,8 @@ public class ProductService {
     }
 
     public Product getProduct(Long id) throws ProductException {
-        Optional<Product> productOpt = productRepository.findById(id);
-        if (productOpt.isEmpty()) {
-            throw new ProductException("product with id " + id + "not found");
-        }
-        return productOpt.get();
+        return productRepository.findById(id)
+                .orElseThrow(()->new ProductException("product with id " + id + "not found"));
     }
 
     private Predicate getFindingPredicate(Map<String,String> params) {

@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,11 +40,9 @@ public class CarService {
     }
 
     public Car getCar(Long id) throws CarException {
-        Optional<Car> carOpt = carRepository.findById(id);
-        if (carOpt.isEmpty()) {
-            throw new CarException("car with id " + id + "not found");
-        }
-        return carOpt.get();
+        return carRepository.findById(id)
+                .orElseThrow(()->new CarException("car with id " + id + "not found"));
+
     }
     private Predicate getFindingPredicate(Map<String,String> params) {
         return QPredicate.builder()
