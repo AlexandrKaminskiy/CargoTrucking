@@ -5,7 +5,7 @@ import by.singularity.entity.Product;
 import by.singularity.entity.ProductStatus;
 import by.singularity.entity.QProduct;
 import by.singularity.exception.ProductException;
-import by.singularity.mapper.ProductMapper;
+import by.singularity.mapper.impl.ProductMapper;
 import by.singularity.repository.ProductRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import by.singularity.service.utils.ParseUtils;

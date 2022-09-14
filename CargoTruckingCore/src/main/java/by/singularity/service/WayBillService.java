@@ -2,18 +2,16 @@ package by.singularity.service;
 
 import by.singularity.dto.WayBillDto;
 import by.singularity.entity.CarriageStatus;
-import by.singularity.entity.Checkpoint;
 import by.singularity.entity.QWayBill;
 import by.singularity.entity.WayBill;
 import by.singularity.exception.CarException;
 import by.singularity.exception.InvoiceException;
 import by.singularity.exception.WayBillException;
-import by.singularity.mapper.WayBillMapper;
+import by.singularity.mapper.impl.WayBillMapper;
 import by.singularity.repository.CarRepository;
 import by.singularity.repository.InvoiceRepository;
 import by.singularity.repository.WayBillRepository;
 import by.singularity.repository.queryUtils.QPredicate;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

@@ -5,7 +5,10 @@ import by.singularity.entity.Invoice;
 import by.singularity.entity.InvoiceStatus;
 import by.singularity.entity.QInvoice;
 import by.singularity.exception.InvoiceException;
-import by.singularity.mapper.InvoiceMapper;
+import by.singularity.exception.ProductOwnerException;
+import by.singularity.exception.StorageException;
+import by.singularity.exception.UserException;
+import by.singularity.mapper.impl.InvoiceMapper;
 import by.singularity.repository.InvoiceRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import by.singularity.service.utils.ParseUtils;
@@ -26,7 +29,7 @@ public class InvoiceService {
     private final InvoiceMapper invoiceMapper;
     private final InvoiceRepository invoiceRepository;
 
-    public Invoice createInvoice(InvoiceDto invoiceDto) {
+    public Invoice createInvoice(InvoiceDto invoiceDto) throws ProductOwnerException, UserException, StorageException {
         Invoice invoice = invoiceMapper.toModel(invoiceDto);
         invoice.setCreationDate(new Date());
         invoice.setStatus(Collections.singleton(InvoiceStatus.MADE_OUT));
@@ -35,13 +38,15 @@ public class InvoiceService {
         return invoice;
     }
 
-    public void updateInvoice(InvoiceDto invoiceDto, String number) throws InvoiceException {
-        Optional<Invoice> invoiceOpt = invoiceRepository.findById(number);
-        if (invoiceOpt.isEmpty()) {
-            throw new InvoiceException("invoice with number " + number + "not found");
-        }
-        //todo fix there
-        Invoice invoice = invoiceMapper.toModel(invoiceDto);
+    public void updateInvoice(InvoiceDto invoiceDto, String number) throws InvoiceException, ProductOwnerException, UserException, StorageException {
+        Invoice invoice = invoiceRepository.findById(number)
+                .orElseThrow(()->new InvoiceException("invoice with number " + number + "not found"));
+        Invoice updatedInvoice = invoiceMapper.toModel(invoiceDto);
+        invoice.setDriver(updatedInvoice.getDriver());
+        invoice.setStorage(updatedInvoice.getStorage());
+        invoice.setCreator(updatedInvoice.getCreator());
+        invoice.setProductOwner(updatedInvoice.getProductOwner());
+        invoice.setProducts(updatedInvoice.getProducts());
         invoiceRepository.save(invoice);
         log.info("INVOICE WITH NUMBER {} UPDATED", number);
     }
@@ -56,11 +61,9 @@ public class InvoiceService {
     }
 
     public Invoice getInvoice(String number) throws InvoiceException {
-        Optional<Invoice> invoiceOpt = invoiceRepository.findById(number);
-        if (invoiceOpt.isEmpty()) {
-            throw new InvoiceException("invoice with number" + number + "not found");
-        }
-        return invoiceOpt.get();
+        return invoiceRepository.findById(number)
+                .orElseThrow(()->new InvoiceException("invoice with number " + number + "not found"));
+
     }
 
     private Predicate getFindingPredicate(Map<String, String> params) {

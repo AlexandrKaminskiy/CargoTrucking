@@ -4,7 +4,7 @@ import by.singularity.dto.CarDto;
 import by.singularity.entity.Car;
 import by.singularity.entity.QCar;
 import by.singularity.exception.CarException;
-import by.singularity.mapper.CarMapper;
+import by.singularity.mapper.impl.CarMapper;
 import by.singularity.repository.CarRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import com.querydsl.core.types.Predicate;

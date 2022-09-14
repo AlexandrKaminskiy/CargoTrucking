@@ -5,7 +5,7 @@ import by.singularity.entity.Product;
 import by.singularity.entity.ProductOwner;
 import by.singularity.entity.QProductOwner;
 import by.singularity.exception.ProductOwnerException;
-import by.singularity.mapper.ProductOwnerMapper;
+import by.singularity.mapper.impl.ProductOwnerMapper;
 import by.singularity.repository.ProductOwnerRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import com.querydsl.core.types.Predicate;

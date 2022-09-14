@@ -5,7 +5,7 @@ import by.singularity.entity.QStorage;
 import by.singularity.entity.Storage;
 import by.singularity.exception.ClientException;
 import by.singularity.exception.StorageException;
-import by.singularity.mapper.StorageMapper;
+import by.singularity.mapper.impl.StorageMapper;
 import by.singularity.pojo.StorageUpdateDto;
 import by.singularity.repository.ClientRepository;
 import by.singularity.repository.StorageRepository;

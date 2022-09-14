@@ -8,7 +8,7 @@ import by.singularity.entity.QClient;
 import by.singularity.entity.User;
 import by.singularity.exception.ClientException;
 import by.singularity.exception.UserException;
-import by.singularity.mapper.ClientMapper;
+import by.singularity.mapper.impl.ClientMapper;
 import by.singularity.pojo.ClientUpdateDto;
 import by.singularity.repository.ClientRepository;
 import by.singularity.repository.queryUtils.QPredicate;

@@ -6,7 +6,7 @@ import by.singularity.entity.QUser;
 import by.singularity.entity.Role;
 import by.singularity.entity.User;
 import by.singularity.exception.UserException;
-import by.singularity.mapper.impl.UserMapperImpl;
+import by.singularity.mapper.impl.UserMapper;
 import by.singularity.pojo.PasswordChanger;
 import by.singularity.repository.UserRepository;
 import by.singularity.repository.queryUtils.QPredicate;
@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final UserMapperImpl userMapper;
+    private final UserMapper userMapper;
 
     @Value("${jwt.secret}")
     private String secret;
