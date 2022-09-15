@@ -42,10 +42,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         appAuthenticationFilter.setFilterProcessesUrl("/api/sign-in");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/sign-in/**","/api/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/sign-in/**","/api/refresh/**","/api/about/**").permitAll();
         http.authorizeRequests().antMatchers("/api/logout/**").authenticated();
-        http.authorizeRequests().antMatchers("/api/user/**").hasAuthority("ADMIN");
-        http.authorizeRequests().antMatchers("/api/managerinfo/**").hasAuthority("MANAGER");
+        http.authorizeRequests().antMatchers("/api/user/**","/api/clients/**").hasAuthority("SYS_ADMIN");
+        http.authorizeRequests().antMatchers("/api/storages/**","/api/product-owners/**","/api/cars/**").hasAuthority("ADMIN");
+        http.authorizeRequests().antMatchers("/api/invoices/**","/api/product-writeoffs/**").hasAuthority("DISPATCHER");
+        http.authorizeRequests().antMatchers("/api/waybills/**").hasAnyAuthority("DISPATCHER","MANAGER");
+
         http.addFilter(appAuthenticationFilter);
         http.addFilterBefore(appAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
