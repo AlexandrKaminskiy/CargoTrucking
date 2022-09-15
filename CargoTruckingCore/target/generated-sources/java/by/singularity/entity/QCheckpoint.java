@@ -24,8 +24,6 @@ public class QCheckpoint extends EntityPathBase<Checkpoint> {
 
     public final StringPath address = createString("address");
 
-    public final DateTimePath<java.util.Date> checkpointDate = createDateTime("checkpointDate", java.util.Date.class);
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final DateTimePath<java.util.Date> requiredArrivalDate = createDateTime("requiredArrivalDate", java.util.Date.class);

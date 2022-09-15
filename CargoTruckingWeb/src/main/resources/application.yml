@@ -18,4 +18,6 @@ logging:
     org.hibernate.sql: debug
 jwt:
   secret: Thequickbrownfoxjumpsoverthelazydog
-  expiration: 172800000
+  expiration:
+    refresh: 172800000
+    access: 1800000

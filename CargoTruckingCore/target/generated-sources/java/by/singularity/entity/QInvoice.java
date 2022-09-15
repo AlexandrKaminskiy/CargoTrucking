@@ -28,13 +28,13 @@ public class QInvoice extends EntityPathBase<Invoice> {
 
     public final QUser driver;
 
-    public final SetPath<InvoiceStatus, EnumPath<InvoiceStatus>> invoiceStatus = this.<InvoiceStatus, EnumPath<InvoiceStatus>>createSet("invoiceStatus", InvoiceStatus.class, EnumPath.class, PathInits.DIRECT2);
-
     public final StringPath number = createString("number");
 
     public final QProductOwner productOwner;
 
     public final SetPath<Product, QProduct> products = this.<Product, QProduct>createSet("products", Product.class, QProduct.class, PathInits.DIRECT2);
+
+    public final SetPath<InvoiceStatus, EnumPath<InvoiceStatus>> status = this.<InvoiceStatus, EnumPath<InvoiceStatus>>createSet("status", InvoiceStatus.class, EnumPath.class, PathInits.DIRECT2);
 
     public final QStorage storage;
 

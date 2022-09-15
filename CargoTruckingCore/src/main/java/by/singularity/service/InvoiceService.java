@@ -12,7 +12,6 @@ import by.singularity.mapper.impl.InvoiceMapper;
 import by.singularity.repository.InvoiceRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import by.singularity.service.utils.ParseUtils;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +74,7 @@ public class InvoiceService {
                 .add(ParseUtils.parseDate(params.get("afterCreationDate")), QInvoice.invoice.creationDate::loe)
                 .add(ParseUtils.parseDate(params.get("beforeVerifiedDate")), QInvoice.invoice.verifiedDate::goe)
                 .add(ParseUtils.parseDate(params.get("afterVerifiedDate")), QInvoice.invoice.verifiedDate::loe)
-                .add(ParseUtils.parseEnum(params.get("status"),InvoiceStatus.class),QInvoice.invoice.invoiceStatus::contains)
+                .add(ParseUtils.parseEnum(params.get("status"),InvoiceStatus.class),QInvoice.invoice.status::contains)
                 .buildAnd();
     }
 }

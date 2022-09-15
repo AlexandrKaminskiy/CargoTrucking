@@ -32,6 +32,8 @@ public class QClient extends EntityPathBase<Client> {
 
     public final SetPath<ClientStatus, EnumPath<ClientStatus>> status = this.<ClientStatus, EnumPath<ClientStatus>>createSet("status", ClientStatus.class, EnumPath.class, PathInits.DIRECT2);
 
+    public final SetPath<Storage, QStorage> storages = this.<Storage, QStorage>createSet("storages", Storage.class, QStorage.class, PathInits.DIRECT2);
+
     public QClient(String variable) {
         this(Client.class, forVariable(variable), INITS);
     }

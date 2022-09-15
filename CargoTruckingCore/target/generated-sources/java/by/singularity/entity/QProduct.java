@@ -30,6 +30,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath name = createString("name");
 
+    public final QProductOwner productOwner;
+
     public final SetPath<ProductStatus, EnumPath<ProductStatus>> productStatus = this.<ProductStatus, EnumPath<ProductStatus>>createSet("productStatus", ProductStatus.class, EnumPath.class, PathInits.DIRECT2);
 
     public QProduct(String variable) {
@@ -51,6 +53,7 @@ public class QProduct extends EntityPathBase<Product> {
     public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.creator = inits.isInitialized("creator") ? new QUser(forProperty("creator"), inits.get("creator")) : null;
+        this.productOwner = inits.isInitialized("productOwner") ? new QProductOwner(forProperty("productOwner")) : null;
     }
 
 }
