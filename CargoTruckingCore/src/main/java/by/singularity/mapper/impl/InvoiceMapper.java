@@ -25,14 +25,12 @@ public class InvoiceMapper implements Mapper<Invoice, InvoiceDto> {
     @PostConstruct
     public void setupMapper() {
         mapper.createTypeMap(Invoice.class, InvoiceDto.class)
-                .addMappings(m->m.skip(InvoiceDto::setCreatorId))
                 .addMappings(m->m.skip(InvoiceDto::setDriverId))
                 .addMappings(m->m.skip(InvoiceDto::setStorageId))
                 .addMappings(m->m.skip(InvoiceDto::setProductOwnerId))
                 .addMappings(m->m.skip(InvoiceDto::setProducts))
                 .setPostConverter(toDtoConverter());
         mapper.createTypeMap(InvoiceDto.class, Invoice.class)
-                .addMappings(m->m.skip(Invoice::setCreator))
                 .addMappings(m->m.skip(Invoice::setDriver))
                 .addMappings(m->m.skip(Invoice::setStorage))
                 .addMappings(m->m.skip(Invoice::setProductOwner))
@@ -69,14 +67,12 @@ public class InvoiceMapper implements Mapper<Invoice, InvoiceDto> {
     }
 
     private void mapSpecificFields(Invoice source, InvoiceDto destination) {
-        destination.setCreatorId(source.getCreator().getId());
         destination.setDriverId(source.getDriver().getId());
         destination.setStorageId(source.getStorage().getId());
         destination.setProductOwnerId(source.getProductOwner().getId());
     }
 
     private void mapSpecificFields(InvoiceDto source, Invoice destination) {
-        destination.setCreator(userRepository.findById(source.getCreatorId()).orElse(null));
         destination.setDriver(userRepository.findById(source.getDriverId()).orElse(null));
         destination.setStorage(storageRepository.findById(source.getStorageId()).orElse(null));
         destination.setProductOwner(productOwnerRepository.findById(source.getProductOwnerId()).orElse(null));

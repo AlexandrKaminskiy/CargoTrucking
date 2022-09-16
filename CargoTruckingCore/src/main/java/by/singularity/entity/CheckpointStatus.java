@@ -1,7 +1,7 @@
 package by.singularity.entity;
 
-public enum ProductStatus {
-    LOST, STOLEN, SPOILED, RESERVED, DELIVERED;
+public enum CheckpointStatus {
+    IN_PROGRESS,REACHED;
 
     @Override
     public String toString() {

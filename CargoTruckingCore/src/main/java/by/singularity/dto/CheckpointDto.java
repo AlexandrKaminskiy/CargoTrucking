@@ -15,6 +15,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckpointDto implements Serializable {
+    private Long id;
+
     @Length(min = 1)
     @NotNull
     @NotEmpty

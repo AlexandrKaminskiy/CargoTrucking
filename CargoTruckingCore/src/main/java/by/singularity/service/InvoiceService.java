@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,11 @@ public class InvoiceService {
     private final UserService userService;
     private final ProductService productService;
 
-    public Invoice createInvoice(InvoiceDto invoiceDto) throws ProductOwnerException, UserException, StorageException, ProductException, ClientException {
+    @Transactional
+    public Invoice createInvoice(InvoiceDto invoiceDto, HttpServletRequest request) throws ProductOwnerException, UserException, StorageException, ProductException, ClientException, InvoiceException {
+        if (invoiceRepository.existsById(invoiceDto.getNumber())) {
+            throw new InvoiceException("invoice with id " + invoiceDto.getNumber() + " exists");
+        }
         Storage storage = storageService.getStorage(invoiceDto.getStorageId());
         if (!storage.getClient().getIsActive()) {
             throw new ClientException("client with id " + storage.getClient().getId() + "is not active");
@@ -37,8 +43,10 @@ public class InvoiceService {
         if (!driver.getRoles().contains(Role.DRIVER)) {
             throw new UserException("user with id " + driver.getId() + " is not driver");
         }
+        User creator = userService.getUserByAuthorization(request);
         Set<Product> products = getProducts(invoiceDto);
         Invoice invoice = invoiceMapper.toModel(invoiceDto);
+        invoice.setCreator(creator);
         invoice.setProducts(products);
         invoice.setCreationDate(new Date());
         invoice.setStatus(Collections.singleton(InvoiceStatus.MADE_OUT));
@@ -47,6 +55,12 @@ public class InvoiceService {
         return invoice;
     }
 
+    @Transactional
+    public void createInvoice(Invoice invoice) {
+        invoiceRepository.save(invoice);
+    }
+
+    @Transactional
     public void updateInvoice(InvoiceDto invoiceDto, String number) throws InvoiceException, ProductOwnerException, UserException, StorageException, ProductException {
         Invoice invoice = invoiceRepository.findById(number)
                 .orElseThrow(()->new InvoiceException("invoice with number " + number + "not found"));
@@ -54,7 +68,6 @@ public class InvoiceService {
         Invoice updatedInvoice = invoiceMapper.toModel(invoiceDto);
         invoice.setDriver(updatedInvoice.getDriver());
         invoice.setStorage(updatedInvoice.getStorage());
-        invoice.setCreator(updatedInvoice.getCreator());
         invoice.setProductOwner(updatedInvoice.getProductOwner());
         invoice.setProducts(getProducts(invoiceDto));
         invoiceRepository.save(invoice);
@@ -65,6 +78,7 @@ public class InvoiceService {
         return invoiceRepository.findAll(getFindingPredicate(params), pageable);
     }
 
+    @Transactional
     public void deleteInvoice(String number) {
         invoiceRepository.deleteById(number);
         log.info("INVOICE WITH NUMBER {} DELETED", number);
@@ -87,6 +101,7 @@ public class InvoiceService {
                 .buildAnd();
     }
 
+    @Transactional
     private Set<Product> getProducts(InvoiceDto invoiceDto) throws ProductOwnerException, ProductException {
         ProductOwner productOwner = productOwnerService.getProductOwner(invoiceDto.getProductOwnerId());
         Set<Product> productsFromInvoice = invoiceDto.getProducts().stream()
@@ -118,4 +133,13 @@ public class InvoiceService {
         return products;
     }
 
+    @Transactional
+    public void validateInvoice(String number) throws InvoiceException {
+        Invoice invoice = invoiceRepository.findById(number)
+                .orElseThrow(()->new InvoiceException("invoice with number " + number + "not found"));
+        invoice.setStatus(new HashSet<>(Collections.singleton(InvoiceStatus.VERIFICATION_COMPLETE)));
+        invoice.setVerifiedDate(new Date());
+        invoiceRepository.save(invoice);
+        log.info("INVOICE {} IS ACTIVE", invoice.getNumber());
+    }
 }

@@ -1,6 +1,5 @@
 package by.singularity.service;
 
-import by.singularity.dto.ProductDto;
 import by.singularity.dto.ProductOwnerDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductOwner;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -44,6 +42,7 @@ public class ProductOwnerService {
         return productOwner.getId();
     }
 
+    @Transactional
     public void updateProductOwner(ProductOwnerDto productOwnerDto, Long id) throws ProductOwnerException {
         ProductOwner productOwner = productOwnerRepository.findById(id)
                 .orElseThrow(()->new ProductOwnerException("product owner with id" + id + "not found"));
@@ -67,6 +66,7 @@ public class ProductOwnerService {
         return productOwnerRepository.findAll(getFindingPredicate(params),pageable);
     }
 
+    @Transactional
     public void deleteProductOwner(Long id) {
         productOwnerRepository.deleteById(id);
         log.info("PRODUCT OWNER WITH ID {} DELETED", id);
@@ -83,16 +83,4 @@ public class ProductOwnerService {
                 .buildAnd();
     }
 
-
-    public Optional<ProductOwner> getByProductsContaining(Set<ProductDto> productDtos) {
-        List<ProductOwner> productOwners = productOwnerRepository.findAll();
-//        return productOwners.stream()
-//                .filter(productOwner ->
-//                    productOwner.getProducts().stream()
-//                            .anyMatch(product -> productDtos.stream()
-//                                        .anyMatch((productDto -> productDto.getName().equals(product.getName()) &&
-//                                                productDto.getAmount() <= product.getAmount()))))
-//                .findFirst();
-        return null;
-    }
 }

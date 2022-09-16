@@ -73,6 +73,7 @@ public class ClientService {
                 .orElseThrow(()->new ClientException("client with id " + id + " not found"));
     }
 
+    @Transactional
     public void activateClient(Long id) {
         clientRepository.findById(id).ifPresent(client -> {
             client.setIsActive(true);
@@ -81,6 +82,7 @@ public class ClientService {
         });
     }
 
+    @Transactional
     public void deleteClient(Long id) {
         clientRepository.findById(id).ifPresent(client -> {
             client.setIsActive(false);

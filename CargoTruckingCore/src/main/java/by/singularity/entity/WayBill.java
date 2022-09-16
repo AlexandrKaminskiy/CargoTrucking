@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -34,7 +36,9 @@ public class WayBill {
     @ManyToOne(targetEntity = User.class)
     private User verifier;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "wayBill")
+    @OneToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "way_bill_id")
     private Set<Checkpoint> checkpoints;
 
     @Enumerated(EnumType.STRING)

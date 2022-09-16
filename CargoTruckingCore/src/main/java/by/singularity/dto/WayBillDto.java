@@ -37,10 +37,6 @@ public class WayBillDto implements Serializable {
     @NotNull
     private Date endDate;
 
-    @Min(1)
-    @NotNull
-    private Long verifierId;
-
     private Set<CarriageStatus> carriageStatuses;
 
     @NotNull

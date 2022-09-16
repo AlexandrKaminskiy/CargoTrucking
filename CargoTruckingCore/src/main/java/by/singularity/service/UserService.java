@@ -26,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), grantedAuthorities);
     }
 
+    @Transactional
     public User registerUser(UserDto userDto) throws UserException {
         User user = userMapper.toModel(userDto);
         if (userRepository.exists(getLoginPredicate(userDto.getLogin()))) {
@@ -77,6 +79,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    @Transactional
     public void updateUser(UserDto userDto, Long id) throws UserException{
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserException("user with id " + id + " doesn't exist"));
@@ -90,6 +93,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll(getSearchPredicate(params), pageable);
     }
 
+    @Transactional
     public void deleteUsers(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
@@ -103,29 +107,21 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDto getUserAuthInfo(HttpServletRequest request) throws UserException {
-        String authHeader = request.getHeader(AUTHORIZATION);
-        String login = getLogin(authHeader);
-        User user = userRepository.findOne(getLoginPredicate(login))
-                .orElseThrow(()->new UserException("user not found"));
+        User user = getUserByAuthorization(request);
         log.info("USER WITH ID {} UPDATED",user.getId());
         return userMapper.toDto(user);
     }
 
     public void alterUserAuthInfo(HttpServletRequest request, UserDto userDto) throws UserException{
-        String authHeader = request.getHeader(AUTHORIZATION);
-        String login = getLogin(authHeader);
-        User user = userRepository.findOne(getLoginPredicate(login))
-                .orElseThrow(()->new UserException("user not found"));
+        User user = getUserByAuthorization(request);
         alterUserProfileInfo(userDto,user);
         userRepository.save(user);
         log.info("USER WITH ID {} DELETED",user.getId());
     }
 
+    @Transactional
     public void changePassword(HttpServletRequest request, PasswordChanger changer) throws UserException{
-        String authHeader = request.getHeader(AUTHORIZATION);
-        String login = getLogin(authHeader);
-        User user = userRepository.findOne(getLoginPredicate(login))
-                .orElseThrow(()->new UserException("user not found"));
+        User user = getUserByAuthorization(request);
         if (passwordEncoder.matches(changer.getOldPassword(),user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changer.getNewPassword()));
             userRepository.save(user);
@@ -139,6 +135,14 @@ public class UserService implements UserDetailsService {
         JWTVerifier jwtVerifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = jwtVerifier.verify(token);
         return decodedJWT.getSubject();
+    }
+
+    public User getUserByAuthorization(HttpServletRequest request) throws UserException {
+        String authHeader = request.getHeader(AUTHORIZATION);
+        String login = getLogin(authHeader);
+        return userRepository.findOne(getLoginPredicate(login))
+                .orElseThrow(()->new UserException("user not found"));
+
     }
 
     private Predicate getLoginPredicate(String login) {

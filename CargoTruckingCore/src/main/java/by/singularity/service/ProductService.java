@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Optional;
@@ -27,12 +28,15 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
 
+    @Transactional
     public Product createProduct(ProductDto productDto) {
         Product product = productMapper.toModel(productDto);
         productRepository.save(product);
         log.info("PRODUCT WITH ID {} CREATED", product.getId());
         return product;
     }
+
+    @Transactional
     public Product createProduct(Product product) {
         productRepository.save(product);
         log.info("RESERVED PRODUCT WITH ID {} CREATED", product.getId());
@@ -45,6 +49,7 @@ public class ProductService {
         return products;
     }
 
+    @Transactional
     public void updateProduct(ProductDto productDto, Long id) throws ProductException {
         Product product = productRepository.findById(id)
                         .orElseThrow(()->new ProductException("product with id" + id +" not found"));
@@ -58,6 +63,7 @@ public class ProductService {
         return productRepository.findAll(getFindingPredicate(params),pageable);
     }
 
+    @Transactional
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
         log.info("PRODUCT WITH ID {} DELETED", id);

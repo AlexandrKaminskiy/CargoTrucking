@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -42,8 +43,9 @@ public class InvoiceController {
 
 
     @PostMapping()
-    public String addInvoice(@RequestBody @Valid InvoiceDto invoiceDto) throws ProductOwnerException, UserException, StorageException, ProductException, ClientException {
-        Invoice invoice = invoiceService.createInvoice(invoiceDto);
+    public String addInvoice(@RequestBody @Valid InvoiceDto invoiceDto,
+                             HttpServletRequest request) throws ProductOwnerException, UserException, StorageException, ProductException, ClientException, InvoiceException {
+        Invoice invoice = invoiceService.createInvoice(invoiceDto, request);
         return "/api/invoices/" + invoice.getNumber();
     }
 
@@ -56,5 +58,10 @@ public class InvoiceController {
     @DeleteMapping("/{number}")
     public void deleteInvoice(@PathVariable String number) {
         invoiceService.deleteInvoice(number);
+    }
+
+    @PutMapping("/validate/{number}")
+    public void validateInvoice(@PathVariable String number) throws InvoiceException {
+        invoiceService.validateInvoice(number);
     }
 }

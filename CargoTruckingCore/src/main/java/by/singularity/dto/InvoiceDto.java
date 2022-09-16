@@ -27,10 +27,6 @@ public class InvoiceDto implements Serializable {
 
     @Min(1)
     @NotNull
-    private Long creatorId;
-
-    @Min(1)
-    @NotNull
     private Long productOwnerId;
 
     @Min(1)

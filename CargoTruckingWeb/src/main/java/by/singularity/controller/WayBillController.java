@@ -4,16 +4,14 @@ import by.singularity.dto.CheckpointDto;
 import by.singularity.dto.WayBillDto;
 import by.singularity.entity.CarriageStatus;
 import by.singularity.entity.WayBill;
-import by.singularity.exception.CarException;
-import by.singularity.exception.InvoiceException;
-import by.singularity.exception.UserException;
-import by.singularity.exception.WayBillException;
+import by.singularity.exception.*;
 import by.singularity.service.WayBillService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -46,13 +44,20 @@ public class WayBillController {
     }
 
     @PostMapping()
-    public Long addWayBill(@RequestBody @Valid WayBillDto wayBillDto) throws InvoiceException, CarException, UserException {
-        WayBill wayBill = wayBillService.createWayBill(wayBillDto);
+    public Long addWayBill(@RequestBody @Valid WayBillDto wayBillDto,
+                           HttpServletRequest request) throws InvoiceException, CarException, UserException {
+        WayBill wayBill = wayBillService.createWayBill(wayBillDto,request);
         return wayBill.getId();
     }
 
     @PutMapping("/{id}")
-    public void reachCheckpoint(@PathVariable Long id) throws WayBillException {
-        wayBillService.reachCheckpoint(id);
+    public void finishCarriage(@PathVariable Long id) throws WayBillException {
+        wayBillService.finishCarriage(id);
+    }
+
+    @PutMapping("/checkpoints/{checkpointId}")
+    public String reachCheckpoint(@PathVariable Long checkpointId) throws CheckpointException {
+        wayBillService.reachCheckpoint(checkpointId);
+        return "/checkpoints/" + checkpointId;
     }
 }

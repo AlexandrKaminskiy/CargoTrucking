@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ public class StorageService {
     private final ClientRepository clientRepository;
     private final StorageMapper storageMapper;
 
+    @Transactional
     public String createStorage(StorageDto storageDto) throws ClientException {
         if (!clientRepository.existsById(storageDto.getClientId())) {
             throw new ClientException("client with id " + storageDto.getClientId() + " not found");
@@ -37,6 +39,7 @@ public class StorageService {
         return storage.getAddress();
     }
 
+    @Transactional
     public void updateStorage(StorageUpdateDto storageUpdateDto, Long id) throws StorageException {
         Storage storage = storageRepository.findById(id)
                 .orElseThrow(()->new StorageException("storage with id " + storageUpdateDto.getId() + " not found"));
@@ -50,6 +53,7 @@ public class StorageService {
         return storageRepository.findAll(getFindingPredicate(name), pageable);
     }
 
+    @Transactional
     public void deleteStorage(Long id) {
         storageRepository.deleteById(id);
     }
