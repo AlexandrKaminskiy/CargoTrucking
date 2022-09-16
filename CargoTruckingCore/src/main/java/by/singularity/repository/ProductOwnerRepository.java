@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductOwnerRepository extends JpaRepository<ProductOwner,Long>, QuerydslPredicateExecutor<ProductOwner> {
-
 }

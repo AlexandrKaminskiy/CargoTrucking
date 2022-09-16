@@ -1,13 +1,8 @@
 package by.singularity.service;
 
 import by.singularity.dto.InvoiceDto;
-import by.singularity.entity.Invoice;
-import by.singularity.entity.InvoiceStatus;
-import by.singularity.entity.QInvoice;
-import by.singularity.exception.InvoiceException;
-import by.singularity.exception.ProductOwnerException;
-import by.singularity.exception.StorageException;
-import by.singularity.exception.UserException;
+import by.singularity.entity.*;
+import by.singularity.exception.*;
 import by.singularity.mapper.impl.InvoiceMapper;
 import by.singularity.repository.InvoiceRepository;
 import by.singularity.repository.queryUtils.QPredicate;
@@ -19,9 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +23,23 @@ import java.util.Map;
 public class InvoiceService {
     private final InvoiceMapper invoiceMapper;
     private final InvoiceRepository invoiceRepository;
+    private final ProductOwnerService productOwnerService;
+    private final StorageService storageService;
+    private final UserService userService;
+    private final ProductService productService;
 
-    public Invoice createInvoice(InvoiceDto invoiceDto) throws ProductOwnerException, UserException, StorageException {
+    public Invoice createInvoice(InvoiceDto invoiceDto) throws ProductOwnerException, UserException, StorageException, ProductException, ClientException {
+        Storage storage = storageService.getStorage(invoiceDto.getStorageId());
+        if (!storage.getClient().getIsActive()) {
+            throw new ClientException("client with id " + storage.getClient().getId() + "is not active");
+        }
+        User driver = userService.getById(invoiceDto.getDriverId());
+        if (!driver.getRoles().contains(Role.DRIVER)) {
+            throw new UserException("user with id " + driver.getId() + " is not driver");
+        }
+        Set<Product> products = getProducts(invoiceDto);
         Invoice invoice = invoiceMapper.toModel(invoiceDto);
+        invoice.setProducts(products);
         invoice.setCreationDate(new Date());
         invoice.setStatus(Collections.singleton(InvoiceStatus.MADE_OUT));
         invoiceRepository.save(invoice);
@@ -39,15 +47,16 @@ public class InvoiceService {
         return invoice;
     }
 
-    public void updateInvoice(InvoiceDto invoiceDto, String number) throws InvoiceException, ProductOwnerException, UserException, StorageException {
+    public void updateInvoice(InvoiceDto invoiceDto, String number) throws InvoiceException, ProductOwnerException, UserException, StorageException, ProductException {
         Invoice invoice = invoiceRepository.findById(number)
                 .orElseThrow(()->new InvoiceException("invoice with number " + number + "not found"));
+        invoice.getProducts().forEach(product -> productService.deleteProduct(product.getId()));
         Invoice updatedInvoice = invoiceMapper.toModel(invoiceDto);
         invoice.setDriver(updatedInvoice.getDriver());
         invoice.setStorage(updatedInvoice.getStorage());
         invoice.setCreator(updatedInvoice.getCreator());
         invoice.setProductOwner(updatedInvoice.getProductOwner());
-        invoice.setProducts(updatedInvoice.getProducts());
+        invoice.setProducts(getProducts(invoiceDto));
         invoiceRepository.save(invoice);
         log.info("INVOICE WITH NUMBER {} UPDATED", number);
     }
@@ -77,4 +86,36 @@ public class InvoiceService {
                 .add(ParseUtils.parseEnum(params.get("status"),InvoiceStatus.class),QInvoice.invoice.status::contains)
                 .buildAnd();
     }
+
+    private Set<Product> getProducts(InvoiceDto invoiceDto) throws ProductOwnerException, ProductException {
+        ProductOwner productOwner = productOwnerService.getProductOwner(invoiceDto.getProductOwnerId());
+        Set<Product> productsFromInvoice = invoiceDto.getProducts().stream()
+                .map(productDto -> {
+                    Product product = new Product();
+                    product.setName(productDto.getName());
+                    product.setAmount(productDto.getAmount());
+                    return product;
+                }).collect(Collectors.toSet());
+        LinkedHashSet<Product> products = new LinkedHashSet<>(productsFromInvoice);
+        Set<Product> nessProducts = productOwner.getProducts().stream()
+                .filter(product -> products.stream()
+                        .anyMatch(p -> {
+                            boolean isMatch = p.getName().equals(product.getName())
+                                    && product.getAmount() >= p.getAmount()
+                                    && product.getProductStatus().size() == 0;
+                            if (isMatch) {
+                                p.setProductStatus(Collections.singleton(ProductStatus.RESERVED));
+                                p.setProductOwner(product.getProductOwner());
+                                p.setCreator(product.getCreator());
+                                productService.createProduct(p);
+                            }
+                            return isMatch;
+                        }))
+                .collect(Collectors.toSet());
+        if (nessProducts.size() != productsFromInvoice.size()) {
+            throw new ProductException("product owner with id " + productOwner.getId() + " doesn't have this products");
+        }
+        return products;
+    }
+
 }

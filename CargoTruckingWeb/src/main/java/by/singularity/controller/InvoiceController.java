@@ -3,10 +3,7 @@ package by.singularity.controller;
 
 import by.singularity.dto.InvoiceDto;
 import by.singularity.entity.Invoice;
-import by.singularity.exception.InvoiceException;
-import by.singularity.exception.ProductOwnerException;
-import by.singularity.exception.StorageException;
-import by.singularity.exception.UserException;
+import by.singularity.exception.*;
 import by.singularity.service.InvoiceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -45,14 +42,14 @@ public class InvoiceController {
 
 
     @PostMapping()
-    public String addInvoice(@RequestBody @Valid InvoiceDto invoiceDto) throws ProductOwnerException, UserException, StorageException {
+    public String addInvoice(@RequestBody @Valid InvoiceDto invoiceDto) throws ProductOwnerException, UserException, StorageException, ProductException, ClientException {
         Invoice invoice = invoiceService.createInvoice(invoiceDto);
         return "/api/invoices/" + invoice.getNumber();
     }
 
     @PutMapping("/{number}")
     public void updateInvoice(@PathVariable String number,
-                              @RequestBody @Valid InvoiceDto invoiceDto) throws InvoiceException, ProductOwnerException, UserException, StorageException {
+                              @RequestBody @Valid InvoiceDto invoiceDto) throws InvoiceException, ProductOwnerException, UserException, StorageException, ProductException {
         invoiceService.updateInvoice(invoiceDto, number);
     }
 

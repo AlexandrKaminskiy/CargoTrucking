@@ -2,7 +2,6 @@ package by.singularity.mapper.impl;
 
 import by.singularity.dto.InvoiceDto;
 import by.singularity.entity.Invoice;
-import by.singularity.exception.UserException;
 import by.singularity.mapper.Mapper;
 import by.singularity.repository.ProductOwnerRepository;
 import by.singularity.repository.StorageRepository;
@@ -30,12 +29,14 @@ public class InvoiceMapper implements Mapper<Invoice, InvoiceDto> {
                 .addMappings(m->m.skip(InvoiceDto::setDriverId))
                 .addMappings(m->m.skip(InvoiceDto::setStorageId))
                 .addMappings(m->m.skip(InvoiceDto::setProductOwnerId))
+                .addMappings(m->m.skip(InvoiceDto::setProducts))
                 .setPostConverter(toDtoConverter());
         mapper.createTypeMap(InvoiceDto.class, Invoice.class)
                 .addMappings(m->m.skip(Invoice::setCreator))
                 .addMappings(m->m.skip(Invoice::setDriver))
                 .addMappings(m->m.skip(Invoice::setStorage))
                 .addMappings(m->m.skip(Invoice::setProductOwner))
+                .addMappings(m->m.skip(Invoice::setProducts))
                 .setPostConverter(toModelConverter());
     }
 

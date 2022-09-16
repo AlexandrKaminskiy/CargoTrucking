@@ -5,11 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -32,13 +30,31 @@ public class Product {
     @JsonIgnore
     private User creator;
 
-    @JsonIgnore
     @ManyToOne
     private ProductOwner productOwner;
+
+    @ManyToOne(targetEntity = Invoice.class)
+    @JoinColumn(name = "invoice_id",referencedColumnName = "id")
+    private Invoice invoice;
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = ProductStatus.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "product_status",joinColumns = @JoinColumn(name = "product_id"))
     private Set<ProductStatus> productStatus;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return name.equals(product.name) && productStatus.equals(product.productStatus);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, productStatus);
+    }
+
+
 }

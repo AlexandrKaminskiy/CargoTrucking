@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.Date;
 import java.util.Set;
 
@@ -39,7 +38,9 @@ public class Invoice {
     @ManyToOne(targetEntity = User.class)
     private User driver;
 
-    @OneToMany(targetEntity = Product.class)
+    @OneToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "invoice_id")
     private Set<Product> products;
 
     @Enumerated(EnumType.STRING)

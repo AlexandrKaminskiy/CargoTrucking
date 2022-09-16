@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,17 @@ public class ProductService {
         productRepository.save(product);
         log.info("PRODUCT WITH ID {} CREATED", product.getId());
         return product;
+    }
+    public Product createProduct(Product product) {
+        productRepository.save(product);
+        log.info("RESERVED PRODUCT WITH ID {} CREATED", product.getId());
+        return product;
+    }
+
+    public Set<Product> createProducts(Set<Product> products) {
+        productRepository.saveAll(products);
+        log.info("RESERVED PRODUCTS CREATED");
+        return products;
     }
 
     public void updateProduct(ProductDto productDto, Long id) throws ProductException {
@@ -59,9 +71,10 @@ public class ProductService {
     private Predicate getFindingPredicate(Map<String,String> params) {
         return QPredicate.builder()
                 .add(params.get("name"), QProduct.product.name::eq)
-                .add(ParseUtils.parseInt(params.get("amount")), QProduct.product.amount::eq)
+                .add(ParseUtils.parseInt(params.get("amount")), QProduct.product.amount::goe)
                 .add(ParseUtils.parseEnum(params.get("productStatus"), ProductStatus.class), QProduct.product.productStatus::contains)
                 .buildAnd();
     }
+
 
 }

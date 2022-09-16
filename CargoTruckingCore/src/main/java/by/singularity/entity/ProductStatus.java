@@ -1,7 +1,7 @@
 package by.singularity.entity;
 
 public enum ProductStatus {
-    LOST, STOLEN, SPOILED;
+    LOST, STOLEN, SPOILED, RESERVED;
 
     @Override
     public String toString() {

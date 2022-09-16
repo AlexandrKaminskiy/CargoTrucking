@@ -1,5 +1,6 @@
 package by.singularity.service;
 
+import by.singularity.dto.ProductDto;
 import by.singularity.dto.ProductOwnerDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductOwner;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,8 +63,8 @@ public class ProductOwnerService {
         log.info("PRODUCT OWNER WITH ID {} UPDATED", productOwner.getId());
     }
 
-    public Page<ProductOwner> getAllProductOwners(Pageable pageable, String name) {
-        return productOwnerRepository.findAll(getFindingPredicate(name),pageable);
+    public Page<ProductOwner> getAllProductOwners(Pageable pageable, Map<String,String> params) {
+        return productOwnerRepository.findAll(getFindingPredicate(params),pageable);
     }
 
     public void deleteProductOwner(Long id) {
@@ -74,10 +77,22 @@ public class ProductOwnerService {
                 .orElseThrow(()->new ProductOwnerException("product owner with id " + id + "not found"));
     }
 
-    private Predicate getFindingPredicate(String name) {
+    private Predicate getFindingPredicate(Map<String,String> params) {
         return QPredicate.builder()
-                .add(name, QProductOwner.productOwner.name::eq)
+                .add(params.get("name"), QProductOwner.productOwner.name::eq)
                 .buildAnd();
     }
 
+
+    public Optional<ProductOwner> getByProductsContaining(Set<ProductDto> productDtos) {
+        List<ProductOwner> productOwners = productOwnerRepository.findAll();
+//        return productOwners.stream()
+//                .filter(productOwner ->
+//                    productOwner.getProducts().stream()
+//                            .anyMatch(product -> productDtos.stream()
+//                                        .anyMatch((productDto -> productDto.getName().equals(product.getName()) &&
+//                                                productDto.getAmount() <= product.getAmount()))))
+//                .findFirst();
+        return null;
+    }
 }
