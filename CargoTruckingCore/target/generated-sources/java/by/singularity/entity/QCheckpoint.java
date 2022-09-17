@@ -28,6 +28,8 @@ public class QCheckpoint extends EntityPathBase<Checkpoint> {
 
     public final DateTimePath<java.util.Date> requiredArrivalDate = createDateTime("requiredArrivalDate", java.util.Date.class);
 
+    public final SetPath<CheckpointStatus, EnumPath<CheckpointStatus>> status = this.<CheckpointStatus, EnumPath<CheckpointStatus>>createSet("status", CheckpointStatus.class, EnumPath.class, PathInits.DIRECT2);
+
     public final QWayBill wayBill;
 
     public QCheckpoint(String variable) {

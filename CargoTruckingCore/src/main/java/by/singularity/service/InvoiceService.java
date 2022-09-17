@@ -101,7 +101,6 @@ public class InvoiceService {
                 .buildAnd();
     }
 
-    @Transactional
     private Set<Product> getProducts(InvoiceDto invoiceDto) throws ProductOwnerException, ProductException {
         ProductOwner productOwner = productOwnerService.getProductOwner(invoiceDto.getProductOwnerId());
         Set<Product> productsFromInvoice = invoiceDto.getProducts().stream()

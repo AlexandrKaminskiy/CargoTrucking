@@ -45,4 +45,10 @@ public class WayBill {
     @ElementCollection(targetClass = CarriageStatus.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "carriage_status", joinColumns = @JoinColumn(name = "waybill_id"))
     private Set<CarriageStatus> carriageStatuses;
+
+    private Integer consumption;
+
+    private Integer income;
+
+    private Integer profit;
 }

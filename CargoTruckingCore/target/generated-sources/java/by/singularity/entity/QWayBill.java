@@ -28,13 +28,19 @@ public class QWayBill extends EntityPathBase<WayBill> {
 
     public final SetPath<Checkpoint, QCheckpoint> checkpoints = this.<Checkpoint, QCheckpoint>createSet("checkpoints", Checkpoint.class, QCheckpoint.class, PathInits.DIRECT2);
 
+    public final NumberPath<Integer> consumption = createNumber("consumption", Integer.class);
+
     public final NumberPath<Integer> distance = createNumber("distance", Integer.class);
 
     public final DateTimePath<java.util.Date> endDate = createDateTime("endDate", java.util.Date.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Integer> income = createNumber("income", Integer.class);
+
     public final QInvoice invoice;
+
+    public final NumberPath<Integer> profit = createNumber("profit", Integer.class);
 
     public final QUser verifier;
 

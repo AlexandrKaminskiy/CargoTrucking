@@ -46,6 +46,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath patronymic = createString("patronymic");
 
+    public final ListPath<Payment, QPayment> payment = this.<Payment, QPayment>createList("payment", Payment.class, QPayment.class, PathInits.DIRECT2);
+
     public final SetPath<Product, QProduct> products = this.<Product, QProduct>createSet("products", Product.class, QProduct.class, PathInits.DIRECT2);
 
     public final SetPath<Role, EnumPath<Role>> roles = this.<Role, EnumPath<Role>>createSet("roles", Role.class, EnumPath.class, PathInits.DIRECT2);

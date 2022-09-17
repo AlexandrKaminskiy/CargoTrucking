@@ -9,13 +9,10 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -73,4 +70,8 @@ public class User {
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "user_id"))
     private Set<Role> roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<Payment> payment;
+
 }

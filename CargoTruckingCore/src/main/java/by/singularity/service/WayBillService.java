@@ -32,6 +32,7 @@ public class WayBillService {
     private final CarService carService;
     private final UserService userService;
     private final ProductService productService;
+    private final PaymentService paymentService;
 
     @Transactional
     public WayBill createWayBill(WayBillDto wayBillDto, HttpServletRequest request) throws InvoiceException, CarException, UserException {
@@ -58,6 +59,9 @@ public class WayBillService {
     public void finishCarriage(Long id) throws WayBillException {
         WayBill wayBill = wayBillRepository.findById(id)
                 .orElseThrow(()->new WayBillException("waybill with id " + id + " not exist"));
+        if (wayBill.getCarriageStatuses().contains(CarriageStatus.FINISHED_CARRIAGE)) {
+            return;
+        }
         HashSet<CarriageStatus> carriageStatuses = new HashSet<>();
         wayBill.getInvoice().getProducts()
                 .forEach(product -> {
@@ -65,10 +69,13 @@ public class WayBillService {
                     productService.createProduct(product);
                 });
         carriageStatuses.add(CarriageStatus.FINISHED_CARRIAGE);
+        setIncome(wayBill);
         wayBill.setCarriageStatuses(carriageStatuses);
         wayBillRepository.save(wayBill);
-        log.info("CHECKPOINT IN WAYBILL WITH ID {} REACHED", id);
+        log.info("CARRIAGE {} FINISHED", id);
     }
+
+
 
     public void reachCheckpoint(Long id) throws CheckpointException {
         checkpointService.reachCheckpoint(id);
@@ -92,6 +99,19 @@ public class WayBillService {
         return QPredicate.builder()
                 .add(carriageStatus, QWayBill.wayBill.carriageStatuses::contains)
                 .buildAnd();
+    }
+
+    private void setIncome(WayBill wayBill) {
+        Car car = wayBill.getCar();
+        int distance = wayBill.getDistance();
+        int income = car.getPriceForKm() * distance;
+        int consumption = car.getConsumptionForKm() * distance;
+        int profit = income - consumption;
+        wayBill.setIncome(income);
+        wayBill.setConsumption(consumption);
+        wayBill.setProfit(profit);
+        wayBillRepository.save(wayBill);
+        paymentService.createPayment(wayBill,profit);
     }
 
 }

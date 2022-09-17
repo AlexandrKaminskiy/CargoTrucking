@@ -6,24 +6,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-@Table(name = "cars")
+@Table(name = "payment")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Car {
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String brand;
+    private Double payment;
 
-    private String carNumber;
+    private Date date;
 
-    private Integer priceForKm;
+    @ManyToOne(targetEntity = User.class)
+    private User user;
 
-    private Integer consumptionForKm;
 }

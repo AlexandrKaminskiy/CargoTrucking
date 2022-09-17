@@ -23,7 +23,11 @@ public class QCar extends EntityPathBase<Car> {
 
     public final StringPath carNumber = createString("carNumber");
 
+    public final NumberPath<Integer> consumptionForKm = createNumber("consumptionForKm", Integer.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final NumberPath<Integer> priceForKm = createNumber("priceForKm", Integer.class);
 
     public QCar(String variable) {
         super(Car.class, forVariable(variable));

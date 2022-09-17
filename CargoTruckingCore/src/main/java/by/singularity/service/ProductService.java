@@ -39,7 +39,7 @@ public class ProductService {
     @Transactional
     public Product createProduct(Product product) {
         productRepository.save(product);
-        log.info("RESERVED PRODUCT WITH ID {} CREATED", product.getId());
+        log.info("INVOICE PRODUCT WITH ID {} CREATED", product.getId());
         return product;
     }
 

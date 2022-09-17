@@ -28,6 +28,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final QInvoice invoice;
+
     public final StringPath name = createString("name");
 
     public final QProductOwner productOwner;
@@ -53,6 +55,7 @@ public class QProduct extends EntityPathBase<Product> {
     public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.creator = inits.isInitialized("creator") ? new QUser(forProperty("creator"), inits.get("creator")) : null;
+        this.invoice = inits.isInitialized("invoice") ? new QInvoice(forProperty("invoice"), inits.get("invoice")) : null;
         this.productOwner = inits.isInitialized("productOwner") ? new QProductOwner(forProperty("productOwner")) : null;
     }
 

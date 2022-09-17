@@ -24,7 +24,7 @@ public class QProductOwner extends EntityPathBase<ProductOwner> {
 
     public final StringPath name = createString("name");
 
-    public final ListPath<Product, QProduct> products = this.<Product, QProduct>createList("products", Product.class, QProduct.class, PathInits.DIRECT2);
+    public final SetPath<Product, QProduct> products = this.<Product, QProduct>createSet("products", Product.class, QProduct.class, PathInits.DIRECT2);
 
     public QProductOwner(String variable) {
         super(ProductOwner.class, forVariable(variable));

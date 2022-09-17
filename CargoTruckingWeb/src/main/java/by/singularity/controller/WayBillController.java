@@ -51,8 +51,9 @@ public class WayBillController {
     }
 
     @PutMapping("/{id}")
-    public void finishCarriage(@PathVariable Long id) throws WayBillException {
+    public String finishCarriage(@PathVariable Long id) throws WayBillException {
         wayBillService.finishCarriage(id);
+        return "carriage " + id + " finished";
     }
 
     @PutMapping("/checkpoints/{checkpointId}")
