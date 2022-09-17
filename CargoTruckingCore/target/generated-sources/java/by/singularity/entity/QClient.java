@@ -22,6 +22,8 @@ public class QClient extends EntityPathBase<Client> {
 
     public static final QClient client = new QClient("client");
 
+    public final DateTimePath<java.util.Date> activeDate = createDateTime("activeDate", java.util.Date.class);
+
     public final QUser adminInfo;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

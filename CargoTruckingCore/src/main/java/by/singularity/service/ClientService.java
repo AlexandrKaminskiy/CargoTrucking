@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -77,6 +78,7 @@ public class ClientService {
     public void activateClient(Long id) {
         clientRepository.findById(id).ifPresent(client -> {
             client.setIsActive(true);
+            client.setActiveDate(new Date());
             clientRepository.save(client);
             log.info("CLIENT WITH ID {} ACTIVATED", id);
         });
@@ -86,6 +88,7 @@ public class ClientService {
     public void deleteClient(Long id) {
         clientRepository.findById(id).ifPresent(client -> {
             client.setIsActive(false);
+            client.setActiveDate(new Date());
             clientRepository.save(client);
             log.info("CLIENT WITH ID {} DELETED", id);
         });

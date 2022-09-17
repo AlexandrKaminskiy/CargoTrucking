@@ -21,7 +21,16 @@ public class ReportController {
                              @RequestParam String endWeekDate,
                              HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachement; filename=report.xlsx");
+        response.setHeader("Content-Disposition", "attachement; filename=waybill_report.xlsx");
         reportService.createWaybillReport(startWeekDate, endWeekDate, response);
+    }
+
+    @GetMapping("/clients")
+    public void clientReport(@RequestParam String startWeekDate,
+                              @RequestParam String endWeekDate,
+                              HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachement; filename=client_report.xlsx");
+        reportService.createClientReport(startWeekDate, endWeekDate, response);
     }
 }

@@ -1,9 +1,7 @@
 package by.singularity.service;
 
-import by.singularity.entity.Payment;
-import by.singularity.entity.QWayBill;
-import by.singularity.entity.User;
-import by.singularity.entity.WayBill;
+import by.singularity.entity.*;
+import by.singularity.repository.ClientRepository;
 import by.singularity.repository.WayBillRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import by.singularity.service.utils.ParseUtils;
@@ -25,36 +23,33 @@ import java.util.Iterator;
 @Slf4j
 public class ReportService {
     private final WayBillRepository wayBillRepository;
-    
+    private final ClientRepository clientRepository;
+
     public void createWaybillReport(String startWeekDate, String endWeekDate, HttpServletResponse response) throws IOException {
-        Iterable<WayBill> wayBills = wayBillRepository.findAll(getFindingPredicate(startWeekDate,endWeekDate));
+        Iterable<WayBill> wayBills = wayBillRepository.findAll(getFindingWaybillPredicate(startWeekDate,endWeekDate));
         try(XSSFWorkbook xssfWorkbook = new XSSFWorkbook()) {
             XSSFSheet xssfSheet = xssfWorkbook.createSheet("Waybill report");
-            writeData(xssfSheet, wayBills, startWeekDate, endWeekDate);
+            writeWaybillData(xssfSheet, wayBills, startWeekDate, endWeekDate);
             writeToResponse(xssfWorkbook, response);
         }
     }
 
-    private void writeData(XSSFSheet xssfSheet, Iterable<WayBill> wayBills, String startWeekDate, String endWeekDate) {
+    private void writeWaybillData(XSSFSheet xssfSheet, Iterable<WayBill> wayBills, String startWeekDate, String endWeekDate) {
         Row waybillColumnsRow = xssfSheet.createRow(0);
-        createCells(waybillColumnsRow,0,"Waybill id", "Start week Date", "End week Date","Consumption","Income","Profit");
+        createCells(waybillColumnsRow,0,"Waybill id", "Start week Date",
+                "End week Date","Consumption","Income","Profit");
         Iterator<WayBill> iterator = wayBills.iterator();
         int rowNum = 1;
-        int allIncome = 0;
-        int allConsumptions = 0;
-        int allProfit = 0;
         while (iterator.hasNext()) {
             WayBill wayBill = iterator.next();
             Row waybillRow = xssfSheet.createRow(rowNum);
             createCells(waybillRow,0,wayBill.getId(),
                     startWeekDate, endWeekDate,wayBill.getConsumption(),wayBill.getIncome(),wayBill.getProfit());
-            allIncome += wayBill.getIncome();
-            allConsumptions += wayBill.getConsumption();
-            allProfit += wayBill.getProfit();
             rowNum++;
         }
         Row allRow = xssfSheet.createRow(rowNum);
-        createCells(allRow,2,"Total:",allConsumptions,allIncome, allProfit);
+        int[] allIncomeInfo = getAllIncomeInfo(wayBills);
+        createCells(allRow,2,"Total:",allIncomeInfo[0],allIncomeInfo[1], allIncomeInfo[2]);
         rowNum += 2;
         Row driverColumnsRow = xssfSheet.createRow(rowNum);
         createCells(driverColumnsRow,0,"Surname", "Name", "Patronymic","Profit");
@@ -74,6 +69,42 @@ public class ReportService {
 
     }
 
+    public void createClientReport(String startWeekDate, String endWeekDate, HttpServletResponse response) throws IOException {
+        try(XSSFWorkbook xssfWorkbook = new XSSFWorkbook()) {
+            XSSFSheet xssfSheet = xssfWorkbook.createSheet("Client report");
+            writeClientData(xssfSheet, startWeekDate, endWeekDate);
+            writeToResponse(xssfWorkbook, response);
+        }
+    }
+
+    private void writeClientData(XSSFSheet xssfSheet, String startWeekDate, String endWeekDate) {
+        Iterable<WayBill> wayBills = wayBillRepository.findAll(getFindingWaybillPredicate(startWeekDate,endWeekDate));
+        long lostClients = clientRepository.count(getFindingClientPredicate(startWeekDate,endWeekDate, false));
+        long newClients = clientRepository.count(getFindingClientPredicate(startWeekDate,endWeekDate, true));
+        long clientsAmount = clientRepository.count();
+        int[] allIncomeInfo = getAllIncomeInfo(wayBills);
+        Row clientsColumnsRow = xssfSheet.createRow(0);
+        createCells(clientsColumnsRow,0,"Start week Date", "End week Date","Total clients amount",
+                "Lost clients in period","New clients in period","Consumption","Income","Profit");
+        Row clientsInfoRow = xssfSheet.createRow(1);
+        createCells(clientsInfoRow,0,startWeekDate, endWeekDate,clientsAmount,
+                lostClients,newClients ,allIncomeInfo[0],allIncomeInfo[1],allIncomeInfo[2]);
+    }
+
+    private int[] getAllIncomeInfo(Iterable<WayBill> wayBills) {
+        Iterator<WayBill> iterator = wayBills.iterator();
+        int allConsumptions = 0;
+        int allIncome = 0;
+        int allProfit = 0;
+        while (iterator.hasNext()) {
+            WayBill wayBill = iterator.next();
+            allConsumptions += wayBill.getConsumption();
+            allIncome += wayBill.getIncome();
+            allProfit += wayBill.getProfit();
+        }
+        return new int[] {allConsumptions, allIncome, allProfit};
+    }
+
     private void createCells(Row row, int startColumn, Object ... values) {
         for (int i = 0; i < values.length; i++) {
             Cell cell = row.createCell(startColumn + i);
@@ -85,11 +116,20 @@ public class ReportService {
         xssfWorkbook.write(response.getOutputStream());
     }
 
-    private Predicate getFindingPredicate(String startWeekDate, String endWeekDate) {
+
+    private Predicate getFindingWaybillPredicate(String startWeekDate, String endWeekDate) {
         return QPredicate.builder()
                 .add(ParseUtils.parseDate(startWeekDate), QWayBill.wayBill.endDate::goe)
                 .add(ParseUtils.parseDate(endWeekDate), QWayBill.wayBill.endDate::loe)
                 .buildAnd();
 
+    }
+
+    private Predicate getFindingClientPredicate(String startWeekDate, String endWeekDate, boolean isActive) {
+        return QPredicate.builder()
+                .add(ParseUtils.parseDate(startWeekDate), QClient.client.activeDate::goe)
+                .add(ParseUtils.parseDate(endWeekDate), QClient.client.activeDate::loe)
+                .add(isActive, QClient.client.isActive::eq)
+                .buildAnd();
     }
 }
