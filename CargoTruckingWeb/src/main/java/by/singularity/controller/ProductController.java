@@ -46,13 +46,13 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public void updateClient(@PathVariable Long id,
+    public void updateProduct(@PathVariable Long id,
                              @RequestBody @Valid ProductDto productDto) throws ProductException {
         productService.updateProduct(productDto, id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteClient(@PathVariable Long id) {
+    public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
     }
 }

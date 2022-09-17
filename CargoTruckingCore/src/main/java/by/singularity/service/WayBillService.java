@@ -31,6 +31,7 @@ public class WayBillService {
     private final InvoiceService invoiceService;
     private final CarService carService;
     private final UserService userService;
+    private final ProductService productService;
 
     @Transactional
     public WayBill createWayBill(WayBillDto wayBillDto, HttpServletRequest request) throws InvoiceException, CarException, UserException {
@@ -58,6 +59,11 @@ public class WayBillService {
         WayBill wayBill = wayBillRepository.findById(id)
                 .orElseThrow(()->new WayBillException("waybill with id " + id + " not exist"));
         HashSet<CarriageStatus> carriageStatuses = new HashSet<>();
+        wayBill.getInvoice().getProducts()
+                .forEach(product -> {
+                    product.setProductStatus(new HashSet<>(Collections.singleton(ProductStatus.DELIVERED)));
+                    productService.createProduct(product);
+                });
         carriageStatuses.add(CarriageStatus.FINISHED_CARRIAGE);
         wayBill.setCarriageStatuses(carriageStatuses);
         wayBillRepository.save(wayBill);
