@@ -32,8 +32,9 @@ public class User {
     private String patronymic;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE,mappedBy = "adminInfo")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "client_id")
     private Client client;
 
     private Date bornDate;
@@ -70,5 +71,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Payment> payment;
-
 }

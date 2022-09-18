@@ -42,7 +42,6 @@ public class Client {
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User adminInfo;
 
 

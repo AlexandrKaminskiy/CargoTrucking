@@ -1,0 +1,5 @@
+ALTER TABLE users
+    ADD admin_info_id BIGINT;
+
+ALTER TABLE users
+    ADD CONSTRAINT FK_USERS_ON_ADMIN_INFO FOREIGN KEY (admin_info_id) REFERENCES client (id) ON DELETE CASCADE;
