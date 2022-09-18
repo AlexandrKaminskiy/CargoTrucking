@@ -2,11 +2,13 @@ package by.singularity.service;
 
 import by.singularity.dto.UserDto;
 import by.singularity.entity.QUser;
+import by.singularity.entity.RepairingMessage;
 import by.singularity.entity.Role;
 import by.singularity.entity.User;
 import by.singularity.exception.UserException;
 import by.singularity.mapper.impl.UserMapper;
 import by.singularity.pojo.PasswordChanger;
+import by.singularity.repository.RepairingMailRepository;
 import by.singularity.repository.UserRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import by.singularity.service.utils.ParseUtils;
@@ -44,6 +46,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final RepairingMailRepository repairingMailRepository;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -143,6 +146,25 @@ public class UserService implements UserDetailsService {
         return userRepository.findOne(getLoginPredicate(login))
                 .orElseThrow(()->new UserException("user not found"));
 
+    }
+
+    @Transactional
+    public String restorePassword(String uuid, String password) throws UserException {
+        RepairingMessage repairingMessage = repairingMailRepository.findByUuid(uuid)
+                .orElseThrow(()->new UserException("check your uuid"));
+        if (repairingMessage.getExpirationTime() < System.currentTimeMillis()) {
+            throw new UserException("uuid expired");
+        }
+        User user = userRepository.findOne(getEmailPredicate(repairingMessage.getEmail()))
+                .orElseThrow(()->new UserException("check your uuid"));
+        if (password.length() < 5 || password.length() > 72) {
+            throw new UserException("your password is incorrect");
+        }
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        repairingMailRepository.delete(repairingMessage);
+        log.info("PASSWORD CHANGED");
+        return "password changed";
     }
 
     private Predicate getLoginPredicate(String login) {
