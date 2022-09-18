@@ -45,7 +45,7 @@ public class ProductOwnerController {
     public String addProductOwner(@RequestBody @Valid ProductOwnerDto productOwnerDto,
                                   HttpServletRequest request) throws UserException {
         Long createdId = productOwnerService.createProductOwner(request,productOwnerDto);
-        return "/api/clients/" + createdId;
+        return "/api/product-owners/" + createdId;
     }
 
     @PutMapping("/{id}")

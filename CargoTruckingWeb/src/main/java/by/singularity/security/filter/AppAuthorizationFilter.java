@@ -66,7 +66,6 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(username,null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                filterChain.doFilter(request,response);
                 log.info("SUCCESSFULLY AUTHORIZED!");
             } catch (Exception e){
                 e.printStackTrace();
