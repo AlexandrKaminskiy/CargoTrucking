@@ -4,7 +4,9 @@ import by.singularity.dto.ProductOwnerDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductOwner;
 import by.singularity.entity.QProductOwner;
+import by.singularity.entity.User;
 import by.singularity.exception.ProductOwnerException;
+import by.singularity.exception.UserException;
 import by.singularity.mapper.impl.ProductOwnerMapper;
 import by.singularity.repository.ProductOwnerRepository;
 import by.singularity.repository.queryUtils.QPredicate;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -28,13 +31,15 @@ public class ProductOwnerService {
     private final ProductOwnerRepository productOwnerRepository;
     private final ProductOwnerMapper productOwnerMapper;
     private final ProductService productService;
+    private final UserService userService;
 
     @Transactional
-    public Long createProductOwner(ProductOwnerDto productOwnerDto) {
+    public Long createProductOwner(HttpServletRequest request, ProductOwnerDto productOwnerDto) throws UserException {
+        User creator = userService.getUserByAuthorization(request);
         ProductOwner productOwner = productOwnerMapper.toModel(productOwnerDto);
         Set<Product> products = productOwnerDto.getProducts()
                 .stream()
-                .map(productService::createProduct)
+                .map(productDto->productService.createProduct(creator,productDto))
                 .collect(Collectors.toSet());
         productOwner.setProducts(products);
         productOwnerRepository.save(productOwner);
@@ -43,7 +48,8 @@ public class ProductOwnerService {
     }
 
     @Transactional
-    public void updateProductOwner(ProductOwnerDto productOwnerDto, Long id) throws ProductOwnerException {
+    public void updateProductOwner(HttpServletRequest request, ProductOwnerDto productOwnerDto, Long id) throws ProductOwnerException, UserException {
+        User creator = userService.getUserByAuthorization(request);
         ProductOwner productOwner = productOwnerRepository.findById(id)
                 .orElseThrow(()->new ProductOwnerException("product owner with id" + id + "not found"));
         Optional.ofNullable(productOwnerDto.getName()).ifPresent(productOwner::setName);
@@ -54,7 +60,7 @@ public class ProductOwnerService {
                             .forEach(productService::deleteProduct);
                     Set<Product> products = productDtos
                             .stream()
-                            .map(productService::createProduct)
+                            .map(productDto->productService.createProduct(creator,productDto))
                             .collect(Collectors.toSet());
                     productOwner.setProducts(products);
                 });

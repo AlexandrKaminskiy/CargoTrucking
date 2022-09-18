@@ -67,6 +67,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(username,null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 filterChain.doFilter(request,response);
+                log.info("SUCCESSFULLY AUTHORIZED!");
             } catch (Exception e){
                 e.printStackTrace();
                 log.error("INVALID ACCESS TOKEN");
@@ -76,9 +77,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                 new ObjectMapper().writeValue(response.getOutputStream(), resp);
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
             }
-            return;
         }
-        log.info("SUCCESSFULLY AUTHORIZED!");
         filterChain.doFilter(request,response);
     }
 

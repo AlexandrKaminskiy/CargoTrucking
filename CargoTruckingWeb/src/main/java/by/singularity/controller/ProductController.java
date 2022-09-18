@@ -3,6 +3,7 @@ package by.singularity.controller;
 import by.singularity.dto.ProductDto;
 import by.singularity.entity.Product;
 import by.singularity.exception.ProductException;
+import by.singularity.exception.UserException;
 import by.singularity.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -40,8 +42,9 @@ public class ProductController {
     }
 
     @PostMapping()
-    public String addProduct(@RequestBody @Valid ProductDto productDto) {
-        Product product = productService.createProduct(productDto);
+    public String addProduct(HttpServletRequest request,
+                             @RequestBody @Valid ProductDto productDto) throws UserException {
+        Product product = productService.createProduct(request,productDto);
         return "/api/product-writeoffs/" + product.getId();
     }
 

@@ -3,6 +3,7 @@ package by.singularity.controller;
 import by.singularity.dto.ProductOwnerDto;
 import by.singularity.entity.ProductOwner;
 import by.singularity.exception.ProductOwnerException;
+import by.singularity.exception.UserException;
 import by.singularity.service.ProductOwnerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -34,25 +36,23 @@ public class ProductOwnerController {
         new ObjectMapper().writeValue(response.getOutputStream(), responseMap);
     }
 
-    @PostMapping("/1")
-
-
-
     @GetMapping("/{id}")
     public ProductOwner getById(@PathVariable Long id) throws ProductOwnerException {
         return productOwnerService.getProductOwner(id);
     }
 
     @PostMapping()
-    public String addProductOwner(@RequestBody @Valid ProductOwnerDto productOwnerDto) {
-        Long createdId = productOwnerService.createProductOwner(productOwnerDto);
+    public String addProductOwner(@RequestBody @Valid ProductOwnerDto productOwnerDto,
+                                  HttpServletRequest request) throws UserException {
+        Long createdId = productOwnerService.createProductOwner(request,productOwnerDto);
         return "/api/clients/" + createdId;
     }
 
     @PutMapping("/{id}")
     public void updateProductOwner(@PathVariable Long id,
-                                   @RequestBody @Valid ProductOwnerDto productOwnerDto) throws ProductOwnerException {
-        productOwnerService.updateProductOwner(productOwnerDto, id);
+                                   @RequestBody @Valid ProductOwnerDto productOwnerDto,
+                                   HttpServletRequest request) throws ProductOwnerException, UserException {
+        productOwnerService.updateProductOwner(request,productOwnerDto, id);
     }
 
     @DeleteMapping("/{id}")

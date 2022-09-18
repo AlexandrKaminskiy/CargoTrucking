@@ -24,4 +24,6 @@ public class RepairingMessage {
     private Long expirationTime;
 
     private String email;
+
+    private String oldEmail;
 }

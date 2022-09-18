@@ -37,4 +37,10 @@ public class CheckpointService {
         checkpoint.setStatus(new HashSet<>(Collections.singleton(CheckpointStatus.REACHED)));
         checkpointRepository.save(checkpoint);
     }
+
+    public Checkpoint getById(Long id) throws CheckpointException {
+        return checkpointRepository.findById(id)
+                .orElseThrow(()->new CheckpointException("checkpoint with id " + id + "not exist"));
+    }
+
 }

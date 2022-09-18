@@ -50,9 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/storages/**","/api/product-owners/**","/api/cars/**","/api/reports/waybills").hasAuthority("ADMIN");
         http.authorizeRequests().antMatchers("/api/invoices/","/api/invoices/{id}","/api/product-writeoffs/**").hasAuthority("DISPATCHER");
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/waybills/**").hasAuthority("DISPATCHER");
-        http.authorizeRequests().antMatchers(HttpMethod.PUT,"/api/waybills/checkpoints/{checkpointId}").hasAuthority("DRIVER");
+        http.authorizeRequests().antMatchers("/api/waybills/checkpoints/**").hasAuthority("DRIVER");
         http.authorizeRequests().antMatchers("/api/waybills/**","/api/invoices/validate/{number}").hasAuthority("MANAGER");
-        http.authorizeRequests().antMatchers("/api/profile").hasAnyAuthority("COMPANY_OWNER","DISPATCHER","MANAGER","DRIVER");
+        http.authorizeRequests().antMatchers("/api/profile/**").hasAnyAuthority("COMPANY_OWNER","DISPATCHER","MANAGER","DRIVER");
         http.addFilter(appAuthenticationFilter);
         http.addFilterBefore(appAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }

@@ -4,7 +4,9 @@ import by.singularity.dto.ProductDto;
 import by.singularity.entity.Product;
 import by.singularity.entity.ProductStatus;
 import by.singularity.entity.QProduct;
+import by.singularity.entity.User;
 import by.singularity.exception.ProductException;
+import by.singularity.exception.UserException;
 import by.singularity.mapper.impl.ProductMapper;
 import by.singularity.repository.ProductRepository;
 import by.singularity.repository.queryUtils.QPredicate;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -27,13 +30,19 @@ import java.util.Set;
 public class ProductService {
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
-
+    private final UserService userService;
     @Transactional
-    public Product createProduct(ProductDto productDto) {
+    public Product createProduct(User creator, ProductDto productDto) {
         Product product = productMapper.toModel(productDto);
+        product.setCreator(creator);
         productRepository.save(product);
         log.info("PRODUCT WITH ID {} CREATED", product.getId());
         return product;
+    }
+
+    public Product createProduct(HttpServletRequest request, ProductDto productDto) throws UserException {
+        User creator = userService.getUserByAuthorization(request);
+        return createProduct(creator, productDto);
     }
 
     @Transactional

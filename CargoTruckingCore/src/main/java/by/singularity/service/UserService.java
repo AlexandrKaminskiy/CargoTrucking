@@ -7,6 +7,7 @@ import by.singularity.entity.Role;
 import by.singularity.entity.User;
 import by.singularity.exception.UserException;
 import by.singularity.mapper.impl.UserMapper;
+import by.singularity.pojo.EmailChanger;
 import by.singularity.pojo.PasswordChanger;
 import by.singularity.repository.RepairingMailRepository;
 import by.singularity.repository.UserRepository;
@@ -31,10 +32,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -145,7 +144,6 @@ public class UserService implements UserDetailsService {
         String login = getLogin(authHeader);
         return userRepository.findOne(getLoginPredicate(login))
                 .orElseThrow(()->new UserException("user not found"));
-
     }
 
     @Transactional
@@ -167,19 +165,52 @@ public class UserService implements UserDetailsService {
         return "password changed";
     }
 
+    public RepairingMessage getEmailChanger(EmailChanger emailChanger, HttpServletRequest request) throws UserException {
+        User user = getUserByAuthorization(request);
+        if (!passwordEncoder.matches(emailChanger.getPassword(), user.getPassword())) {
+            throw new UserException("incorrect password");
+        }
+        if (userRepository.exists(getEmailPredicate(emailChanger.getRecipient()))) {
+            throw new UserException("email " + emailChanger.getRecipient() + " just exists");
+        }
+        RepairingMessage repairingMessage = new RepairingMessage();
+        repairingMessage.setUuid(UUID.randomUUID().toString());
+        repairingMessage.setEmail(emailChanger.getRecipient());
+        repairingMessage.setExpirationTime(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
+        repairingMessage.setOldEmail(user.getEmail());
+        return repairingMessage;
+    }
+
+    public String activateEmail(String uuid) throws UserException {
+        RepairingMessage repairingMessage = repairingMailRepository.findByUuid(uuid)
+                .orElseThrow(()->new UserException("check your uuid"));
+        if (repairingMessage.getExpirationTime() < System.currentTimeMillis()) {
+            throw new UserException("uuid expired");
+        }
+        if (userRepository.exists(getEmailPredicate(repairingMessage.getEmail()))) {
+            throw new UserException("email " + repairingMessage.getEmail() + " just exists");
+        }
+        User user = userRepository.findOne(getEmailPredicate(repairingMessage.getOldEmail()))
+                .orElseThrow(()->new UserException("check your uuid"));
+        user.setEmail(repairingMessage.getEmail());
+        userRepository.save(user);
+        repairingMailRepository.delete(repairingMessage);
+        log.info("EMAIL CHANGED");
+        return "Your email was successfully changed";
+    }
+
     private Predicate getLoginPredicate(String login) {
         return QPredicate.builder()
                 .add(login, QUser.user.login::eq)
                 .buildAnd();
     }
-
     private Predicate getEmailPredicate(String email) {
         return QPredicate.builder()
                 .add(email, QUser.user.email::eq)
                 .buildAnd();
     }
 
-    public Predicate getSearchPredicate(Map<String, String> params) {
+    private Predicate getSearchPredicate(Map<String, String> params) {
         return QPredicate.builder()
                 .add(params.get("name"), QUser.user.name::eq)
                 .add(params.get("surname"), QUser.user.surname::eq)
@@ -192,8 +223,8 @@ public class UserService implements UserDetailsService {
                 .add(ParseUtils.parseInt(params.get("flat")), QUser.user.flat::eq)
                 .add(ParseUtils.parseEnum(params.get("roles"), Role.class), QUser.user.roles::contains)
                 .buildAnd();
-
     }
+
     private void alterUserProfileInfo(UserDto userDto, User user) {
         Optional.ofNullable(userDto.getName()).ifPresent(user::setName);
         Optional.ofNullable(userDto.getSurname()).ifPresent(user::setSurname);
@@ -209,6 +240,4 @@ public class UserService implements UserDetailsService {
     private void alterFromAdminInfo(UserDto userDto, User user) {
         Optional.ofNullable(userDto.getRoles()).ifPresent(user::setRoles);
     }
-
-
 }

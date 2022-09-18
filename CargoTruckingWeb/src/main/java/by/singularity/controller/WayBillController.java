@@ -57,8 +57,9 @@ public class WayBillController {
     }
 
     @PutMapping("/checkpoints/{checkpointId}")
-    public String reachCheckpoint(@PathVariable Long checkpointId) throws CheckpointException {
-        wayBillService.reachCheckpoint(checkpointId);
+    public String reachCheckpoint(@PathVariable Long checkpointId, HttpServletRequest request) throws CheckpointException, UserException {
+        wayBillService.reachCheckpoint(checkpointId, request);
         return "/checkpoints/" + checkpointId;
     }
+
 }

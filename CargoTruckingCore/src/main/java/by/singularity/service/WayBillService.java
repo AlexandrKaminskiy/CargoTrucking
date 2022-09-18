@@ -75,9 +75,13 @@ public class WayBillService {
         log.info("CARRIAGE {} FINISHED", id);
     }
 
-
-
-    public void reachCheckpoint(Long id) throws CheckpointException {
+    public void reachCheckpoint(Long id, HttpServletRequest request) throws CheckpointException, UserException {
+        User driver = userService.getUserByAuthorization(request);
+        Checkpoint checkpoint = checkpointService.getById(id);
+        WayBill wayBill = checkpoint.getWayBill();
+        if (!wayBill.getInvoice().getDriver().getLogin().equals(driver.getLogin())) {
+            throw new UserException("you haven't got this checkpoint");
+        }
         checkpointService.reachCheckpoint(id);
         log.info("CHECKPOINT {} REACHED", id);
     }
@@ -98,6 +102,12 @@ public class WayBillService {
     private Predicate getFindingPredicate(CarriageStatus carriageStatus) {
         return QPredicate.builder()
                 .add(carriageStatus, QWayBill.wayBill.carriageStatuses::contains)
+                .buildAnd();
+    }
+
+    private Predicate invoiceByUserPredicate(Long userId) {
+        return QPredicate.builder()
+                .add(userId, QInvoice.invoice.driver.id::eq)
                 .buildAnd();
     }
 

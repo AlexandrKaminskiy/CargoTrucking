@@ -4,10 +4,12 @@ import by.singularity.entity.QUser;
 import by.singularity.entity.RepairingMessage;
 import by.singularity.entity.User;
 import by.singularity.exception.UserException;
+import by.singularity.pojo.EmailChanger;
 import by.singularity.pojo.MailParams;
 import by.singularity.repository.RepairingMailRepository;
 import by.singularity.repository.UserRepository;
 import by.singularity.repository.queryUtils.QPredicate;
+import by.singularity.service.UserService;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +19,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequestMapping("/api/email")
@@ -30,7 +34,8 @@ public class MailService {
     private final JavaMailSender emailSender;
     private final UserRepository userRepository;
     private final RepairingMailRepository repairingMailRepository;
-    private final int HOUR = 3600000;
+    private final UserService userService;
+
     public void sendSimpleMessage(MailParams mailParams) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -74,7 +79,7 @@ public class MailService {
 
     public String updatePassword(MailParams mailParams) throws UserException {
         if (!userRepository.exists(getFindingPredicate(mailParams.getTo()))) {
-            return "this email not exists";
+            throw new UserException("this email not exists");
         }
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -82,7 +87,7 @@ public class MailService {
             String uuid = UUID.randomUUID().toString();
             RepairingMessage repairingMessage = new RepairingMessage();
             repairingMessage.setEmail(mailParams.getTo());
-            repairingMessage.setExpirationTime(System.currentTimeMillis() + HOUR);
+            repairingMessage.setExpirationTime(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
             repairingMessage.setUuid(uuid);
             repairingMailRepository.save(repairingMessage);
             message.setSubject("Your repairing token");
@@ -90,12 +95,18 @@ public class MailService {
             emailSender.send(message);
             return "message was sent to your email";
         } catch (Exception e) {
-            log.info("ERROR SENDING MESSAGE");
+            log.info("ERROR SENDING MAIL");
         }
-        return "sending message error";
+        return "sending mail error";
     }
 
-
+    public void updateEmail(EmailChanger emailChanger, HttpServletRequest request) throws UserException {
+        RepairingMessage repairingMessage = userService.getEmailChanger(emailChanger,request);
+        repairingMailRepository.save(repairingMessage);
+        String link = "http://localhost:8080/api/profile/confirm-change-email/" + repairingMessage.getUuid();
+        MailParams mailParams = new MailParams(repairingMessage.getEmail(),"Your email activation link", link);
+        sendSimpleMessage(mailParams);
+    }
 
     private Predicate getFindingPredicate(String email) {
         return QPredicate.builder()
