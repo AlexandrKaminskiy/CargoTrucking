@@ -21,3 +21,8 @@ jwt:
   expiration:
     refresh: 172800000
     access: 1800000
+mail:
+  login: sasha.pinsk03@gmail.com
+  password: ndqvwiahjiezaabm
+  host: smtp.gmail.com
+  port: 587
