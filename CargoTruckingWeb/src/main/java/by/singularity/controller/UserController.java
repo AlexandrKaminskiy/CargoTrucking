@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @RestController
 @RequiredArgsConstructor
 public class UserController {
