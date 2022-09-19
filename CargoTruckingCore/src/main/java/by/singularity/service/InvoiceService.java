@@ -37,7 +37,7 @@ public class InvoiceService {
         }
         Storage storage = storageService.getStorage(invoiceDto.getStorageId());
         if (!storage.getClient().getIsActive()) {
-            throw new ClientException("client with id " + storage.getClient().getId() + "is not active");
+            throw new ClientException("client with id " + storage.getClient().getId() + " is not active");
         }
         User driver = userService.getById(invoiceDto.getDriverId());
         if (!driver.getRoles().contains(Role.DRIVER)) {
@@ -121,7 +121,6 @@ public class InvoiceService {
                                 p.setProductStatus(Collections.singleton(ProductStatus.RESERVED));
                                 p.setProductOwner(product.getProductOwner());
                                 p.setCreator(product.getCreator());
-                                productService.createProduct(p);
                             }
                             return isMatch;
                         }))

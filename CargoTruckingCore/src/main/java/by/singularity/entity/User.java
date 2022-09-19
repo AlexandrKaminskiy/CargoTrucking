@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -32,9 +30,7 @@ public class User {
     private String patronymic;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.REMOVE,mappedBy = "adminInfo")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "client_id")
+    @OneToOne(cascade = CascadeType.REMOVE, mappedBy = "adminInfo")
     private Client client;
 
     private Date bornDate;
@@ -59,9 +55,7 @@ public class User {
     private String issuedBy;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "creator_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
     private Set<Product> products;
 
     @Enumerated(EnumType.STRING)
@@ -69,6 +63,12 @@ public class User {
     @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "user_id"))
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Payment> payment;
+
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.PERSIST,CascadeType.REFRESH}, mappedBy = "creator")
+    private List<Invoice> invoice;
 }

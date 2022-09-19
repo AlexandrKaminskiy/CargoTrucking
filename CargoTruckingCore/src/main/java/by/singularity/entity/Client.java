@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -35,9 +33,7 @@ public class Client {
     private Set<ClientStatus> status;
 
     @JsonIgnore
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "client_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
     private Set<Storage> storages;
 
     @JsonIgnore

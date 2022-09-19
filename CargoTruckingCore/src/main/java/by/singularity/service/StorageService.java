@@ -60,7 +60,7 @@ public class StorageService {
 
     public Storage getStorage(Long id) throws StorageException {
         return storageRepository.findById(id)
-                .orElseThrow(()->new StorageException("storage with id" + id + "not exist"));
+                .orElseThrow(()->new StorageException("storage with id " + id + " not exist"));
     }
 
     private Predicate getFindingPredicate(String name) {

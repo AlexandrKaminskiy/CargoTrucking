@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 
@@ -25,7 +24,9 @@ public class Storage {
     private String address;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "client_id")
     private Client client;
 
 }

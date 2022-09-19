@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,22 +21,24 @@ public class WayBill {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne(targetEntity = Invoice.class)
+    @OneToOne(cascade = CascadeType.ALL)
     private Invoice invoice;
 
     private Integer distance;
 
-    @ManyToOne(targetEntity = Car.class)
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "car_id")
     private Car car;
 
     private Date endDate;
 
-    @ManyToOne(targetEntity = User.class)
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "verifier_id")
     private User verifier;
 
-    @OneToMany
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "way_bill_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wayBill")
     private Set<Checkpoint> checkpoints;
 
     @Enumerated(EnumType.STRING)
@@ -51,4 +51,11 @@ public class WayBill {
     private Integer income;
 
     private Integer profit;
+
+    public void setCheckpoints(Set<Checkpoint> checkpoints) {
+        if (checkpoints != null) {
+            checkpoints.forEach(checkpoint -> checkpoint.setWayBill(this));
+        }
+        this.checkpoints = checkpoints;
+    }
 }

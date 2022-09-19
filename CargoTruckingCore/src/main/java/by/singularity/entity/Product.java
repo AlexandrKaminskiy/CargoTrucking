@@ -26,15 +26,20 @@ public class Product {
 
     private Integer amount;
 
-    @ManyToOne
     @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "creator_id")
     private User creator;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "product_owner_id")
     private ProductOwner productOwner;
 
-    @ManyToOne(targetEntity = Invoice.class)
-    @JoinColumn(name = "invoice_id",referencedColumnName = "id")
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "invoice_id")
     private Invoice invoice;
 
     @JsonIgnore
@@ -55,6 +60,5 @@ public class Product {
     public int hashCode() {
         return Objects.hash(name, productStatus);
     }
-
 
 }

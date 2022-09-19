@@ -21,8 +21,9 @@ public class Checkpoint {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(targetEntity = WayBill.class)
-    @JoinColumn(name = "way_bill_id", referencedColumnName = "id")
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "way_bill_id")
     private WayBill wayBill;
 
     private String address;

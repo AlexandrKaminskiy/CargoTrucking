@@ -80,7 +80,7 @@ public class ProductOwnerService {
 
     public ProductOwner getProductOwner(Long id) throws ProductOwnerException {
         return productOwnerRepository.findById(id)
-                .orElseThrow(()->new ProductOwnerException("product owner with id " + id + "not found"));
+                .orElseThrow(()->new ProductOwnerException("product owner with id " + id + " not found"));
     }
 
     private Predicate getFindingPredicate(Map<String,String> params) {

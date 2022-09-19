@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -26,21 +24,27 @@ public class Invoice {
 
     private Date verifiedDate;
 
-    @ManyToOne(targetEntity = Storage.class)
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "storage_id")
     private Storage storage;
 
-    @ManyToOne(targetEntity = User.class)
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "creator_id")
     private User creator;
 
-    @ManyToOne(targetEntity = ProductOwner.class)
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "product_owner_id")
     private ProductOwner productOwner;
 
-    @ManyToOne(targetEntity = User.class)
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "driver_id")
     private User driver;
 
-    @OneToMany
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "invoice_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
     private Set<Product> products;
 
     @Enumerated(EnumType.STRING)
@@ -48,4 +52,13 @@ public class Invoice {
     @CollectionTable(name = "invoice_status",joinColumns = @JoinColumn(name = "invoice_number"))
     private Set<InvoiceStatus> status;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "invoice")
+    private WayBill wayBill;
+
+    public void setProducts(Set<Product> products) {
+        if (products != null) {
+            products.forEach(p -> p.setInvoice(this));
+        }
+        this.products = products;
+    }
 }

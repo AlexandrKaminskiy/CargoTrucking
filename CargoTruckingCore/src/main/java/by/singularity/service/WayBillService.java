@@ -36,7 +36,10 @@ public class WayBillService {
 
     @Transactional
     public WayBill createWayBill(WayBillDto wayBillDto, HttpServletRequest request) throws InvoiceException, CarException, UserException {
-        invoiceService.getInvoice(wayBillDto.getInvoiceNumber());
+        Invoice inv = invoiceService.getInvoice(wayBillDto.getInvoiceNumber());
+        if (inv.getVerifiedDate() == null) {
+            throw new InvoiceException("invoice with number " + inv.getNumber() + " is invalid");
+        }
         carService.getCar(wayBillDto.getCarId());
         WayBill wayBill = wayBillMapper.toModel(wayBillDto);
         User verifier = userService.getUserByAuthorization(request);

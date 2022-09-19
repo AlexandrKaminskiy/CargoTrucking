@@ -25,7 +25,6 @@ public class CheckpointService {
     public Checkpoint createCheckpoint(CheckpointDto checkpointDto) {
         Checkpoint checkpoint = checkpointMapper.toModel(checkpointDto);
         checkpoint.setStatus(new HashSet<>(Collections.singleton(CheckpointStatus.IN_PROGRESS)));
-        checkpointRepository.save(checkpoint);
         log.info("CHECKPOINT WITH ID {} CREATED", checkpoint.getId());
         return checkpoint;
     }

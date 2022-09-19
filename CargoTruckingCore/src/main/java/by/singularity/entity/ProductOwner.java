@@ -5,10 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -26,9 +25,18 @@ public class ProductOwner {
     private String name;
 
     @JsonIgnore
-    @OneToMany
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "product_owner_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productOwner")
     private Set<Product> products;
 
+    @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST},
+            mappedBy = "productOwner")
+    private Collection<Invoice> invoice;
+
+    public void setProducts(Set<Product> products) {
+        if (products != null) {
+            products.forEach(product -> product.setProductOwner(this));
+        }
+        this.products = products;
+    }
 }

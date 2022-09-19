@@ -31,18 +31,22 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
     private final UserService userService;
+
     @Transactional
     public Product createProduct(User creator, ProductDto productDto) {
         Product product = productMapper.toModel(productDto);
         product.setCreator(creator);
-        productRepository.save(product);
         log.info("PRODUCT WITH ID {} CREATED", product.getId());
         return product;
     }
 
     public Product createProduct(HttpServletRequest request, ProductDto productDto) throws UserException {
         User creator = userService.getUserByAuthorization(request);
-        return createProduct(creator, productDto);
+        Product product = productMapper.toModel(productDto);
+        product.setCreator(creator);
+        productRepository.save(product);
+        log.info("PRODUCT WITH ID {} CREATED", product.getId());
+        return product;
     }
 
     @Transactional

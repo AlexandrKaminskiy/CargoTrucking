@@ -24,7 +24,9 @@ public class Payment {
 
     private Date date;
 
-    @ManyToOne(targetEntity = User.class)
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "user_id")
     private User user;
 
 }
