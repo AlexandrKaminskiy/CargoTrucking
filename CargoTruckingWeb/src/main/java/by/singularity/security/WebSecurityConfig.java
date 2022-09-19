@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers("/api/sign-in/**","/api/refresh/**","/api/about/**","/api/email/repairing/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/logout/**").authenticated();
+        http.authorizeRequests().antMatchers("/api/logout/**","/api/email/**").authenticated();
         http.authorizeRequests().antMatchers("/api/user/**","/api/clients/**","/api/reports/clients").hasAuthority("SYS_ADMIN");
         http.authorizeRequests().antMatchers("/api/storages/**","/api/product-owners/**","/api/cars/**","/api/reports/waybills").hasAuthority("ADMIN");
         http.authorizeRequests().antMatchers("/api/invoices/","/api/invoices/{id}","/api/product-writeoffs/**").hasAuthority("DISPATCHER");
