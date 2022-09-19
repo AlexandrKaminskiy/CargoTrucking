@@ -1,6 +1,6 @@
 package by.singularity.controller;
 
-import by.singularity.security.service.SecurityService;
+import by.singularity.security.SecurityService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

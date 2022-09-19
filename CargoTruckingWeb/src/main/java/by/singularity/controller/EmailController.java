@@ -1,8 +1,8 @@
 package by.singularity.controller;
 
 import by.singularity.exception.UserException;
+import by.singularity.mail.MailSender;
 import by.singularity.pojo.MailParams;
-import by.singularity.security.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,16 +16,16 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class EmailController {
 
-    private final MailService mailService;
+    private final MailSender mailSender;
 
     @PostMapping
     public void sendSimpleMessage(@RequestBody @Valid MailParams mailParams) {
-        mailService.sendSimpleMessage(mailParams);
+        mailSender.sendSimpleMessage(mailParams);
     }
 
     @PostMapping("/repairing")
     public String sendRestoringMessage(@RequestBody @Valid MailParams mailParams) throws UserException {
-        return mailService.updatePassword(mailParams);
+        return mailSender.updatePassword(mailParams);
     }
 
 

@@ -20,7 +20,7 @@ jwt:
   secret: Thequickbrownfoxjumpsoverthelazydog
   expiration:
     refresh: 172800000
-    access: 1800000
+    access: 180000
 mail:
   login: sasha.pinsk03@gmail.com
   password: ndqvwiahjiezaabm

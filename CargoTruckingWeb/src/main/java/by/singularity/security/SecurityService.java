@@ -1,4 +1,4 @@
-package by.singularity.security.service;
+package by.singularity.security;
 
 import by.singularity.entity.InvalidJwt;
 import by.singularity.entity.User;

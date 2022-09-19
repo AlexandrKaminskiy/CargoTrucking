@@ -1,4 +1,4 @@
-package by.singularity.security.service;
+package by.singularity.mail;
 
 import by.singularity.entity.QUser;
 import by.singularity.entity.RepairingMessage;
@@ -17,7 +17,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
@@ -26,10 +25,9 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@RequestMapping("/api/email")
 @RequiredArgsConstructor
 @Slf4j
-public class MailService {
+public class MailSender {
 
     private final JavaMailSender emailSender;
     private final UserRepository userRepository;

@@ -2,9 +2,9 @@ package by.singularity.controller;
 
 import by.singularity.dto.UserDto;
 import by.singularity.exception.UserException;
+import by.singularity.mail.MailSender;
 import by.singularity.pojo.EmailChanger;
 import by.singularity.pojo.PasswordChanger;
-import by.singularity.security.service.MailService;
 import by.singularity.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class ProfileController {
     private final UserService userService;
-    private final MailService mailService;
+    private final MailSender mailSender;
 
     @GetMapping()
     public UserDto getUser(HttpServletRequest request) throws UserException {
@@ -44,7 +44,7 @@ public class ProfileController {
     @PostMapping("/change-email")
     public void changeEmail(@RequestBody EmailChanger emailChanger,
                             HttpServletRequest request) throws UserException {
-        mailService.updateEmail(emailChanger, request);
+        mailSender.updateEmail(emailChanger, request);
     }
 
 }
