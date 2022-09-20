@@ -82,6 +82,9 @@ public class WayBillService {
         User driver = userService.getUserByAuthorization(request);
         Checkpoint checkpoint = checkpointService.getById(id);
         WayBill wayBill = checkpoint.getWayBill();
+        if (wayBill.getInvoice() == null || wayBill.getInvoice().getDriver() == null) {
+            throw new UserException("you haven't got this checkpoint");
+        }
         if (!wayBill.getInvoice().getDriver().getLogin().equals(driver.getLogin())) {
             throw new UserException("you haven't got this checkpoint");
         }
@@ -107,7 +110,6 @@ public class WayBillService {
                 .add(carriageStatus, QWayBill.wayBill.carriageStatuses::contains)
                 .buildAnd();
     }
-
 
     private void setIncome(WayBill wayBill) {
         Car car = wayBill.getCar();

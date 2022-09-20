@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class CustomControllerAdvice {
 
     @ExceptionHandler({WayBillException.class, UserException.class, StorageException.class, ProductOwnerException.class,
-            ProductException.class, InvoiceException.class, ClientException.class, CarException.class})
+            ProductException.class, InvoiceException.class, ClientException.class, CarException.class, CheckpointException.class})
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(),HttpStatus.BAD_REQUEST.value(),e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

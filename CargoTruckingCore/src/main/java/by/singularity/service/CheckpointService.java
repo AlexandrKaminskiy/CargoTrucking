@@ -39,7 +39,7 @@ public class CheckpointService {
 
     public Checkpoint getById(Long id) throws CheckpointException {
         return checkpointRepository.findById(id)
-                .orElseThrow(()->new CheckpointException("checkpoint with id " + id + "not exist"));
+                .orElseThrow(()->new CheckpointException("checkpoint with id " + id + " not exist"));
     }
 
 }
