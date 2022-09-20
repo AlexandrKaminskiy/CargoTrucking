@@ -52,7 +52,7 @@ public class UserController {
 
 
     @DeleteMapping("/{id}")
-    public void deleteUsers(@PathVariable Long id) {
+    public void deleteUsers(@PathVariable Long id) throws UserException {
         userService.deleteUsers(id);
     }
 }

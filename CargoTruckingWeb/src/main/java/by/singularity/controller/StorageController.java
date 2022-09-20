@@ -54,7 +54,7 @@ public class StorageController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteStorage(@PathVariable Long id) {
+    public void deleteStorage(@PathVariable Long id) throws StorageException {
         storageService.deleteStorage(id);
     }
 }

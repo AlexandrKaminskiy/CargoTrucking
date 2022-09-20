@@ -1,6 +1,7 @@
 package by.singularity.service;
 
 import by.singularity.dto.StorageDto;
+import by.singularity.entity.Invoice;
 import by.singularity.entity.QStorage;
 import by.singularity.entity.Storage;
 import by.singularity.exception.ClientException;
@@ -8,6 +9,7 @@ import by.singularity.exception.StorageException;
 import by.singularity.mapper.impl.StorageMapper;
 import by.singularity.pojo.StorageUpdateDto;
 import by.singularity.repository.ClientRepository;
+import by.singularity.repository.InvoiceRepository;
 import by.singularity.repository.StorageRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import com.querydsl.core.types.Predicate;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +30,7 @@ public class StorageService {
     private final StorageRepository storageRepository;
     private final ClientRepository clientRepository;
     private final StorageMapper storageMapper;
+    private final InvoiceRepository invoiceRepository;
 
     @Transactional
     public String createStorage(StorageDto storageDto) throws ClientException {
@@ -54,8 +58,12 @@ public class StorageService {
     }
 
     @Transactional
-    public void deleteStorage(Long id) {
-        storageRepository.deleteById(id);
+    public void deleteStorage(Long id) throws StorageException {
+        Storage storage = storageRepository.findById(id).orElseThrow(()->new StorageException("storage with id " + id + "not found"));
+        List<Invoice> invoiceList = storage.getInvoice();
+        invoiceList.forEach(invoice -> invoice.setStorage(null));
+        invoiceRepository.saveAll(invoiceList);
+        storageRepository.delete(storage);
     }
 
     public Storage getStorage(Long id) throws StorageException {

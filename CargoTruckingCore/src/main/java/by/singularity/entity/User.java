@@ -71,4 +71,9 @@ public class User {
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,
             CascadeType.PERSIST,CascadeType.REFRESH}, mappedBy = "creator")
     private List<Invoice> invoice;
+
+    @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,
+            CascadeType.PERSIST,CascadeType.REFRESH}, mappedBy = "verifier")
+    private List<WayBill> wayBill;
+
 }

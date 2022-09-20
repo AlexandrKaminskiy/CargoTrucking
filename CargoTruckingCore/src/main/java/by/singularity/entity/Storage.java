@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "storage")
@@ -28,5 +29,8 @@ public class Storage {
             CascadeType.REFRESH,CascadeType.PERSIST})
     @JoinColumn(name = "client_id")
     private Client client;
+
+    @OneToMany(mappedBy = "storage")
+    private List<Invoice> invoice;
 
 }

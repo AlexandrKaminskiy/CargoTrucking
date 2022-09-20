@@ -1,16 +1,15 @@
 package by.singularity.service;
 
 import by.singularity.dto.UserDto;
-import by.singularity.entity.QUser;
-import by.singularity.entity.RepairingMessage;
-import by.singularity.entity.Role;
-import by.singularity.entity.User;
+import by.singularity.entity.*;
 import by.singularity.exception.UserException;
 import by.singularity.mapper.impl.UserMapper;
 import by.singularity.pojo.EmailChanger;
 import by.singularity.pojo.PasswordChanger;
+import by.singularity.repository.InvoiceRepository;
 import by.singularity.repository.RepairingMailRepository;
 import by.singularity.repository.UserRepository;
+import by.singularity.repository.WayBillRepository;
 import by.singularity.repository.queryUtils.QPredicate;
 import by.singularity.service.utils.ParseUtils;
 import com.auth0.jwt.JWT;
@@ -43,6 +42,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final InvoiceRepository invoiceRepository;
+    private final WayBillRepository wayBillRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final RepairingMailRepository repairingMailRepository;
@@ -96,11 +97,25 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void deleteUsers(Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            log.info("USER WITH ID {} DELETED", id);
-        }
+    public void deleteUsers(Long id) throws UserException {
+        User user = userRepository.findById(id)
+                .orElseThrow(()->new UserException("user with id " + id +" not found"));
+        List<Invoice> invoices = user.getInvoice();
+        invoices.forEach(invoice -> {
+            if (invoice.getDriver().getId().equals(id)) {
+                invoice.setDriver(null);
+            }
+            if (invoice.getCreator().getId().equals(id)) {
+                invoice.setCreator(null);
+            }
+            invoiceRepository.save(invoice);
+        });
+        List<WayBill> wayBills = user.getWayBill();
+        wayBills.forEach(wayBill -> {
+            wayBill.setVerifier(null);
+            wayBillRepository.save(wayBill);
+        });
+        userRepository.delete(user);
     }
 
     public User getById(Long id) throws UserException {
