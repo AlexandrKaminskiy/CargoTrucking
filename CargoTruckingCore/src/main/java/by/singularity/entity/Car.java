@@ -1,5 +1,6 @@
 package by.singularity.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class Car {
 
     private Integer consumptionForKm;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "car")
     private List<WayBill> wayBill;
 

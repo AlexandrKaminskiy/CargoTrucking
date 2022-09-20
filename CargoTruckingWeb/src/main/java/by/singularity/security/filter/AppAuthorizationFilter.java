@@ -37,17 +37,12 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals("/api/register")) {
-            filterChain.doFilter(request,response);
-            return;
-        }
-        if (request.getServletPath().equals("/api/refresh")) {
-            filterChain.doFilter(request,response);
-            return;
-        }
-        if (request.getServletPath().equals("/api/sign-in")) {
-            filterChain.doFilter(request,response);
-            return;
+        List<String> paths = List.of("/api/refresh","/api/sign-in","/api/about","/api/email/repairing");
+        for (var path : paths) {
+            if (request.getServletPath().equals(path)) {
+                filterChain.doFilter(request,response);
+                return;
+            }
         }
         String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -67,8 +62,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(username,null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 log.info("SUCCESSFULLY AUTHORIZED!");
-            } catch (Exception e){
-                e.printStackTrace();
+            } catch (Exception e) {
                 log.error("INVALID ACCESS TOKEN");
                 Map<String, String> resp = new HashMap<>();
                 resp.put("error","check your access token");

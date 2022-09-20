@@ -72,6 +72,7 @@ public class User {
             CascadeType.PERSIST,CascadeType.REFRESH}, mappedBy = "creator")
     private List<Invoice> invoice;
 
+    @JsonIgnore
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,
             CascadeType.PERSIST,CascadeType.REFRESH}, mappedBy = "verifier")
     private List<WayBill> wayBill;

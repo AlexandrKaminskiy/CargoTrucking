@@ -30,6 +30,7 @@ public class Storage {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "storage")
     private List<Invoice> invoice;
 

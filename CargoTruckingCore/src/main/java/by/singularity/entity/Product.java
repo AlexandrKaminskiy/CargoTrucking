@@ -32,11 +32,13 @@ public class Product {
     @JoinColumn(name = "creator_id")
     private User creator;
 
+    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
             CascadeType.REFRESH,CascadeType.PERSIST})
     @JoinColumn(name = "product_owner_id")
     private ProductOwner productOwner;
 
+    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,
             CascadeType.REFRESH,CascadeType.PERSIST})
     @JoinColumn(name = "invoice_id")

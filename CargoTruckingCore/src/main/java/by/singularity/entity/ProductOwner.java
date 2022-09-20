@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,10 +28,11 @@ public class ProductOwner {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productOwner")
     private Set<Product> products;
 
+    @JsonIgnore
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,
             CascadeType.REFRESH,CascadeType.PERSIST},
             mappedBy = "productOwner")
-    private Collection<Invoice> invoice;
+    private List<Invoice> invoice;
 
     public void setProducts(Set<Product> products) {
         if (products != null) {
