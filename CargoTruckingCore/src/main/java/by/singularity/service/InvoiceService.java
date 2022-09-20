@@ -66,8 +66,13 @@ public class InvoiceService {
                 .orElseThrow(()->new InvoiceException("invoice with number " + number + "not found"));
         invoice.getProducts().forEach(product -> productService.deleteProduct(product.getId()));
         Invoice updatedInvoice = invoiceMapper.toModel(invoiceDto);
+        Storage storage = storageService.getStorage(invoiceDto.getStorageId());
+        User driver = userService.getById(invoiceDto.getDriverId());
+        if (!driver.getRoles().contains(Role.DRIVER)) {
+            throw new UserException("user with id " + driver.getId() + " is not driver");
+        }
         invoice.setDriver(updatedInvoice.getDriver());
-        invoice.setStorage(updatedInvoice.getStorage());
+        invoice.setStorage(storage);
         invoice.setProductOwner(updatedInvoice.getProductOwner());
         invoice.setProducts(getProducts(invoiceDto));
         invoiceRepository.save(invoice);

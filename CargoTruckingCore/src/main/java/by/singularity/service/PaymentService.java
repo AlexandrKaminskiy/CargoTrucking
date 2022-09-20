@@ -16,11 +16,10 @@ import java.util.Date;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
 
-    private final double SALARY_MULTIPLIER = 0.01;
-
     public void createPayment(WayBill wayBill, Integer profit) {
         User driver = wayBill.getInvoice().getDriver();
         Payment payment = new Payment();
+        double SALARY_MULTIPLIER = 0.01;
         payment.setPayment(profit * SALARY_MULTIPLIER);
         payment.setDate(new Date());
         payment.setUser(driver);

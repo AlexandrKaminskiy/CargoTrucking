@@ -108,11 +108,6 @@ public class WayBillService {
                 .buildAnd();
     }
 
-    private Predicate invoiceByUserPredicate(Long userId) {
-        return QPredicate.builder()
-                .add(userId, QInvoice.invoice.driver.id::eq)
-                .buildAnd();
-    }
 
     private void setIncome(WayBill wayBill) {
         Car car = wayBill.getCar();

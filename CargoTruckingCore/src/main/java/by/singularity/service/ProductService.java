@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -54,12 +53,6 @@ public class ProductService {
         productRepository.save(product);
         log.info("INVOICE PRODUCT WITH ID {} CREATED", product.getId());
         return product;
-    }
-
-    public Set<Product> createProducts(Set<Product> products) {
-        productRepository.saveAll(products);
-        log.info("RESERVED PRODUCTS CREATED");
-        return products;
     }
 
     @Transactional
